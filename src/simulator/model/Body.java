@@ -2,7 +2,6 @@ package simulator.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import simulator.misc.Vector2D;
 
 public class Body {
@@ -32,7 +31,17 @@ public class Body {
 			b2.move(t);
 		}
     }
-
+	
+	public static void test2() {
+		Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 100, 0.1, 3);
+		double t = 0.5;
+		b1.addForce(new Vector2D(100, 50));
+		for (int i = 0; i < 300; i++) {
+			System.out.println("v: " + b1.getVelocity() + ", p: " + b1.getPosition());
+			b1.move(t);
+		}
+	}
+	
 	public Body(String str, Vector2D v, Vector2D p, double mass) {
 		id = str;
 		this.v = v;
@@ -83,4 +92,3 @@ public class Body {
 		return null;
 	}
 }
-
