@@ -24,18 +24,14 @@ public class NewtonUniversalGravitation {
 		double distance = b1.p.distanceTo(b2.p);
 		if(distance > 0 && b1.getMass() > 0 && b2.getMass() > 0){
 			Vector2D dirB1ToB2 =  b2.p.minus(b1.p);
-			Vector2D dirB2ToB1 =  b1.p.minus(b2.p);
-			Vector2D unityDirV_1 = dirB1ToB2.scale(1/dirB1ToB2.magnitude());
-			Vector2D unityDirV_2 = dirB2ToB1.scale(1/dirB2ToB1.magnitude());
+			Vector2D unityDirV = dirB1ToB2.scale(1/dirB1ToB2.magnitude());
 			//TODO check if unityDirVector is unity vector indeed
 			double factor = _G*b1.getMass()*b2.getMass() / (distance*distance);
-			result = unityDirVector.scale(factor);
+			result = unityDirV.scale(factor);
 
-			bs.get(i).f = result;
-			bs.get(j).f = result.scale();
+			b1.f = b1.f.plus(result);
+			b2.f = b2.f.plus(result.scale(-1)); //opposite directions, same magnitude
 		}
-
-		return result;
 	}
 
 
