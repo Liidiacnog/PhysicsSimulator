@@ -4,14 +4,16 @@ import java.util.List;
 
 import simulator.misc.Vector2D;
 
-public class NewtonUniversalGravitation {
+public class NewtonUniversalGravitation implements ForceLaws {
 	
-	static int _G;
+	private static double _G;
 
-	public NewtonUniversalGravitation(final int G){
+	public NewtonUniversalGravitation(double G){
 		_G = G;
 	}
 	
+	
+
 	public void apply(List<Body> bs){
 		for(int i = 0; i < bs.size(); ++i)
 			for(int j = i + 1; j < bs.size(); ++j){ //TODO change by implementing Iterator?
@@ -25,7 +27,6 @@ public class NewtonUniversalGravitation {
 		if(distance > 0 && b1.getMass() > 0 && b2.getMass() > 0){
 			Vector2D dirB1ToB2 =  b2.p.minus(b1.p);
 			Vector2D unityDirV = dirB1ToB2.scale(1/dirB1ToB2.magnitude());
-			//TODO check if unityDirVector is unity vector indeed
 			double factor = _G*b1.getMass()*b2.getMass() / (distance*distance);
 			result = unityDirV.scale(factor);
 

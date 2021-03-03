@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Body",
+            "request": "launch",
+            "mainClass": "simulator.model.Body",
+            "projectName": "TP-II_e2043721"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
