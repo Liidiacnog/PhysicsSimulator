@@ -21,7 +21,6 @@ public class Body {
 		List<Body> bs = new ArrayList<>();
 		bs.add(b1);
 		bs.add(b2);
-		double G = 6.67E-11; //0.0000000000667; TODO qué le pasa?
 		double G = 6.67E-11;
 		NewtonUniversalGravitation f = new NewtonUniversalGravitation(G);
 		f.apply(bs);
@@ -33,7 +32,7 @@ public class Body {
 		}
     }
 	
-	public static void test2() {
+	public static void test2() { // TODO remove
 		Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 100, 0.1, 3);
 		double t = 0.5;
 		b1.addForce(new Vector2D(100, 50));
