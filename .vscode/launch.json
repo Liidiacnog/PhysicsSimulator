@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch UseExample",
+            "request": "launch",
+            "mainClass": "extra.json.UseExample",
+            "projectName": "TP-II_e2043721"
+        },
+        {
+            "type": "java",
             "name": "Launch Body",
             "request": "launch",
             "mainClass": "simulator.model.Body",
