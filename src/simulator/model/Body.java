@@ -1,7 +1,11 @@
 package simulator.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.json.JSONObject;
+
 import simulator.misc.Vector2D;
 
 public class Body {
@@ -90,5 +94,24 @@ public class Body {
 	
 	public String toString() {
 		return null;
+	}
+
+	//equal bodies if they have the same identifier
+	public boolean equals(Body b){
+		return id.equals(b.getId());
+	}
+
+/*returns the JSON structure that includes the body’s information:
+{ "id": id, "m": m, "p": p, "v": v, "f": f } */
+	public JSONObject getState() {
+		JSONObject jo = new JSONObject();
+
+    	jo.put("id", id);
+		jo.put("m", m);
+		jo.put("p", p); //TODO check if it returns toString() of vectors or it has to be called explicitely
+		jo.put("v", v);
+		jo.put("f", f);
+
+		return jo;
 	}
 }
