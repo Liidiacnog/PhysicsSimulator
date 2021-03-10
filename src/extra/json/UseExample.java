@@ -52,7 +52,7 @@ public class UseExample {
 		// match -- usually you know what type you expect.
 		//
 		System.out.println();
-		System.out.println("** Check is a key is defined");
+		System.out.println("** Check if a key is defined");
 		System.out.println();
 
 		System.out.println("a = " + jo.getInt("a"));

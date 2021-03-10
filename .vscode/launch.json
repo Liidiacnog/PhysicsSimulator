@@ -9,6 +9,13 @@
             "name": "Launch UseExample",
             "request": "launch",
             "mainClass": "extra.json.UseExample",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
+            "name": "Launch UseExample",
+            "request": "launch",
+            "mainClass": "extra.json.UseExample",
             "projectName": "TP-II_e2043721"
         },
         {
