@@ -1,5 +1,7 @@
 package simulator.factories;
 
+import org.json.JSONObject;
+
 public class Builder<T> {
 /*A builder is an object that is able to create an instance of a specific type, i.e., it can handle a
 JSON structure with a very specific value for key type. */
