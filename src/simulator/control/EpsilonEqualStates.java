@@ -44,13 +44,13 @@ public class EpsilonEqualStates implements StateComparator {
     }
     
     //Two numbers a and b are eps-equal if “Math.abs(a-b) <= eps”
-    boolean epsEqual(double a, double b){
+    private boolean epsEqual(double a, double b){
         return Math.abs(a-b) <= _eps;
     }
 
 
     //two vectors v1 and v2 are eps-equal if “v1.distanceTo(v2) <= eps”
-    boolean epsEqual(Vector2D a, Vector2D b){
+    private boolean epsEqual(Vector2D a, Vector2D b){
         return a.distanceTo(b) <= _eps;
     }
 
