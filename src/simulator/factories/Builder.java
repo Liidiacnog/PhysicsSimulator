@@ -14,17 +14,18 @@ it recognizes the type tag but there is an error in the values provided in the d
 section, it should throw an IllegalArgumentException exception.*/
     public T createInstance(JSONObject info) throws IllegalArgumentException {
         T inst = null;
-        if(info.type == _type)
-            T = new Builder();
+        if(info.get("type") == _type)
+            T = new T(); //TODO ?, also: to be overwitten by those subclasses that do require the data section data to be built?, is tehre any class that doesn't require it?
         return inst;
     }
 
 
     /*returns a JSON serving as a template for the corresponding builder, i.e., a valid value for the parameter of 
     createInstance (see getInfo() of Factory<T> as well).*/
-    public JSONObject getBuilderInfo(){
+    public JSONObject getBuilderInfo(){ //TODO I don't quite understand what we have to do, and when it'll be used
         JSONObject o = new JSONObject();
         o.put("type", _type);
+        o.putKey("data");
         return o;
     }
 
