@@ -108,9 +108,9 @@ public class Body {
 
     	jo.put("id", id);
 		jo.put("m", m);
-		jo.put("p", p); //TODO check if it returns toString() of vectors or it has to be called explicitely
-		jo.put("v", v);
-		jo.put("f", f);
+		jo.put("p", p.asJSONArray());
+		jo.put("v", v.asJSONArray());
+		jo.put("f", f.asJSONArray());
 
 		return jo;
 	}

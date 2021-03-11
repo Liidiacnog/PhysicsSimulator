@@ -31,12 +31,28 @@ public class EpsilonEqualStates implements StateComparator {
             if(ja1.length() == ja2.length()){
                 eq = true;
                 for(int i = 0; i < ja1.length() && eq; ++i){
-                    if(ja1.get(i).getId() != ja2.get(i).getId() || !epsEqual(ja1.get(i).getMass(), ja2.get(i).getMass())
-                        || !epsEqual(ja1.get(i).getPosition(), ja2.get(i).getPosition()) 
-                        || !epsEqual(ja1.get(i).getForce(), ja2.get(i).getForce())
-                        || !epsEqual(ja1.get(i).getVelocity(), ja2.get(i).getVelocity()) ) //TODO use casting?
-                        eq = false;
-                } //TODO casting required?
+                    //create vector instances with the values extracted from objects i for velocity, position and force of each
+                    // JSONOBject, to pass them as parameters to method epsEqual and compare them
+                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"); //TODO maybe better way or move to aux method?
+                    JSONArray coords2 = ja2.getJSONObject(i).getJSONArray("p");
+                    Vector2D vPos1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
+                             vPos2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+                            
+                    coords1 = ja1.getJSONObject(i).getJSONArray("v");
+                    coords2 = ja2.getJSONObject(i).getJSONArray("v");
+                    Vector2D vVel1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
+                             vVel2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+                    
+                    coords1 = ja1.getJSONObject(i).getJSONArray("f");
+                    coords2 = ja2.getJSONObject(i).getJSONArray("f");
+                    Vector2D vForce1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
+                             vForce2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+
+                    if(!ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id")) 
+                        || !epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))
+                        || !epsEqual(vPos1, vPos2) || !epsEqual(vForce1, vForce2) || !epsEqual(vVel1, vVel2) )
+                                    eq = false;
+                }
             }
         }
 

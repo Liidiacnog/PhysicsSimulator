@@ -2,11 +2,11 @@ package simulator.factories;
 
 import org.json.JSONObject;
 
-public class Builder<T> {
 /*A builder is an object that is able to create an instance of a specific type, i.e., it can handle a
 JSON structure with a very specific value for key type. */
+public class Builder<T> {
 
-    private static String _type;
+    protected static String _type;
 
     /*creates an object of type T (i.e., an instance of a sub-class of T) if it recognizes the information in info, 
 otherwise it returns null to indicate that this builder cannot handle the request. In the case that
@@ -14,20 +14,27 @@ it recognizes the type tag but there is an error in the values provided in the d
 section, it should throw an IllegalArgumentException exception.*/
     public T createInstance(JSONObject info) throws IllegalArgumentException {
         T inst = null;
-        if(info.get("type") == _type)
-            T = new T(); //TODO ?, also: to be overwitten by those subclasses that do require the data section data to be built?, is tehre any class that doesn't require it?
+        if(info.get("type").equals(_type))
+            inst = createNewT(info);
         return inst;
     }
 
 
     /*returns a JSON serving as a template for the corresponding builder, i.e., a valid value for the parameter of 
     createInstance (see getInfo() of Factory<T> as well).*/
-    public JSONObject getBuilderInfo(){ //TODO I don't quite understand what we have to do, and when it'll be used
+    public JSONObject getBuilderInfo(){ 
         JSONObject o = new JSONObject();
         o.put("type", _type);
-        o.putKey("data");
+        o.put("data", getData());
         return o;
     }
 
+    protected JSONObject getData() {
+        return new JSONObject();
+    }
+
+    protected T createNewT(JSONObject info) {
+        return null;
+    }
 
 }
