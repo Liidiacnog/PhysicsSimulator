@@ -33,7 +33,7 @@ section, it should throw an IllegalArgumentException exception.*/
         return new JSONObject();
     }
 
-    protected T createNewT(JSONObject info) {
+    protected T createNewT(JSONObject info) throws IllegalArgumentException{ //TODO declare that it throws it in subclasses and declare and implement when it throws it
         return null;
     }
 

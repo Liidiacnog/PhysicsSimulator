@@ -16,7 +16,7 @@ public class BasicBodyBuilder extends Builder<Body> {
 
     /*returns a JSON serving as a template for the corresponding builder, i.e., a valid value for the parameter of 
     createInstance (see getInfo() of Factory<T> as well).*/
-    protected JSONObject getData() { 
+    protected JSONObject getData() {
         JSONObject data = new JSONObject();
         data.put("id", "Body id");
         data.put("v", "Velocity vector");
