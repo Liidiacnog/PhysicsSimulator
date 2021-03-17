@@ -49,6 +49,11 @@ information in the constructor, to avoid creating it every time).*/
     public List<JSONObject> getInfo() {
         
         List<JSONObject> list = new ArrayList<JSONObject>(); //TODO what does it mean when it says "to avoid creating it every time"?
+        
+        for(int i = 0; i < bList.size(); ++i){
+            list.add(bList.get(i).getBuilderInfo());
+        }
+        
         //TODO not finished
 
         return null;

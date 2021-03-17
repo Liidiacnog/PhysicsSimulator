@@ -1,7 +1,7 @@
 package simulator.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,7 +23,7 @@ public class PhysicsSimulator {
             throw new IllegalArgumentException();
         
         _current_t = 0.0;
-
+        _l = new ArrayList<>();
     }
 
     
@@ -54,8 +54,8 @@ public void addBody(Body b) throws IllegalArgumentException{
 }
 
 
-/*returns the JSON structure that includes the simulator’s state:*/
-/*{ "time": t, "bodies": [json1, json2, . . .] }
+/*returns the JSON structure that includes the simulator’s state:
+    { "time": t, "bodies": [json1, json2, . . .] }
 where t is the current time and jsoni is the JSONObject returned by getState() of the i-th body in the list of bodies. */
 public JSONObject getState(){
     JSONObject jo = new JSONObject();
