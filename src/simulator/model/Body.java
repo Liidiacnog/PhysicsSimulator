@@ -82,7 +82,7 @@ public class Body {
 		f = new Vector2D();
 	}
 	
-	void move(double t) {
+	public void move(double t) {
 		Vector2D a;
 		if (m != 0)
 			a = f.scale(1/m);

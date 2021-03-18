@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch BuilderBasedFactory",
+            "request": "launch",
+            "mainClass": "simulator.factories.BuilderBasedFactory",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
             "name": "Launch UseExample",
             "request": "launch",
             "mainClass": "extra.json.UseExample",

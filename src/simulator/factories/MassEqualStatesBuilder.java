@@ -10,12 +10,16 @@ public class MassEqualStatesBuilder extends Builder<StateComparator>{
 
     private static String MassEqualStatesBuilderType = "massEq";
 
-    private MassEqualStatesBuilder(){
+    public MassEqualStatesBuilder(){
         _type = MassEqualStatesBuilderType;
     }
 
     protected StateComparator createNewT(JSONObject info) {
-        return new MassEqualStates();
+        try {
+            return new MassEqualStates();
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
 }

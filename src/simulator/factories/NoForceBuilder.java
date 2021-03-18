@@ -7,11 +7,15 @@ public class NoForceBuilder extends Builder<ForceLaws> {
     
     private static String NoForceBuilderType = "noForce";
 
-    private NoForceBuilder(){
+    public NoForceBuilder(){
         _type = NoForceBuilderType;
     }
     
     protected ForceLaws createNewT() {
-        return new NoForce();
+        try {
+            return new NoForce();
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }

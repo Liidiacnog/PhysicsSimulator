@@ -10,7 +10,7 @@ public class BasicBodyBuilder extends Builder<Body> {
     
     private static String BasicBodyBuilderType = "basic";
 
-    private BasicBodyBuilder(){
+    public BasicBodyBuilder(){
         _type = BasicBodyBuilderType;
     }
 
@@ -27,8 +27,12 @@ public class BasicBodyBuilder extends Builder<Body> {
     }
     
     protected Body createNewT(JSONObject info) {
-        return new Body(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), 
+        try {
+            return new Body(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), 
                 new Vector2D(info.getJSONArray("p").getInt(0), info.getJSONArray("p").getInt(1)), info.getInt("m"));
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
     

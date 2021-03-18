@@ -9,7 +9,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     
     private static String NewtonUniversalGravitationBuilderType = "newtonUG";
 
-    private NewtonUniversalGravitationBuilder(){
+    public NewtonUniversalGravitationBuilder(){
         _type = NewtonUniversalGravitationBuilderType;
     }
     
@@ -21,6 +21,10 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     }
 
     protected ForceLaws createNewT(JSONObject info) {
-        return new NewtonUniversalGravitation(info.getDouble("G"));
+        try {
+            return new NewtonUniversalGravitation(info.getDouble("G"));
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }

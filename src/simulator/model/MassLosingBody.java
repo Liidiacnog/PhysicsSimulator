@@ -16,7 +16,7 @@ public class MassLosingBody extends Body{
 	
 	
 	@Override
-	void move(double t) {
+	public void move(double t) {
 		super.move(t);
 		
 		timeCount += t;

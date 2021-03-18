@@ -9,7 +9,7 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
     
     private static String EpsilonEqualStatesBuilderType = "epsEq";
 
-    private EpsilonEqualStatesBuilder(){
+    public EpsilonEqualStatesBuilder(){
         _type = EpsilonEqualStatesBuilderType;
     }
 
@@ -21,7 +21,11 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
     }
 
     protected StateComparator createNewT(JSONObject info) {
-        return new EpsilonEqualStates(info.getDouble("eps")); 
+        try {
+            return new EpsilonEqualStates(info.getDouble("eps")); 
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
 }

@@ -1,8 +1,12 @@
 package simulator.control;
 
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +32,6 @@ public class Controller {
     public Controller(PhysicsSimulator sim, Factory<Body> fB){
         _fB = fB;
         _sim = sim;
-        //TODO okay?
     }
 
 /*Converts the input JSON into a JSONObject, using and then extracts each bbi from jsonInupt, 
@@ -67,18 +70,32 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
         information).
     */
         public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp){
-            JSONObject jsonOUT = new JSONObject();
-            JSONArray jArrayStates = new JSONArray();
-            jArrayStates.put(0, _sim.getState());
-            for(int i = 1; i < n; ++i){
-               _sim.advance();
-               jArrayStates.put(i, _sim.getState());
+            PrintStream p = new PrintStream(out);
+            if(expOut != null){
+                JSONObject jsonExpected = new JSONObject(new JSONTokener(expOut));
             }
-            jsonOUT.put("states", jArrayStates);
             
-            //out.write(jsonOUT.toString());
+            p.println("{");
+            p.println("\"states\": [");
+            //print s0:
+            p.println(_sim.toString() + ',');
 
-            //TODO voy por aquí, section 6.2.
+             // run the sumulation n steps
+            for(int i = 1; i < n - 1; ++i){
+               _sim.advance();
+               p.println(_sim.toString() + ',');
+            }
+            if(n > 1){ //last one (sn) has no final comma
+                _sim.advance();
+               p.println(_sim.toString());
+            }
+            p.println("]");
+            p.println("}");
+
+
+            
+
+
             
         }
 

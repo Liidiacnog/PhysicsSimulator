@@ -9,7 +9,7 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     
     private static String MovingTowardsFixedPointBuilderType = "mtfp";
 
-    private MovingTowardsFixedPointBuilder(){
+    public MovingTowardsFixedPointBuilder(){
         _type = MovingTowardsFixedPointBuilderType;
     }
     
@@ -22,6 +22,10 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     }
 
     protected ForceLaws createNewT(JSONObject info) {
-        return new MovingTowardsFixedPoint(new Vector2D(info.getJSONArray("c").getInt(0), info.getJSONArray("c").getInt(1)), info.getDouble("g"));
+        try {
+            return new MovingTowardsFixedPoint(new Vector2D(info.getJSONArray("c").getInt(0), info.getJSONArray("c").getInt(1)), info.getDouble("g"));
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }

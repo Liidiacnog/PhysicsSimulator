@@ -10,7 +10,7 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 
     private static String MassLosingBodyBuilderType = "massLosing";
 
-    private MassLosingBodyBuilder(){
+    public MassLosingBodyBuilder(){
         _type = MassLosingBodyBuilderType;
     }
 
@@ -27,6 +27,10 @@ public class MassLosingBodyBuilder extends Builder<Body> {
     }
 
     protected MassLosingBody createNewT(JSONObject info) {
-        return new MassLosingBody(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), new Vector2D(info.getJSONArray("p").getInt(0), info.getJSONArray("p").getInt(1)), info.getInt("m"), info.getDouble("freq"), info.getDouble("factor"));
+        try {
+            return new MassLosingBody(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), new Vector2D(info.getJSONArray("p").getInt(0), info.getJSONArray("p").getInt(1)), info.getInt("m"), info.getDouble("freq"), info.getDouble("factor"));
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }
