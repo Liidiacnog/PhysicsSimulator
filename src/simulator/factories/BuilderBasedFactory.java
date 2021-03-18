@@ -59,7 +59,6 @@ case of failure.*/
 by getBuilderInfo() of all builders in a list and returns it (create the list and aggregate the
 information in the constructor, to avoid creating it every time).*/
     public List<JSONObject> getInfo() {
-
         return info;
     }
 

@@ -41,13 +41,10 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
              { "bodies": [bb1,...,bbn] }
         where each bbi is a JSON structure defining a corresponding body*/
         //convert the input JSON into a JSONObject:
-        JSONObject jsonInput = new JSONObject(new JSONTokener(in));
-        
-        JSONArray bodies = jsonInput.getJSONArray("bodies");
+        JSONArray bodies = new JSONObject(new JSONTokener(in)).getJSONArray("bodies");
         for(int i = 0; i < bodies.length(); ++i){
             _sim.addBody(_fB.createInstance(bodies.getJSONObject(i)));
         }
-        
     }
 
 
@@ -57,37 +54,45 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
         where s0 is the state of the simulator before executing any step, and each si with
         i >= 1 is the state of the simulator immediately after executing the i-th simulation
         step. Note that state si is obtained by calling getState() of the simulator. Note
-        also that when calling this method with n < 1, the output should include s0. See
-        Section 6.2 for a convenient way to print into a OutputStream.
-
-        The 3rd parameter expOut is an InputStream that corresponds to the expected output
-        or null (the same syntax as the output described above). If expOut is not null,
-        first convert it into a JSON structure, and then in each simulation step you should
-        compare the current state of the simulator to the expected one using the state
-        comparator of the 4-th argument, and if the result is not equal throw a corresponding
-        exception with a message that includes the different states and the number of the
-        execution step (better create your own exception class that encapsulate all this
-        information).
+        also that when calling this method with n < 1, the output should include s0. 
     */
-        public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp){
+        public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp) throws StatesMismatchException{
             PrintStream p = new PrintStream(out);
+            JSONArray arrayExpStates = null;
             if(expOut != null){
-                JSONObject jsonExpected = new JSONObject(new JSONTokener(expOut));
+                arrayExpStates = new JSONObject(new JSONTokener(expOut)).getJSONArray("states");
             }
-            
+        
             p.println("{");
             p.println("\"states\": [");
             //print s0:
             p.println(_sim.toString() + ',');
 
-             // run the sumulation n steps
-            for(int i = 1; i < n - 1; ++i){
-               _sim.advance();
-               p.println(_sim.toString() + ',');
+            if(arrayExpStates != null){//TODO better way? (shorter)
+                //compare s0
+                //TODO
+                // run the sumulation n steps
+                for(int i = 1; i < n - 1; ++i){
+                    _sim.advance();
+                    p.println(_sim.toString() + ',');
+                    if(!cmp.equal(_sim.getState(), arrayExpStates.getJSONObject(i)))
+                        throw new StatesMismatchException(); //TODO fill info: different states and the number of the execution step
+                }
+                if(n > 1){ //last one (sn) has no final comma
+                    _sim.advance();
+                    p.println(_sim.toString());
+
+                }
             }
-            if(n > 1){ //last one (sn) has no final comma
-                _sim.advance();
-               p.println(_sim.toString());
+            else{
+                for(int i = 1; i < n - 1; ++i){
+                    _sim.advance();
+                    p.println(_sim.toString() + ',');
+                }
+                if(n > 1){ //last one (sn) has no final comma
+                    _sim.advance();
+                    p.println(_sim.toString());
+                }
             }
             p.println("]");
             p.println("}");
