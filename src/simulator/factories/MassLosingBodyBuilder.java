@@ -8,7 +8,7 @@ import simulator.misc.*;
 public class MassLosingBodyBuilder extends Builder<Body> {
 
 
-    private static String MassLosingBodyBuilderType = "massLosing";
+    private static String MassLosingBodyBuilderType = "mlb";
 
     public MassLosingBodyBuilder(){
         _type = MassLosingBodyBuilderType;

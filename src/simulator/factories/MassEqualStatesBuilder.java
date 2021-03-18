@@ -8,7 +8,7 @@ import simulator.control.StateComparator;
 public class MassEqualStatesBuilder extends Builder<StateComparator>{
     
 
-    private static String MassEqualStatesBuilderType = "massEq";
+    private static String MassEqualStatesBuilderType = "masseq";
 
     public MassEqualStatesBuilder(){
         _type = MassEqualStatesBuilderType;

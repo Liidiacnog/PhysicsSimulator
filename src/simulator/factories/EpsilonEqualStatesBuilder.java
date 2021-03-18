@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
     
-    private static String EpsilonEqualStatesBuilderType = "epsEq";
+    private static String EpsilonEqualStatesBuilderType = "epseq";
 
     public EpsilonEqualStatesBuilder(){
         _type = EpsilonEqualStatesBuilderType;

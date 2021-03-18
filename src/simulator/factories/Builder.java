@@ -6,7 +6,7 @@ import org.json.JSONObject;
 JSON structure with a very specific value for key type. */
 public class Builder<T> {
 
-    protected static String _type;
+    protected String _type;
 
     /*creates an object of type T (i.e., an instance of a sub-class of T) if it recognizes the information in info, 
 otherwise it returns null to indicate that this builder cannot handle the request. In the case that
