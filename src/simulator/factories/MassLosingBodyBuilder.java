@@ -27,8 +27,10 @@ public class MassLosingBodyBuilder extends Builder<Body> {
     }
 
     protected MassLosingBody createNewT(JSONObject info) {
+        Vector2D v = (Vector2D) info.get("v");
+        Vector2D p = (Vector2D) info.get("p");
         try {
-            return new MassLosingBody(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), new Vector2D(info.getJSONArray("p").getInt(0), info.getJSONArray("p").getInt(1)), info.getInt("m"), info.getDouble("freq"), info.getDouble("factor"));
+            return new MassLosingBody(info.getString("id"), v, p, info.getDouble("m"), info.getDouble("freq"), info.getDouble("factor"));
         } catch (RuntimeException e) {
             throw new IllegalArgumentException();
         }

@@ -27,9 +27,12 @@ public class BasicBodyBuilder extends Builder<Body> {
     }
     
     protected Body createNewT(JSONObject info) {
+        String id = info.getString("id");
+        Vector2D v = (Vector2D) info.get("v");
+        Vector2D p = (Vector2D) info.get("p");
+        double m = info.getDouble("m");
         try {
-            return new Body(info.getString("id"), new Vector2D(info.getJSONArray("v").getInt(0), info.getJSONArray("v").getInt(1)), 
-                new Vector2D(info.getJSONArray("p").getInt(0), info.getJSONArray("p").getInt(1)), info.getInt("m"));
+            return new Body(id, v, p, m);
         } catch (RuntimeException e) {
             throw new IllegalArgumentException();
         }

@@ -15,7 +15,7 @@ section, it should throw an IllegalArgumentException exception.*/
     public T createInstance(JSONObject info) throws IllegalArgumentException { //TODO should throw exc if values provided in the data are wrong
         T inst = null;
         if(matchType(info.getString("type")))
-            inst = createNewT(info);
+            inst = createNewT(info.getJSONObject("data"));
         return inst;
     }
 

@@ -82,7 +82,7 @@ information in the constructor, to avoid creating it every time).*/
         data1.put("m", 10);
         data1.put("freq", 0.1);
         data1.put("factor", 3);
-        j1.put("type", "basic");
+        j1.put("type", "mlb");
         j1.put("data", data1);
 
         JSONObject j2 = new JSONObject();
@@ -91,9 +91,9 @@ information in the constructor, to avoid creating it every time).*/
         data2.put("v", new Vector2D());
         data2.put("p", new Vector2D(1, 1));
         data2.put("m", 10);
-        data1.put("freq", 0.1);
-        data1.put("factor", 3);
-        j2.put("type", "basic");
+        data2.put("freq", 0.1);
+        data2.put("factor", 3);
+        j2.put("type", "mlb");
         j2.put("data", data2);
 
         Body b1 = bodyFactory.createInstance(j1);
