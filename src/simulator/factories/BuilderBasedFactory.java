@@ -21,21 +21,13 @@ public class BuilderBasedFactory<T> implements Factory<T> {
     }
 
 
-
-    /*The following is an example of how we can create a factory of bodies using the classes
-that we have developed:
-ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
-bodyBuilders.add(new BasicBodyBuilder());
-bodyBuilders.add(new MassLosingBodyBuilder());
-Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);*/
-
 /*tries the builders one by one until it succeeds to create a corresponding instance — throws IllegalArgumentException in
 case of failure.*/
     public T createInstance(JSONObject info) throws IllegalArgumentException { //TODO since it inherits from RunTimeExc should we declare that it throws it?
         T inst = null;
         //int i = 0;
         boolean found = false;
-        for (int i = 0; i < _builders.size() && !found; ++i){ //TODO ask, change for a while?
+        for (int i = 0; i < _builders.size() && !found; ++i){ //TODO ask, change for a while loop?
             inst = _builders.get(i).createInstance(info);
             if (inst != null) {
                 found = true;
@@ -49,7 +41,7 @@ case of failure.*/
         }*/
         
         if (inst == null){
-            throw new IllegalArgumentException(); //TODO fill cause mssg (no valid type found)
+            throw new IllegalArgumentException("No valid type found matching the information provided"); 
         }
 
         return inst;
@@ -67,8 +59,10 @@ information in the constructor, to avoid creating it every time).*/
     }
 
     public static void test1(){ //TODO remove
-        /*Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 10, 0.1, 3);
-		Body b2 = new MassLosingBody("2", new Vector2D(), new Vector2D(1, 1), 10, 0.1, 3);*/
+        /*
+        Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 10, 0.1, 3);
+		Body b2 = new MassLosingBody("2", new Vector2D(), new Vector2D(1, 1), 10, 0.1, 3);
+        */
         ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
         bodyBuilders.add(new BasicBodyBuilder());
         bodyBuilders.add(new MassLosingBodyBuilder());
@@ -110,7 +104,7 @@ information in the constructor, to avoid creating it every time).*/
 			b1.move(t);
 			System.out.println("f: " + b2.getForce() + ", p: " + b2.getPosition());
 			b2.move(t);
-		}
+		} 
     }
 
     public static void test2() {
