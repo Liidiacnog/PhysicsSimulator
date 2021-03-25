@@ -2,6 +2,8 @@ package simulator.factories;
 
 import simulator.model.MovingTowardsFixedPoint;
 import simulator.model.ForceLaws;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.*;
 
@@ -22,7 +24,7 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     }
 
     protected ForceLaws createNewT(JSONObject info) {
-        Vector2D c = (Vector2D) info.get("c");
+        Vector2D c = new Vector2D(info.getJSONArray("c"));
         try {
             return new MovingTowardsFixedPoint(c, info.getDouble("g"));
         } catch (RuntimeException e) {

@@ -33,20 +33,20 @@ public class EpsilonEqualStates implements StateComparator {
                 for(int i = 0; i < ja1.length() && eq; ++i){
                     //create vector instances with the values extracted from objects i for velocity, position and force of each
                     // JSONOBject, to pass them as parameters to method epsEqual and compare them
-                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"); //TODO maybe better way or move to aux method?
-                    JSONArray coords2 = ja2.getJSONObject(i).getJSONArray("p");
-                    Vector2D vPos1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
-                             vPos2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"),
+                              coords2 = ja2.getJSONObject(i).getJSONArray("p");
+                    Vector2D vPos1 = new Vector2D(coords1),
+                             vPos2 = new Vector2D(coords2);
                             
                     coords1 = ja1.getJSONObject(i).getJSONArray("v");
                     coords2 = ja2.getJSONObject(i).getJSONArray("v");
-                    Vector2D vVel1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
-                             vVel2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+                    Vector2D vVel1 = new Vector2D(coords1),
+                             vVel2 = new Vector2D(coords2);
                     
                     coords1 = ja1.getJSONObject(i).getJSONArray("f");
                     coords2 = ja2.getJSONObject(i).getJSONArray("f");
-                    Vector2D vForce1 = new Vector2D(coords1.getDouble(0), coords1.getDouble(1)),
-                             vForce2 = new Vector2D(coords2.getDouble(0), coords2.getDouble(1));
+                    Vector2D vForce1 = new Vector2D(coords1),
+                             vForce2 = new Vector2D(coords2);
 
                     if(!ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id")) 
                         || !epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))

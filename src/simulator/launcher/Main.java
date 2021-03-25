@@ -7,12 +7,20 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
 import org.json.JSONObject;
 
+import simulator.control.Controller;
 import simulator.control.StateComparator;
-import simulator.factories.Factory;
-import simulator.model.Body;
-import simulator.model.ForceLaws;
+import simulator.factories.*;
+import simulator.model.*;
 
 public class Main {
 
@@ -21,11 +29,15 @@ public class Main {
 	private final static Double _dtimeDefaultValue = 2500.0;
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
+	private final static Integer _stepsDefaultValue = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _dtime = null;
+	private static int _steps = 0;
 	private static String _inFile = null;
+	private static String _outFile = null;
+	private static String _expectedOutFile = null;
 	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
 
@@ -35,11 +47,25 @@ public class Main {
 	private static Factory<StateComparator> _stateComparatorFactory;
 
 	private static void init() {
-		// TODO initialize the bodies factory
+		// initializing the bodies factory
+		ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+        bodyBuilders.add(new BasicBodyBuilder());
+        bodyBuilders.add(new MassLosingBodyBuilder());
+        _bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
 
-		// TODO initialize the force laws factory
+		// initializing the force laws factory
+		ArrayList<Builder<ForceLaws>> lawBuilders = new ArrayList<>();
+		lawBuilders.add(new NewtonUniversalGravitationBuilder());
+		lawBuilders.add(new MovingTowardsFixedPointBuilder());
+		lawBuilders.add(new NoForceBuilder());
+		_forceLawsFactory = new BuilderBasedFactory<>(lawBuilders);
 
-		// TODO initialize the state comparator
+		// initializing the state comparator
+		ArrayList<Builder<StateComparator>> comparatorBuider = new ArrayList<>();
+		comparatorBuider.add(new EpsilonEqualStatesBuilder());
+		comparatorBuider.add(new MassEqualStatesBuilder());
+		_stateComparatorFactory = new BuilderBasedFactory<>(comparatorBuider);
+
 	}
 
 	private static void parseArgs(String[] args) {
@@ -56,8 +82,9 @@ public class Main {
 
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
-			// TODO add support of -o, -eo, and -s (define corresponding parse methods)
-
+			parseOutFileOption(line);
+			parseStepsOption(line);
+			parseExpectedFileOption(line);
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
@@ -80,6 +107,7 @@ public class Main {
 
 	}
 
+	
 	private static Options buildOptions() {
 		Options cmdLineOptions = new Options();
 
@@ -89,8 +117,17 @@ public class Main {
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
-		// TODO add support for -o, -eo, and -s (add corresponding information to
-		// cmdLineOptions)
+		//output
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
+				.desc("Output file, where output is written. Default value: the standard output.").build());
+
+		//steps
+		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
+				.desc("An integer representing the number of simulation steps. Default value: 150.").build());
+
+		//expected output
+		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg()
+				.desc("The expected output file. If not provided no comparison is applied").build());
 
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
@@ -146,6 +183,27 @@ public class Main {
 			throw new ParseException("In batch mode an input file of bodies is required");
 		}
 	}
+
+
+	private static void parseExpectedFileOption(CommandLine line){
+		_expectedOutFile = line.getOptionValue("eo");
+		/*if (_expectedOutFile == null) {}*/ //TODO do we inform the user somehow?
+	}
+
+	private static void parseStepsOption(CommandLine line) throws ParseException{
+		String steps = line.getOptionValue("s", _stepsDefaultValue.toString());
+		try {
+			_steps = Integer.parseInt(steps);
+			assert (_steps > 0);
+		} catch (Exception e) {
+			throw new ParseException("Invalid number of steps: " + steps);
+		}
+	}
+
+	private static void parseOutFileOption(CommandLine line) {
+		_outFile = line.getOptionValue("o");
+	}
+
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _dtimeDefaultValue.toString());
@@ -212,7 +270,36 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		// TODO complete this method
+		// TODO
+
+		/*
+		• it creates a simulator (instance of PhyicsSimulator), passing it a corresponding
+			force laws and delta-time as specified by the options -fl and -dt.
+		• it creates corresponding input and output streams as specified by the options
+			-i, -o, and -eo. Recall that if -o is not provided in the command line, System.out
+			should be used to print on the console.
+		• it creates a state comparator as specified in the option -cmp.
+		• it creates a controller (instance of Controller), passing it the simulartor and the
+			bodies factory.
+		• it adds the bodies to the simulator by calling method loadBodies of the controller.
+		• it starts the simulation, by calling method run of the controller and passing the
+			corresponding argument.*/
+
+			
+		ForceLaws force = _forceLawsFactory.createInstance(_forceLawsInfo);
+		StateComparator comp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
+		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
+		Controller c = new Controller(sim, _bodyFactory);
+		
+		try (BufferedOutputStream outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"))) {
+			//c.run(_steps, outChar, inChar, comp);
+		}catch (IOException ioe) {
+			//OutputStream outChar = System.out;
+			//c.run(_steps, outChar, inChar, comp);
+		}
+		//TODO preguntar a samir cómo se hace
+		
+		
 	}
 
 	private static void start(String[] args) throws Exception {

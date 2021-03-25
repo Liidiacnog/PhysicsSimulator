@@ -1,6 +1,6 @@
 package simulator.factories;
 
-import org.json.JSONObject;
+import org.json.*;
 
 import simulator.model.Body;
 import simulator.misc.*;
@@ -27,14 +27,17 @@ public class BasicBodyBuilder extends Builder<Body> {
     }
     
     protected Body createNewT(JSONObject info) {
-        String id = info.getString("id");
-        Vector2D v = (Vector2D) info.get("v");
-        Vector2D p = (Vector2D) info.get("p");
-        double m = info.getDouble("m");
         try {
+            String id = info.getString("id");
+            JSONArray a = info.getJSONArray("p");
+            Vector2D p = new Vector2D(a);
+            a = info.getJSONArray("v");
+            Vector2D v = new Vector2D(a);
+            double m = info.getDouble("m");
+            
             return new Body(id, v, p, m);
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(""); //TODO add message
         }
     }
 

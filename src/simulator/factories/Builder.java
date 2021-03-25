@@ -12,7 +12,7 @@ public class Builder<T> {
 otherwise it returns null to indicate that this builder cannot handle the request. In the case that
 it recognizes the type tag but there is an error in the values provided in the data
 section, it should throw an IllegalArgumentException exception.*/
-    public T createInstance(JSONObject info) throws IllegalArgumentException { //TODO should throw exc if values provided in the data are wrong
+    public T createInstance(JSONObject info) throws IllegalArgumentException { 
         T inst = null;
         if(matchType(info.getString("type")))
             inst = createNewT(info.getJSONObject("data"));
@@ -33,7 +33,7 @@ section, it should throw an IllegalArgumentException exception.*/
         return new JSONObject();
     }
 
-    protected T createNewT(JSONObject info) throws IllegalArgumentException{ //TODO declare that it throws it in subclasses and declare and implement when it throws it
+    protected T createNewT(JSONObject info) throws IllegalArgumentException{
         return null;
     }
 

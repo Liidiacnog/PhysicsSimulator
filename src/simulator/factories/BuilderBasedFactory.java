@@ -71,19 +71,19 @@ information in the constructor, to avoid creating it every time).*/
         JSONObject j1 = new JSONObject();
         JSONObject data1 = new JSONObject();
         data1.put("id", "1");
-        data1.put("v", new Vector2D());
-        data1.put("p", new Vector2D());
+        data1.put("v", new Vector2D().asJSONArray());
+        data1.put("p", new Vector2D().asJSONArray());
         data1.put("m", 10);
-        data1.put("freq", 0.1);
-        data1.put("factor", 3);
-        j1.put("type", "mlb");
+        //data1.put("freq", 0.1);
+        //data1.put("factor", 3);
+        j1.put("type", "basic");
         j1.put("data", data1);
 
         JSONObject j2 = new JSONObject();
         JSONObject data2 = new JSONObject();
         data2.put("id", "2");
-        data2.put("v", new Vector2D());
-        data2.put("p", new Vector2D(1, 1));
+        data2.put("v", new Vector2D().asJSONArray());
+        data2.put("p", new Vector2D(1, 1).asJSONArray());
         data2.put("m", 10);
         data2.put("freq", 0.1);
         data2.put("factor", 3);

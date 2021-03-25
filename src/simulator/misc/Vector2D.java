@@ -18,6 +18,12 @@ public class Vector2D {
 		_y = v._y;
 	}
 
+	// create a vector from a JSONArray
+	public Vector2D(JSONArray v) {
+		_x = v.getDouble(0);
+		_y = v.getDouble(1);
+	}
+
 	// create a vector from an array
 	public Vector2D(double x, double y) {
 		_x = x;

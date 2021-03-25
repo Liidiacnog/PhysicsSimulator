@@ -1,7 +1,7 @@
 package simulator.factories;
 
 import simulator.model.Body;
-import org.json.JSONObject;
+import org.json.*;
 import simulator.model.MassLosingBody;
 import simulator.misc.*;
 
@@ -27,8 +27,8 @@ public class MassLosingBodyBuilder extends Builder<Body> {
     }
 
     protected MassLosingBody createNewT(JSONObject info) {
-        Vector2D v = (Vector2D) info.get("v");
-        Vector2D p = (Vector2D) info.get("p");
+        Vector2D p = new Vector2D(info.getJSONArray("p"));
+        Vector2D v = new Vector2D(info.getJSONArray("v"));
         try {
             return new MassLosingBody(info.getString("id"), v, p, info.getDouble("m"), info.getDouble("freq"), info.getDouble("factor"));
         } catch (RuntimeException e) {

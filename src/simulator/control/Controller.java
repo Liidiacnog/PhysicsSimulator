@@ -1,10 +1,6 @@
 package simulator.control;
 
-
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -81,8 +77,7 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
                     p.println(_sim.toString());
                     compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(n), cmp, n);
                 }
-            }
-            else{
+            }else{
                 for(int i = 1; i < n; ++i){
                     _sim.advance();
                     p.println(_sim.toString() + ',');
@@ -99,7 +94,8 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
         p.println("}");
     }
 
-    //compares JSONObject's j1 and j2 using StateComparator cmp, and throws StatesMismatchException if they aren't equal, otherwise it does nothing
+    //compares JSONObject's j1 and j2 using StateComparator cmp, and throws StatesMismatchException if they aren't equal, 
+    ///otherwise it does nothing
     private void compareUsingCmp(JSONObject j1, JSONObject j2, StateComparator cmp, int execStep) throws StatesMismatchException {
         if(!cmp.equal(j1, j2))
                 throw new StatesMismatchException("Simulation step number: " + execStep + "%n" + "States j1: " + j1.toString(5) + "and j2: " + j2.toString(5) + "differ", j1, j2, execStep); //TODO leave like this or string mssg inside constructor itself?

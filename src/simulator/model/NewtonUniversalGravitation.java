@@ -7,7 +7,12 @@ import simulator.misc.Vector2D;
 public class NewtonUniversalGravitation implements ForceLaws {
 	
 	private double _G;
+	private final double GravitationalConstant = 6.67E-11;
 
+	public NewtonUniversalGravitation(){
+		_G = GravitationalConstant;
+	}
+	
 	public NewtonUniversalGravitation(double G){
 		_G = G;
 	}

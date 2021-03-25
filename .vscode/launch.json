@@ -9,6 +9,13 @@
             "name": "Launch BuilderBasedFactory",
             "request": "launch",
             "mainClass": "simulator.factories.BuilderBasedFactory",
+            "projectName": "TP-II_e2043721"
+        },
+        {
+            "type": "java",
+            "name": "Launch BuilderBasedFactory",
+            "request": "launch",
+            "mainClass": "simulator.factories.BuilderBasedFactory",
             "projectName": "TP-II"
         },
         {
