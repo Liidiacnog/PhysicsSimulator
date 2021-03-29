@@ -5,4 +5,5 @@
 	<classpathentry kind="lib" path="lib/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="resources" path="resources"/>
 </classpath>
