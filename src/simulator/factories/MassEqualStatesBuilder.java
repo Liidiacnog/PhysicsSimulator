@@ -7,11 +7,12 @@ import simulator.control.StateComparator;
 
 public class MassEqualStatesBuilder extends Builder<StateComparator>{
 
-    private static String MassEqualStatesBuilderType = "masseq";
-    protected String _desc = "";//TODO in process
+    private static final String MassEqualStatesBuilderType = "masseq";
+    private static final String MassEqualStatesBuilderDesc = "Compares 2 states in terms of their “time” key, and keys “id” and “mass” of the i-th bodies in their lists";
 
     public MassEqualStatesBuilder(){
         _type = MassEqualStatesBuilderType;
+        _desc = MassEqualStatesBuilderDesc;
     }
 
     protected StateComparator createNewT(JSONObject info) {

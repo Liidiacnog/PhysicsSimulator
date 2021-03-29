@@ -8,12 +8,19 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 	
 	private double _g;
     private Vector2D _c;
+	private static final double Default_g = 9.81;
+    private static final Vector2D Default_c = new Vector2D (0,0);
 
     /*simulates a scenario in which we apply a force in the direction of a fixed point c.
     F = m/g in the direction of (c - pos of Body)*/
 	public MovingTowardsFixedPoint(Vector2D c, double g){
 		_g = g;
         _c = new Vector2D(c);
+	}
+
+	public MovingTowardsFixedPoint(){
+		_g = Default_g;
+        _c = new Vector2D(Default_c);
 	}
 	
 	

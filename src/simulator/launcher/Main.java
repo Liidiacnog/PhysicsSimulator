@@ -7,15 +7,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 import org.json.JSONObject;
@@ -41,7 +37,8 @@ public class Main {
 	private static String _inFile = null;
 	private static String _outFile = null;
 	private static String _expectedOutFile = null;
-	private static JSONObject _forceLawsInfo = null;
+	private static JSONObject 
+	_forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
 
 	// factories
@@ -282,7 +279,7 @@ public class Main {
 
 		//TODO preguntar a samir cómo se hace
 
-		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile + ".txt"))){ //TODO check format of input and output files
+		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile))){ //TODO check format of input and output files
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
 			//TODO wrap exception?
@@ -290,7 +287,7 @@ public class Main {
 
 		if (_outFile != null) {
 			try {
-				outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".json"));
+				outChar = new BufferedOutputStream(new FileOutputStream(_outFile));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
 			}
@@ -300,7 +297,7 @@ public class Main {
 
 		if (_expectedOutFile != null) {
 			try {
-				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile + ".json"));
+				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
 			}

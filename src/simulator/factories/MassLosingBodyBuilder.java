@@ -9,10 +9,11 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 
 
     private static String MassLosingBodyBuilderType = "mlb";
-    protected String _desc = "Body which loses mass by a certain lossFactor, every lossFrequency value of time";
+    private static final String MassLosingBodyBuilderTypeDesc = "Body which loses mass by a certain lossFactor, every lossFrequency value of time";
 
     public MassLosingBodyBuilder(){
         _type = MassLosingBodyBuilderType;
+        _desc = MassLosingBodyBuilderTypeDesc;
     }
 
     protected JSONObject getData() { 
@@ -21,9 +22,8 @@ public class MassLosingBodyBuilder extends Builder<Body> {
         data.put("v", "Velocity vector");
         data.put("p", "Position vector");
         data.put("m", "Mass of the body");
-        data.put("freq", "Losing mass frequency");
-        data.put("factor", "Losing mass factor");
-
+        data.put("freq", "Mass losing frequency");
+        data.put("factor", "Mass losing factor");
         return data;
     }
 

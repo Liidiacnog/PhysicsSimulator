@@ -25,7 +25,7 @@ public class Body {
 		List<Body> bs = new ArrayList<>();
 		bs.add(b1);
 		bs.add(b2);
-		double G = 6.67E-11;
+		double G = 6.67E-11; 
 		NewtonUniversalGravitation f = new NewtonUniversalGravitation(G);
 		f.apply(bs);
 		for (int i = 0; i < 300; i++) {

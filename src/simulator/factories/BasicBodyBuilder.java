@@ -9,9 +9,11 @@ import simulator.misc.*;
 public class BasicBodyBuilder extends Builder<Body> {
     
     private static String BasicBodyBuilderType = "basic";
+    private static final String BasicBodyBuilderDesc = "Body with no special behaviour";
 
     public BasicBodyBuilder(){
         _type = BasicBodyBuilderType;
+        _desc = BasicBodyBuilderDesc;
     }
 
     /*returns a JSON serving as a template for the corresponding builder, i.e., a valid value for the parameter of 
@@ -22,7 +24,6 @@ public class BasicBodyBuilder extends Builder<Body> {
         data.put("v", "Velocity vector");
         data.put("p", "Position vector");
         data.put("m", "Mass of the body");
-
         return data;
     }
     
@@ -36,7 +37,7 @@ public class BasicBodyBuilder extends Builder<Body> {
             double m = info.getDouble("m");
             
             return new Body(id, v, p, m);
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { // TODO change for JSONException?
             throw new IllegalArgumentException(""); //TODO add message
         }
     }

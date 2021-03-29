@@ -7,6 +7,11 @@ import simulator.misc.Vector2D;
 public class EpsilonEqualStates implements StateComparator {
 
     private double _eps;
+    private static final double DefaultEps = 0.0;
+
+    public EpsilonEqualStates (){
+        _eps = DefaultEps;
+    }
 
     public EpsilonEqualStates (double eps){
         _eps = eps;

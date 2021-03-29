@@ -1,6 +1,7 @@
 package simulator.factories;
 
 import simulator.model.ForceLaws;
+import org.json.JSONException;
 import org.json.JSONObject;
 import simulator.model.NewtonUniversalGravitation;
 
@@ -8,23 +9,24 @@ import simulator.model.NewtonUniversalGravitation;
 public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     
     private static String NewtonUniversalGravitationBuilderType = "nlug";
-    protected String _desc = "Newton’s law of universal gravitation"; //TODO okay if it hides _desc of Builder class?
-
+    private static final String NewtonUniversalGravitationBuilderDesc = "Newton’s law of universal gravitation"; 
+    
     public NewtonUniversalGravitationBuilder(){
         _type = NewtonUniversalGravitationBuilderType;
+        _desc = NewtonUniversalGravitationBuilderDesc;
     }
     
     protected JSONObject getData() { 
         JSONObject data = new JSONObject();
-        data.put("G", "Value of the constant G");
+        data.put("G", "Constant of universal gravitation");
         return data;
     }
 
     protected ForceLaws createNewT(JSONObject info) {
         try {
             return new NewtonUniversalGravitation(info.getDouble("G"));
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException();
+        } catch (JSONException e) {
+            return new NewtonUniversalGravitation(); //TODO okay or should we check that they have introduced either a valid G or nothing, and no other parameter?
         }
     }
 }

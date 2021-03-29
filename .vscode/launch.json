@@ -6,7 +6,31 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Main",
+            "name": "Launch with Arguments for out.1.json",
+            "request": "launch",
+            "mainClass": "simulator.launcher.Main",
+            "args": [
+                "-i", "resources/examples/ex1.2body.json",
+                "-o", "resources/output/out.1.json", 
+                "-s", "10000", 
+                "-dt", "10000", 
+                "-fl", "nlug 6.67E-11" //TODO change (for debugging only)
+            ],
+            "projectName": "TP-II"
+        },
+        {
+        "type": "java",
+        "name": "Launch with Argument HELP",
+        "request": "launch",
+        "mainClass": "simulator.launcher.Main",
+        "args": [
+            "-h", ""
+        ],
+        "projectName": "TP-II"
+    },
+        {
+            "type": "java",
+            "name": "Launch Main without arguments",
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "projectName": "TP-II"
@@ -16,7 +40,7 @@
             "name": "Launch BuilderBasedFactory",
             "request": "launch",
             "mainClass": "simulator.factories.BuilderBasedFactory",
-            "projectName": "TP-II_e2043721"
+            "projectName": "TP-II"
         },
         {
             "type": "java",
@@ -37,14 +61,14 @@
             "name": "Launch UseExample",
             "request": "launch",
             "mainClass": "extra.json.UseExample",
-            "projectName": "TP-II_e2043721"
+            "projectName": "TP-II"
         },
         {
             "type": "java",
             "name": "Launch Body",
             "request": "launch",
             "mainClass": "simulator.model.Body",
-            "projectName": "TP-II_e2043721"
+            "projectName": "TP-II"
         },
         {
             "type": "java",
