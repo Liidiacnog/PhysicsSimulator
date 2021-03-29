@@ -24,8 +24,8 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     }
 
     protected ForceLaws createNewT(JSONObject info) {
-        Vector2D c = new Vector2D(info.getJSONArray("c"));
         try {
+            Vector2D c = new Vector2D(info.getJSONArray("c"));
             return new MovingTowardsFixedPoint(c, info.getDouble("g"));
         } catch (RuntimeException e) {
             throw new IllegalArgumentException();

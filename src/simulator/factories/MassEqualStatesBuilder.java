@@ -15,11 +15,7 @@ public class MassEqualStatesBuilder extends Builder<StateComparator>{
     }
 
     protected StateComparator createNewT(JSONObject info) {
-        try {
-            return new MassEqualStates();
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException();
-        }
+        return new MassEqualStates();
     }
 
 }

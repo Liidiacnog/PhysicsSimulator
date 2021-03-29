@@ -12,10 +12,6 @@ public class NoForceBuilder extends Builder<ForceLaws> {
     }
     
     protected ForceLaws createNewT() {
-        try {
-            return new NoForce();
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException();
-        }
+        return new NoForce();
     }
 }
