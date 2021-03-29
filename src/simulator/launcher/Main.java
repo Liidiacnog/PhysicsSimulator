@@ -296,7 +296,7 @@ public class Main {
 		OutputStream outChar = null;
 		BufferedInputStream expectedOut = null;
 
-		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile + ".dat"))){
+		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile + ".txt"))){ //TODO check format of input and output files
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
 			//TODO wrap exception?
@@ -304,7 +304,7 @@ public class Main {
 
 		if (_outFile != null) {
 			try {
-				outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"));
+				outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".json"));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
 			}
@@ -314,7 +314,7 @@ public class Main {
 
 		if (_expectedOutFile != null) {
 			try {
-				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile + ".dat"));
+				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile + ".json"));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
 			}
@@ -325,12 +325,6 @@ public class Main {
 		outChar.close();
 		expectedOut.close();
 
-		/*try (BufferedOutputStream outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"))) {
-			//c.run(_steps, outChar, inChar, comp);
-		}catch (IOException ioe) {
-			//OutputStream outChar = System.out;
-			//c.run(_steps, outChar, inChar, comp);
-		}*/
 		//TODO preguntar a samir cómo se hace
 		
 		
