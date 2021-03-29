@@ -8,11 +8,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 import org.json.JSONObject;
@@ -290,13 +293,44 @@ public class Main {
 		StateComparator comp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
 		Controller c = new Controller(sim, _bodyFactory);
-		
-		try (BufferedOutputStream outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"))) {
+		OutputStream outChar = null;
+		BufferedInputStream expectedOut = null;
+
+		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile + ".dat"))){
+			c.loadBodies(inChar);
+		} catch (IOException ioe) {
+			//TODO wrap exception?
+		}
+
+		if (_outFile != null) {
+			try {
+				outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"));
+			} catch (IOException ioe) {
+				//TODO wrap exception? Need to close stream here?
+			}
+		} else {
+			outChar = System.out;
+		}
+
+		if (_expectedOutFile != null) {
+			try {
+				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile + ".dat"));
+			} catch (IOException ioe) {
+				//TODO wrap exception? Need to close stream here?
+			}
+		}
+
+		c.run(_steps, outChar, expectedOut, comp);
+
+		outChar.close();
+		expectedOut.close();
+
+		/*try (BufferedOutputStream outChar = new BufferedOutputStream(new FileOutputStream(_outFile + ".dat"))) {
 			//c.run(_steps, outChar, inChar, comp);
 		}catch (IOException ioe) {
 			//OutputStream outChar = System.out;
 			//c.run(_steps, outChar, inChar, comp);
-		}
+		}*/
 		//TODO preguntar a samir cómo se hace
 		
 		
