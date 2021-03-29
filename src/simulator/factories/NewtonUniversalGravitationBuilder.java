@@ -8,6 +8,7 @@ import simulator.model.NewtonUniversalGravitation;
 public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     
     private static String NewtonUniversalGravitationBuilderType = "nlug";
+    protected String _desc = "Newton’s law of universal gravitation"; //TODO okay if it hides _desc of Builder class?
 
     public NewtonUniversalGravitationBuilder(){
         _type = NewtonUniversalGravitationBuilderType;
@@ -16,7 +17,6 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     protected JSONObject getData() { 
         JSONObject data = new JSONObject();
         data.put("G", "Value of the constant G");
-
         return data;
     }
 

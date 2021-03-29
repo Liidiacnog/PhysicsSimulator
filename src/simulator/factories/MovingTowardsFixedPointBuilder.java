@@ -2,14 +2,13 @@ package simulator.factories;
 
 import simulator.model.MovingTowardsFixedPoint;
 import simulator.model.ForceLaws;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.*;
 
 public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     
     private static String MovingTowardsFixedPointBuilderType = "mtcp";
+    protected String _desc = "Applying a force in the direction of a fixed point";
 
     public MovingTowardsFixedPointBuilder(){
         _type = MovingTowardsFixedPointBuilderType;

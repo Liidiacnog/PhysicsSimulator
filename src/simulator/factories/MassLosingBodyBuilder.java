@@ -9,6 +9,7 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 
 
     private static String MassLosingBodyBuilderType = "mlb";
+    protected String _desc = "Body which loses mass by a certain lossFactor, every lossFrequency value of time";
 
     public MassLosingBodyBuilder(){
         _type = MassLosingBodyBuilderType;

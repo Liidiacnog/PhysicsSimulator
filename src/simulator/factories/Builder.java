@@ -7,6 +7,7 @@ JSON structure with a very specific value for key type. */
 public class Builder<T> {
 
     protected String _type;
+    protected String _desc;
 
     /*creates an object of type T (i.e., an instance of a sub-class of T) if it recognizes the information in info, 
 otherwise it returns null to indicate that this builder cannot handle the request. In the case that
@@ -26,11 +27,12 @@ section, it should throw an IllegalArgumentException exception.*/
         JSONObject o = new JSONObject();
         o.put("type", _type);
         o.put("data", getData());
+        o.put("desc", _desc);
         return o;
     }
 
     protected JSONObject getData() {
-        return new JSONObject();
+        return new JSONObject(); //TODO some default values for the keys in the data section (or instead of values, we can use strings that describe corresponding keys, if any). 
     }
 
     protected T createNewT(JSONObject info) throws IllegalArgumentException{

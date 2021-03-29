@@ -273,28 +273,14 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		// TODO
-
-		/*
-		• it creates a simulator (instance of PhyicsSimulator), passing it a corresponding
-			force laws and delta-time as specified by the options -fl and -dt.
-		• it creates corresponding input and output streams as specified by the options
-			-i, -o, and -eo. Recall that if -o is not provided in the command line, System.out
-			should be used to print on the console.
-		• it creates a state comparator as specified in the option -cmp.
-		• it creates a controller (instance of Controller), passing it the simulartor and the
-			bodies factory.
-		• it adds the bodies to the simulator by calling method loadBodies of the controller.
-		• it starts the simulation, by calling method run of the controller and passing the
-			corresponding argument.*/
-
-			
 		ForceLaws force = _forceLawsFactory.createInstance(_forceLawsInfo);
 		StateComparator comp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
 		Controller c = new Controller(sim, _bodyFactory);
 		OutputStream outChar = null;
 		BufferedInputStream expectedOut = null;
+
+		//TODO preguntar a samir cómo se hace
 
 		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile + ".txt"))){ //TODO check format of input and output files
 			c.loadBodies(inChar);
@@ -323,11 +309,7 @@ public class Main {
 		c.run(_steps, outChar, expectedOut, comp);
 
 		outChar.close();
-		expectedOut.close();
-
-		//TODO preguntar a samir cómo se hace
-		
-		
+		expectedOut.close();		
 	}
 
 	private static void start(String[] args) throws Exception {
