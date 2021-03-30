@@ -305,8 +305,10 @@ public class Main {
 
 		c.run(_steps, outChar, expectedOut, comp);
 
-		outChar.close();
-		expectedOut.close();		
+		if(outChar != null)
+			outChar.close();
+		if(expectedOut != null)
+			expectedOut.close();		
 	}
 
 	private static void start(String[] args) throws Exception {
