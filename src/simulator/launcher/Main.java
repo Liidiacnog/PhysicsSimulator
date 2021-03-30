@@ -292,7 +292,7 @@ public class Main {
 				//TODO wrap exception? Need to close stream here?
 			}
 		} else {
-			outChar = System.out;
+			outChar = System.out; //TODO doesn't work
 		}
 
 		if (_expectedOutFile != null) {

@@ -14,14 +14,14 @@ public class MassEqualStates implements StateComparator {
     @Override
     public boolean equal(JSONObject s1, JSONObject s2) {
         boolean eq = false;
-        if(s1.has("time") && s2.has("time") && s1.get("time") == s2.get("time")){
+        if(s1.getDouble("time") == s2.getDouble("time")){
             JSONArray ja1 = s1.getJSONArray("bodies");
             JSONArray ja2 = s2.getJSONArray("bodies");
             if(ja1.length() == ja2.length()){
                 eq = true;
                 for(int i = 0; i < ja1.length() && eq; ++i){
-                    if( ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id")) 
-                        || ja1.getJSONObject(i).get("m") != (ja2.getJSONObject(i).get("m")) )
+                    if( ja1.getJSONObject(i).getString("id").equals(ja2.getJSONObject(i).getString("id")) 
+                        || ja1.getJSONObject(i).getDouble("m") != (ja2.getJSONObject(i).getDouble("m")) )
                             eq = false;
                 }
             }

@@ -28,9 +28,9 @@ public class EpsilonEqualStates implements StateComparator {
     value of eps.
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) {
+    public boolean equal(JSONObject s1, JSONObject s2) {//TODO modify so that user gets noticed on which parameter caused inequality?
         boolean eq = false;
-        if(s1.get("time") == s2.get("time")){ 
+        if(s1.getDouble("time") == s2.getDouble("time")){ 
             JSONArray ja1 = s1.getJSONArray("bodies");
             JSONArray ja2 = s2.getJSONArray("bodies");
             if(ja1.length() == ja2.length()){
@@ -53,7 +53,7 @@ public class EpsilonEqualStates implements StateComparator {
                     Vector2D vForce1 = new Vector2D(coords1),
                              vForce2 = new Vector2D(coords2);
 
-                    if(!ja1.getJSONObject(i).get("id").equals(ja2.getJSONObject(i).get("id")) 
+                    if(!ja1.getJSONObject(i).getString("id").equals(ja2.getJSONObject(i).getString("id")) 
                         || !epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))
                         || !epsEqual(vPos1, vPos2) || !epsEqual(vForce1, vForce2) || !epsEqual(vVel1, vVel2) )
                                     eq = false;

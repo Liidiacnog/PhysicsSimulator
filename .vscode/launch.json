@@ -11,10 +11,11 @@
             "mainClass": "simulator.launcher.Main",
             "args": [
                 "-i", "resources/examples/ex1.2body.json",
-                "-o", "resources/output/out.1.json", 
+                "-eo", "resources/output/out.1.json",
+                "-o", "resources/output/OURSout.1.json",
                 "-s", "10000", 
                 "-dt", "10000", 
-                "-fl", "nlug 6.67E-11" //TODO change (for debugging only)
+                "-fl", "nlug"
             ],
             "projectName": "TP-II"
         },

@@ -7,8 +7,6 @@ import java.io.PrintStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import simulator.factories.BuilderBasedFactory;
 import simulator.factories.Factory;
 import simulator.model.Body;
 import simulator.model.PhysicsSimulator;
@@ -98,7 +96,7 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
     ///otherwise it does nothing
     private void compareUsingCmp(JSONObject j1, JSONObject j2, StateComparator cmp, int execStep) throws StatesMismatchException {
         if(!cmp.equal(j1, j2))
-                throw new StatesMismatchException("Simulation step number: " + execStep + "%n" + "States j1: " + j1.toString(5) + "and j2: " + j2.toString(5) + "differ", j1, j2, execStep); //TODO leave like this or string mssg inside constructor itself?
+                throw new StatesMismatchException("Simulation step number: " + execStep + " %n States j1: " + j1.toString(5) + "and j2: " + j2.toString(5) + "differ", j1, j2, execStep); //TODO leave like this or string mssg inside constructor itself?
     }
 
 
