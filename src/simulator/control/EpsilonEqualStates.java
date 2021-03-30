@@ -53,10 +53,18 @@ public class EpsilonEqualStates implements StateComparator {
                     Vector2D vForce1 = new Vector2D(coords1),
                              vForce2 = new Vector2D(coords2);
 
-                    if(!ja1.getJSONObject(i).getString("id").equals(ja2.getJSONObject(i).getString("id")) 
-                        || !epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))
-                        || !epsEqual(vPos1, vPos2) || !epsEqual(vForce1, vForce2) || !epsEqual(vVel1, vVel2) )
-                                    eq = false;
+                    if(!ja1.getJSONObject(i).getString("id").equals(ja2.getJSONObject(i).getString("id"))){
+                         eq = false;
+                         throw new IDMismatchException("Differing IDs: ", ja1.getJSONObject(i).getString("id"), ja2.getJSONObject(i).getString("id"));
+                    }//TODO in progress
+                       
+                    if(!epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))){
+                        eq = false;
+                    }
+                        
+                    if(!epsEqual(vPos1, vPos2) || !epsEqual(vForce1, vForce2) || !epsEqual(vVel1, vVel2)){
+                        eq = false;
+                    } 
                 }
             }
         }
