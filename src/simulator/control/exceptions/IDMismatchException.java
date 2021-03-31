@@ -1,10 +1,10 @@
-package simulator.control;
+package simulator.control.exceptions;
 
 import org.json.JSONObject;
 
 
 /*thrown when the comparison of the ID's of 2 bodies via a StateComparator is false*/
-public class IDMismatchException extends Exception {
+public class IDMismatchException extends StatesMismatchException {
 	
     private String _id1, _id2;
     
@@ -12,13 +12,14 @@ public class IDMismatchException extends Exception {
 		super(str);
         _id1 = id1;
         _id2 = id2;
-	}
+	}//TODO used?
 	
     
     public IDMismatchException() {
 		_id1 = null;
         _id2 = null;
-	}
+	}//TODO used?
+
 
 	public IDMismatchException(String str) {
 		super(str);
@@ -39,6 +40,3 @@ public class IDMismatchException extends Exception {
 	
 }
 
-
-
-}

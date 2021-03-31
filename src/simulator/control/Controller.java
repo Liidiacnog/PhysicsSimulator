@@ -3,10 +3,11 @@ package simulator.control;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import simulator.control.exceptions.StatesMismatchException;
 import simulator.factories.Factory;
 import simulator.model.Body;
 import simulator.model.PhysicsSimulator;
@@ -60,7 +61,7 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
         //print s0:
         p.println(_sim.toString() + ',');
 
-        //try{
+        try{
             if(arrayExpStates != null){//TODO better way? (shorter)
                 //compare s0
                 compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(0), cmp, 0);
@@ -85,20 +86,28 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
                     p.println(_sim.toString());
                 }
             }
-        //} catch (StatesMismatchException ex){
-            //TODO inform user or what is it for?
-        //}
-        p.println("]");
-        p.println("}");
+
+            p.println("]");
+            p.println("}");
+
+        } catch (StatesMismatchException ex){
+            p.println(ex.getMessage());
+            p.println("Cause: ");
+            p.println(ex.getCause().getMessage());
+            //TODO needed here?
+        }
+       
     }
 
     //compares JSONObject's j1 and j2 using StateComparator cmp, and throws StatesMismatchException if they aren't equal, 
     ///otherwise it does nothing
     private void compareUsingCmp(JSONObject j1, JSONObject j2, StateComparator cmp, int execStep) throws StatesMismatchException {
-        if(!cmp.equal(j1, j2))
-                throw new StatesMismatchException("Simulation step number: " + execStep + " %n States j1: " + j1.toString(5) + "and j2: " + j2.toString(5) + "differ", j1, j2, execStep); //TODO leave like this or string mssg inside constructor itself?
+        try{
+            cmp.equal(j1, j2);
+        }catch(StatesMismatchException c){
+            throw new StatesMismatchException(String.format("Simulation step number: " + execStep + " . %n States j1: " + j1.toString(5) + 
+                                                "%n%n and %n%n" + "j2: " + j2.toString(5) + "%n%n" + "Differ %n"), c); //TODO leave like this?
+        }
     }
-
-
 
 }

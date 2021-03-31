@@ -1,10 +1,10 @@
-package simulator.control;
+package simulator.control.exceptions;
 
 import org.json.JSONObject;
 
 /*thrown when the comparison of two states via a StateComparator is false*/
 
-public class StatesMismatchException extends Exception { //TODO create package exceptions or here ?
+public class StatesMismatchException extends Exception { 
 	
     private JSONObject _j1, _j2;
     private int _execStep;

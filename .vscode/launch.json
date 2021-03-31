@@ -12,10 +12,11 @@
             "args": [
                 "-i", "resources/examples/ex1.2body.json",
                 "-eo", "resources/output/out.1.json",
-                "-o", "resources/output/OURSout.1.json",
+                //"-o", "resources/output/OURSout.1.json",
                 "-s", "10000", 
                 "-dt", "10000", 
-                "-fl", "nlug"
+                "-fl", "nlug",
+                "-cmp", "epseq:{eps:0.1}"
             ],
             "projectName": "TP-II"
         },

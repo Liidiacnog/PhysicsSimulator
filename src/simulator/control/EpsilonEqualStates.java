@@ -3,6 +3,7 @@ package simulator.control;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import simulator.misc.Vector2D;
+import simulator.control.exceptions.*;
 
 public class EpsilonEqualStates implements StateComparator {
 
@@ -28,7 +29,7 @@ public class EpsilonEqualStates implements StateComparator {
     value of eps.
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) {//TODO modify so that user gets noticed on which parameter caused inequality?
+    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{
         boolean eq = false;
         if(s1.getDouble("time") == s2.getDouble("time")){ 
             JSONArray ja1 = s1.getJSONArray("bodies");
@@ -53,17 +54,33 @@ public class EpsilonEqualStates implements StateComparator {
                     Vector2D vForce1 = new Vector2D(coords1),
                              vForce2 = new Vector2D(coords2);
 
-                    if(!ja1.getJSONObject(i).getString("id").equals(ja2.getJSONObject(i).getString("id"))){
+                    String id1 = ja1.getJSONObject(i).getString("id"),  
+                           id2 = ja2.getJSONObject(i).getString("id");
+                    if(!id1.equals(id2)){
                          eq = false;
-                         throw new IDMismatchException("Differing IDs: ", ja1.getJSONObject(i).getString("id"), ja2.getJSONObject(i).getString("id"));
-                    }//TODO in progress
-                       
-                    if(!epsEqual(ja1.getJSONObject(i).getDouble("m"), ja2.getJSONObject(i).getDouble("m"))){
+                         throw new IDMismatchException("Differing IDs: "+ id1 + " , " + id2);
+                    }
+
+                    double m1 = ja1.getJSONObject(i).getDouble("m"), 
+                           m2 = ja2.getJSONObject(i).getDouble("m");
+                    if(!epsEqual(m1, m2)){
                         eq = false;
+                        throw new MassMismatchException("Differing masses: "+ m1 + " , " + m2);
                     }
                         
-                    if(!epsEqual(vPos1, vPos2) || !epsEqual(vForce1, vForce2) || !epsEqual(vVel1, vVel2)){
+                    if(!epsEqual(vPos1, vPos2)){
                         eq = false;
+                        throw new PositionMismatchException("Differing positions: "+ vPos1 + " , " + vPos2);
+                    } 
+                    
+                    if(!epsEqual(vForce1, vForce2)){
+                        eq = false;
+                        throw new ForceMismatchException("Differing forces: "+ vForce1 + " , " + vForce2);
+                    } 
+                    
+                    if(!epsEqual(vVel1, vVel2)){
+                        eq = false;
+                        throw new VelocityMismatchException("Differing velocities: "+ vVel1 + " , " + vVel2);
                     } 
                 }
             }
