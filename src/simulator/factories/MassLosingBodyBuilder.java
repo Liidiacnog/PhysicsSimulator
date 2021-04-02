@@ -33,7 +33,7 @@ public class MassLosingBodyBuilder extends Builder<Body> {
             Vector2D v = new Vector2D(info.getJSONArray("v"));
             return new MassLosingBody(info.getString("id"), v, p, info.getDouble("m"), info.getDouble("freq"), info.getDouble("factor"));
         } catch (RuntimeException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Mass losing body could not be created with given data");
         }
     }
 }

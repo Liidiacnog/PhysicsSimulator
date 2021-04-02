@@ -38,7 +38,7 @@ public class BasicBodyBuilder extends Builder<Body> {
             
             return new Body(id, v, p, m);
         } catch (RuntimeException e) { // TODO change for JSONException?
-            throw new IllegalArgumentException(""); //TODO add message
+            throw new IllegalArgumentException("Basic body could not be created with given data"); //TODO add message
         }
     }
 

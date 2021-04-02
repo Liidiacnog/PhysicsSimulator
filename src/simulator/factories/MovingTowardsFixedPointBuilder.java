@@ -30,6 +30,7 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
             return new MovingTowardsFixedPoint(c, info.getDouble("g"));
         } catch (JSONException e) { //no params provided, so default values are used
             return new MovingTowardsFixedPoint();
+            //TODO same as epsilon state cmp
         }
     }
 }

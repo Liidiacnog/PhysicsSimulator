@@ -27,10 +27,13 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
 
     protected StateComparator createNewT(JSONObject info) {
         try {
-            return new EpsilonEqualStates(info.getDouble("eps")); 
+            return new EpsilonEqualStates(info.getDouble("eps"));
         } catch (JSONException e) {
-            return new EpsilonEqualStates(); 
-            //TODO necessary?: throw new IllegalArgumentException();
+            return new EpsilonEqualStates();
+            //TODO necessary?: throw new IllegalArgumentException("Epsilon state comparator could not be cretaed eith the given epsilon");
+            //y si le han dado un valor a eps, pero el valor no es valido (por ejemplo es un string)
+            //debería entonces tirar excepción o coger el valor predeterminado?
+            //yo creo que lo primero, el predeterminado sería si no tiene valor
         }
     }
 
