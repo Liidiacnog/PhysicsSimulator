@@ -24,7 +24,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 
     protected ForceLaws createNewT(JSONObject info) {
         try {
-            if (info.get("G") != null)
+            if (!info.isNull("G"))
                 return new NewtonUniversalGravitation(info.getDouble("G"));
             else
                 return new NewtonUniversalGravitation();
