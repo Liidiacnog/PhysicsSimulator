@@ -6,20 +6,40 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch with Arguments for out.1.json",
+            "name": "Launch with Arguments for out.1.json with huge eps comp",
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
                 "-i", "resources/examples/ex1.2body.json",
                 "-eo", "resources/output/out.1.json",
-                //"-o", "resources/output/OURSout.1.json",
+                "-o", "resources/output/OURSout.1.json",
                 "-s", "10000", 
                 "-dt", "10000", 
                 "-fl", "nlug",
-                "-cmp", "epseq:{eps:0.1}"
+                //"-cmp", "epseq:{eps:0.2}"
+                "-cmp", "epseq:{eps:2e25}"
             ],
             "projectName": "TP-II"
         },
+
+{
+    "type": "java",
+            "name": "Launch with Arguments for out.8.json with huge eps comp",
+            "request": "launch",
+            "mainClass": "simulator.launcher.Main",
+            "args": [
+                "-i", "resources/examples/ex4.4body.json",
+                "-eo", "resources/output/out.8s.json",
+                "-o", "resources/output/OURSout.1.json",
+                "-s", "10000", 
+                "-fl", "mtfp",
+                "-dt", "2500.0",
+                //"-cmp", "epseq:{eps:0.2}"
+                "-cmp", "epseq:{eps:2e25}"
+            ],
+            "projectName": "TP-II"
+},
+
         {
         "type": "java",
         "name": "Launch with Argument HELP",

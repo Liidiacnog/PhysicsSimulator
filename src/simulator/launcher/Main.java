@@ -48,20 +48,20 @@ public class Main {
 
 	private static void init() {
 		// initializing the bodies factory
-		ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+		List<Builder<Body>> bodyBuilders = new ArrayList<>();
         bodyBuilders.add(new BasicBodyBuilder());
         bodyBuilders.add(new MassLosingBodyBuilder());
         _bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
 
 		// initializing the force laws factory
-		ArrayList<Builder<ForceLaws>> lawBuilders = new ArrayList<>();
+		List<Builder<ForceLaws>> lawBuilders = new ArrayList<>();
 		lawBuilders.add(new NewtonUniversalGravitationBuilder());
 		lawBuilders.add(new MovingTowardsFixedPointBuilder());
 		lawBuilders.add(new NoForceBuilder());
 		_forceLawsFactory = new BuilderBasedFactory<>(lawBuilders);
 
 		// initializing the state comparator
-		ArrayList<Builder<StateComparator>> comparatorBuider = new ArrayList<>();
+		List<Builder<StateComparator>> comparatorBuider = new ArrayList<>();
 		comparatorBuider.add(new EpsilonEqualStatesBuilder());
 		comparatorBuider.add(new MassEqualStatesBuilder());
 		_stateComparatorFactory = new BuilderBasedFactory<>(comparatorBuider);

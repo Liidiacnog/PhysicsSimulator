@@ -8,8 +8,8 @@ import simulator.misc.*;
 
 public class BuilderBasedFactory<T> implements Factory<T> {
 
-    private ArrayList<JSONObject> info;
-    private ArrayList<Builder<T>> _builders;
+    private List<JSONObject> info;
+    private List<Builder<T>> _builders;
 
     public BuilderBasedFactory(List<Builder<T>> builders){
         _builders = new ArrayList<>(builders);
@@ -63,7 +63,7 @@ information in the constructor, to avoid creating it every time).*/
         Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 10, 0.1, 3);
 		Body b2 = new MassLosingBody("2", new Vector2D(), new Vector2D(1, 1), 10, 0.1, 3);
         */
-        ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+        List<Builder<Body>> bodyBuilders = new ArrayList<>();
         bodyBuilders.add(new BasicBodyBuilder());
         bodyBuilders.add(new MassLosingBodyBuilder());
         Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
@@ -108,7 +108,7 @@ information in the constructor, to avoid creating it every time).*/
     }
 
     public static void test2() {
-        ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+        List<Builder<Body>> bodyBuilders = new ArrayList<>();
         bodyBuilders.add(new BasicBodyBuilder());
         bodyBuilders.add(new MassLosingBodyBuilder());
         Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
