@@ -24,9 +24,13 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 
     protected ForceLaws createNewT(JSONObject info) {
         try {
-            return new NewtonUniversalGravitation(info.getDouble("G"));
+            if (info.get("G") != null)
+                return new NewtonUniversalGravitation(info.getDouble("G"));
+            else
+                return new NewtonUniversalGravitation();
         } catch (JSONException e) {
-            return new NewtonUniversalGravitation(); //TODO okay or should we check that they have introduced either a valid G or nothing, and no other parameter?
+             //TODO okay or should we check that they have introduced either a valid G or nothing, and no other parameter?
+             throw new IllegalArgumentException("Invalid value for G");
         }
     }
 }

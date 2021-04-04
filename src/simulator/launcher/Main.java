@@ -283,6 +283,7 @@ public class Main {
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
 			//TODO wrap exception?
+			throw new IllegalArgumentException("Input file " + _inFile + " could not be opened");
 		}
 
 		if (_outFile != null) {
@@ -290,9 +291,10 @@ public class Main {
 				outChar = new BufferedOutputStream(new FileOutputStream(_outFile));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
+				throw new IllegalArgumentException("Output file " + _outFile + " could not be opened");
 			}
 		} else {
-			outChar = System.out; //TODO doesn't work
+			outChar = System.out; //TODO doesn't work, Yo creo que si funciona (a mi me ha funcionado)
 		}
 
 		if (_expectedOutFile != null) {
@@ -300,6 +302,7 @@ public class Main {
 				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile));
 			} catch (IOException ioe) {
 				//TODO wrap exception? Need to close stream here?
+				throw new IllegalArgumentException("Expected output file " + _expectedOutFile + " could not be opened");
 			}
 		}
 
