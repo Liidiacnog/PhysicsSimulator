@@ -10,13 +10,12 @@ public abstract class Builder<T> {
     protected String _desc;
 
     /*creates an object of type T (i.e., an instance of a sub-class of T) if it recognizes the information in info, 
-otherwise it returns null to indicate that this builder cannot handle the request. In the case that
-it recognizes the type tag but there is an error in the values provided in the data
-section, it should throw an IllegalArgumentException exception.*/
+    otherwise it returns null to indicate that this builder cannot handle the request. In the case that it recognizes 
+    the type tag but there is an error in the values provided in the data section, it throws IllegalArgumentException*/
     public T createInstance(JSONObject info) throws IllegalArgumentException { 
         T inst = null;
         if(_type.equals(info.getString("type")))
-            inst = createNewT(info.getJSONObject("data"));
+            inst = createNewT(info.getJSONObject("data"));//throws IllegalArgumentException if data is incorrect
         return inst;
     }
 
@@ -31,6 +30,7 @@ section, it should throw an IllegalArgumentException exception.*/
         return o;
     }
 
+    //default behaviour,  to be overwritten by some subclasses
     protected JSONObject getData(){
         JSONObject o = new JSONObject();
         o.put("data", "No data required");

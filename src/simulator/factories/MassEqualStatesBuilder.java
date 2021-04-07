@@ -16,7 +16,7 @@ public class MassEqualStatesBuilder extends Builder<StateComparator>{
     }
 
     protected StateComparator createNewT(JSONObject info) {
-        return new MassEqualStates();
+        return new MassEqualStates(); //TODO could sth go wrong?
     }
 
 }

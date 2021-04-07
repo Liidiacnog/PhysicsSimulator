@@ -27,7 +27,7 @@ public class BasicBodyBuilder extends Builder<Body> {
         return data;
     }
     
-    protected Body createNewT(JSONObject info) {
+    protected Body createNewT(JSONObject info) throws IllegalArgumentException {
         try {
             String id = info.getString("id");
             JSONArray a = info.getJSONArray("p");
@@ -37,8 +37,8 @@ public class BasicBodyBuilder extends Builder<Body> {
             double m = info.getDouble("m");
             
             return new Body(id, v, p, m);
-        } catch (RuntimeException e) { // TODO change for JSONException?
-            throw new IllegalArgumentException("Basic body could not be created with given data"); //TODO add message
+        } catch (JSONException e) { // TODO okay to catch JSONException?
+            throw new IllegalArgumentException("Basic body could not be created with the given data"); //TODO add message
         }
     }
 

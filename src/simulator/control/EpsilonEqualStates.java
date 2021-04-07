@@ -10,7 +10,7 @@ public class EpsilonEqualStates implements StateComparator {
     private double _eps;
     private static final double DefaultEps = 0.0;
 
-    public EpsilonEqualStates (){
+    public EpsilonEqualStates(){
         _eps = DefaultEps;
     }
 
@@ -18,18 +18,16 @@ public class EpsilonEqualStates implements StateComparator {
         _eps = eps;
     }
 
-    /*Two states s1 and s2 are equal if:
+    /*Two states s1 and s2 are eps-equal if:
         The value of their “time” key is equal.
         the i-th bodies in the lists of bodies in s1 and s2 must have equal values for key
         “id”, and eps-equal values for “m”, “p”, “v” and “f”.
     This comparator is useful because when performing calculations on data of type double,
     we might get slightly different results depending on the order in which we apply the
-    operations (because of the use of floating point arithmetic). When comparing your output
-    to the expected output, you can allow the values to be slightly different by changing the
-    value of eps.
+    operations (because of the use of floating point arithmetic).
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{
+    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{ //TODO okay or shorter way?
         boolean eq = false;
         if(s1.getDouble("time") == s2.getDouble("time")){ 
             JSONArray ja1 = s1.getJSONArray("bodies");
@@ -37,23 +35,6 @@ public class EpsilonEqualStates implements StateComparator {
             if(ja1.length() == ja2.length()){
                 eq = true;
                 for(int i = 0; i < ja1.length() && eq; ++i){
-                    //create vector instances with the values extracted from objects i for velocity, position and force of each
-                    // JSONOBject, to pass them as parameters to method epsEqual and compare them
-                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"),
-                              coords2 = ja2.getJSONObject(i).getJSONArray("p");
-                    Vector2D vPos1 = new Vector2D(coords1),
-                             vPos2 = new Vector2D(coords2);
-                            
-                    coords1 = ja1.getJSONObject(i).getJSONArray("v");
-                    coords2 = ja2.getJSONObject(i).getJSONArray("v");
-                    Vector2D vVel1 = new Vector2D(coords1),
-                             vVel2 = new Vector2D(coords2);
-                    
-                    coords1 = ja1.getJSONObject(i).getJSONArray("f");
-                    coords2 = ja2.getJSONObject(i).getJSONArray("f");
-                    Vector2D vForce1 = new Vector2D(coords1),
-                             vForce2 = new Vector2D(coords2);
-
                     String id1 = ja1.getJSONObject(i).getString("id"),  
                            id2 = ja2.getJSONObject(i).getString("id");
                     if(!id1.equals(id2)){
@@ -68,16 +49,31 @@ public class EpsilonEqualStates implements StateComparator {
                         throw new MassMismatchException("Differing masses: "+ m1 + " , " + m2);
                     }
                         
+                    //we create vector instances with the values extracted from objects i for velocity, position and force of each
+                    // JSONObject, to pass them as parameters to method epsEqual and compare them:
+
+                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"),
+                              coords2 = ja2.getJSONObject(i).getJSONArray("p");
+                    Vector2D vPos1 = new Vector2D(coords1),
+                             vPos2 = new Vector2D(coords2);
                     if(!epsEqual(vPos1, vPos2)){
                         eq = false;
                         throw new PositionMismatchException("Differing positions: "+ vPos1 + " , " + vPos2);
                     } 
                     
+                    coords1 = ja1.getJSONObject(i).getJSONArray("f");
+                    coords2 = ja2.getJSONObject(i).getJSONArray("f");
+                    Vector2D vForce1 = new Vector2D(coords1),
+                             vForce2 = new Vector2D(coords2);
                     if(!epsEqual(vForce1, vForce2)){
                         eq = false;
                         throw new ForceMismatchException("Differing forces: "+ vForce1 + " , " + vForce2);
                     } 
                     
+                    coords1 = ja1.getJSONObject(i).getJSONArray("v");
+                    coords2 = ja2.getJSONObject(i).getJSONArray("v");
+                    Vector2D vVel1 = new Vector2D(coords1),
+                             vVel2 = new Vector2D(coords2);
                     if(!epsEqual(vVel1, vVel2)){
                         eq = false;
                         throw new VelocityMismatchException("Differing velocities: "+ vVel1 + " , " + vVel2);

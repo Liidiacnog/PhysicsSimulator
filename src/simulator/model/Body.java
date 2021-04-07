@@ -81,7 +81,7 @@ public class Body {
 		f = new Vector2D();
 	}
 	
-	public void move(double t) {
+	void move(double t) {
 		Vector2D a;
 		if (m != 0)
 			a = f.scale(1/m);
@@ -92,7 +92,7 @@ public class Body {
 	}
 	
 	public String toString() {
-		return null;
+		return getState().toString();
 	}
 
 	//equal bodies if they have the same identifier
@@ -104,7 +104,6 @@ public class Body {
 { "id": id, "m": m, "p": p, "v": v, "f": f } */
 	public JSONObject getState() {
 		JSONObject jo = new JSONObject();
-
     	jo.put("id", id);
 		jo.put("m", m);
 		jo.put("p", p.asJSONArray());

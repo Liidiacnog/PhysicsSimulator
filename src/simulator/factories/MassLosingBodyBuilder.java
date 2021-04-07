@@ -27,13 +27,13 @@ public class MassLosingBodyBuilder extends Builder<Body> {
         return data;
     }
 
-    protected MassLosingBody createNewT(JSONObject info) {
+    protected MassLosingBody createNewT(JSONObject info) throws IllegalArgumentException{
         try {
-            Vector2D p = new Vector2D(info.getJSONArray("p"));
-            Vector2D v = new Vector2D(info.getJSONArray("v"));
-            return new MassLosingBody(info.getString("id"), v, p, info.getDouble("m"), info.getDouble("factor"), info.getDouble("freq"));
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Mass losing body could not be created with given data");
+            return new MassLosingBody(info.getString("id"), new Vector2D(info.getJSONArray("v")), 
+                                        new Vector2D(info.getJSONArray("p")), info.getDouble("m"), 
+                                            info.getDouble("factor"), info.getDouble("freq"));
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Mass losing body could not be created with the given data");
         }
     }
 }

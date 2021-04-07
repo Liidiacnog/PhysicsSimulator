@@ -12,35 +12,29 @@ public class BuilderBasedFactory<T> implements Factory<T> {
     private List<Builder<T>> _builders;
 
     public BuilderBasedFactory(List<Builder<T>> builders){
-        _builders = new ArrayList<>(builders);
+        _builders = new ArrayList<Builder<T>>(builders);
 
-        info = new ArrayList<>();
+        info = new ArrayList<JSONObject>();
         for (int i = 0; i < builders.size(); i++) {
             info.add(builders.get(i).getBuilderInfo());
         }
     }
 
 
-/*tries the builders one by one until it succeeds to create a corresponding instance — throws IllegalArgumentException in
-case of failure.*/
+    /*tries the builders one by one until it succeeds to create a corresponding instance — throws IllegalArgumentException in
+    case of failure.*/
+    @Override
     public T createInstance(JSONObject info) throws IllegalArgumentException { //TODO since it inherits from RunTimeExc should we declare that it throws it?
         T inst = null;
-        //int i = 0;
         boolean found = false;
-        for (int i = 0; i < _builders.size() && !found; ++i){ //TODO ask, change for a while loop?
-            inst = _builders.get(i).createInstance(info);
+        for (int i = 0; i < _builders.size() && !found; ++i){
+            inst = _builders.get(i).createInstance(info);//throws IllegalArgumentException if type is valid, but data is incorrect
             if (inst != null) {
                 found = true;
             }
         }
-        /*while(!found && i < _builders.size()) {
-            inst = _builders.get(i).createInstance(info);
-            if (inst != null) {
-                found = true;
-            }
-        }*/
         
-        if (inst == null){
+        if (inst == null){//TODO okay?, or simply by returning null we are saying the same?
             throw new IllegalArgumentException("No valid type found matching the information provided"); 
         }
 
@@ -50,19 +44,16 @@ case of failure.*/
     /* Method getInfo() of this class aggregates the JSON structures returned
 by getBuilderInfo() of all builders in a list and returns it (create the list and aggregate the
 information in the constructor, to avoid creating it every time).*/
+    @Override
     public List<JSONObject> getInfo() {
         return info;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         test1();
     }
 
     public static void test1(){ //TODO remove
-        /*
-        Body b1 = new MassLosingBody("1", new Vector2D(), new Vector2D(), 10, 0.1, 3);
-		Body b2 = new MassLosingBody("2", new Vector2D(), new Vector2D(1, 1), 10, 0.1, 3);
-        */
         List<Builder<Body>> bodyBuilders = new ArrayList<>();
         bodyBuilders.add(new BasicBodyBuilder());
         bodyBuilders.add(new MassLosingBodyBuilder());
@@ -113,5 +104,5 @@ information in the constructor, to avoid creating it every time).*/
         bodyBuilders.add(new MassLosingBodyBuilder());
         Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
     }
-    
+    */
 }

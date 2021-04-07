@@ -8,12 +8,12 @@ import simulator.control.exceptions.*;
 public class MassEqualStates implements StateComparator {
 
     /*
-    Two states s1 and s2 are equal if:
+    Two states s1 and s2 are mass-equal if:
         The value of their “time” key is equal.
         The i-th bodies in the lists of bodies in s1 and s2 have the same value for keys “id” and “mass”.
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException { //TODO notify user on what went wrong
+    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException { //TODO notify user on what went wrong?
         boolean eq = false;
         if(s1.getDouble("time") == s2.getDouble("time")){
             JSONArray ja1 = s1.getJSONArray("bodies");

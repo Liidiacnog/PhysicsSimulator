@@ -11,16 +11,16 @@ public class PhysicsSimulator {
     //it will be passed to method move of the bodies
 
     private double _current_t;
-    private ForceLaws _force;
+    private ForceLaws _forces;
     private List<Body> _l;
 
-    public PhysicsSimulator(double delta_t, ForceLaws force) throws IllegalArgumentException{
-        if(delta_t > 0 && force != null){
+    public PhysicsSimulator(double delta_t, ForceLaws forces) throws IllegalArgumentException{
+        if(delta_t > 0 && forces != null){
             _dt = delta_t;
-            _force = force;
+            _forces = forces;
         }
         else
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(); //TODO message?
         
         _current_t = 0.0;
         _l = new ArrayList<>();
@@ -31,11 +31,11 @@ public class PhysicsSimulator {
 move(dt) of each body where dt is the real time per step; and (4) increments the current time by dt seconds.*/
 public void advance(){
     //1
-    for(int i = 0; i < _l.size(); ++i){
+    for(int i = 0; i < _l.size(); ++i){ //TODO iterator?
         _l.get(i).resetForce();
     }
     //2
-    _force.apply(_l);
+    _forces.apply(_l);
     //3
     for(int i = 0; i < _l.size(); ++i){
         _l.get(i).move(_dt);
@@ -71,9 +71,6 @@ public JSONObject getState(){
     return jo;
 }
 
-
-
-/*returns what getState().toString() returns.*/
 public String toString(){
     return getState().toString();
 }
