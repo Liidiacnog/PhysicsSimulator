@@ -27,7 +27,7 @@ public class EpsilonEqualStates implements StateComparator {
     operations (because of the use of floating point arithmetic).
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{ //TODO okay or shorter way?
+    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{
         boolean eq = false;
         if(s1.getDouble("time") == s2.getDouble("time")){ 
             JSONArray ja1 = s1.getJSONArray("bodies");
@@ -39,45 +39,19 @@ public class EpsilonEqualStates implements StateComparator {
                            id2 = ja2.getJSONObject(i).getString("id");
                     if(!id1.equals(id2)){
                          eq = false;
-                         throw new IDMismatchException("Differing IDs: "+ id1 + " , " + id2);
+                         throw new StatesMismatchException("Differing IDs: "+ id1 + " , " + id2);
                     }
 
                     double m1 = ja1.getJSONObject(i).getDouble("m"), 
                            m2 = ja2.getJSONObject(i).getDouble("m");
                     if(!epsEqual(m1, m2)){
                         eq = false;
-                        throw new MassMismatchException("Differing masses: "+ m1 + " , " + m2);
+                        throw new StatesMismatchException("Differing masses: "+ m1 + " , " + m2);
                     }
                         
-                    //we create vector instances with the values extracted from objects i for velocity, position and force of each
-                    // JSONObject, to pass them as parameters to method epsEqual and compare them:
-
-                    JSONArray coords1 = ja1.getJSONObject(i).getJSONArray("p"),
-                              coords2 = ja2.getJSONObject(i).getJSONArray("p");
-                    Vector2D vPos1 = new Vector2D(coords1),
-                             vPos2 = new Vector2D(coords2);
-                    if(!epsEqual(vPos1, vPos2)){
-                        eq = false;
-                        throw new PositionMismatchException("Differing positions: "+ vPos1 + " , " + vPos2);
-                    } 
-                    
-                    coords1 = ja1.getJSONObject(i).getJSONArray("f");
-                    coords2 = ja2.getJSONObject(i).getJSONArray("f");
-                    Vector2D vForce1 = new Vector2D(coords1),
-                             vForce2 = new Vector2D(coords2);
-                    if(!epsEqual(vForce1, vForce2)){
-                        eq = false;
-                        throw new ForceMismatchException("Differing forces: "+ vForce1 + " , " + vForce2);
-                    } 
-                    
-                    coords1 = ja1.getJSONObject(i).getJSONArray("v");
-                    coords2 = ja2.getJSONObject(i).getJSONArray("v");
-                    Vector2D vVel1 = new Vector2D(coords1),
-                             vVel2 = new Vector2D(coords2);
-                    if(!epsEqual(vVel1, vVel2)){
-                        eq = false;
-                        throw new VelocityMismatchException("Differing velocities: "+ vVel1 + " , " + vVel2);
-                    } 
+                    cmp_using_key(ja1, ja2, "p", i);
+                    cmp_using_key(ja1, ja2, "f", i);
+                    cmp_using_key(ja1, ja2, "v", i);
                 }
             }
         }
@@ -85,14 +59,25 @@ public class EpsilonEqualStates implements StateComparator {
         return eq;
     }
     
+
+    private void cmp_using_key(JSONArray ja1, JSONArray ja2, String key, int i) throws StatesMismatchException{
+        JSONArray coords1 = ja1.getJSONObject(i).getJSONArray(key),
+                  coords2 = ja2.getJSONObject(i).getJSONArray(key);
+        if(!epsEqual(coords1, coords2)){
+            throw new StatesMismatchException("Differing vectors: "+ coords1 + " , " + coords2);
+        }
+    }
+
     //Two numbers a and b are eps-equal if “Math.abs(a-b) <= eps”
     private boolean epsEqual(double a, double b){
         return Math.abs(a-b) <= _eps;
     }
 
 
-    //two vectors v1 and v2 are eps-equal if “v1.distanceTo(v2) <= eps”
-    private boolean epsEqual(Vector2D a, Vector2D b){
+    //extracts vector coordinates from a JSONArray and copares two vectors via an eps-equal if “v1.distanceTo(v2) <= eps”
+    private boolean epsEqual(JSONArray coords1, JSONArray coords2){
+        Vector2D a = new Vector2D(coords1),
+                 b = new Vector2D(coords2);
         return a.distanceTo(b) <= _eps;
     }
 

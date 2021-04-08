@@ -12,6 +12,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 import org.json.JSONObject;
@@ -187,7 +188,6 @@ public class Main {
 
 	private static void parseExpectedFileOption(CommandLine line){
 		_expectedOutFile = line.getOptionValue("eo");
-		/*if (_expectedOutFile == null) {}*/ //TODO do we inform the user somehow?
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
@@ -277,12 +277,9 @@ public class Main {
 		OutputStream outChar = null;
 		BufferedInputStream expectedOut = null;
 
-		//TODO preguntar a samir cómo se hace
-
-		try (BufferedInputStream inChar = new BufferedInputStream(new FileInputStream(_inFile))){ //TODO check format of input and output files
+		try (InputStream inChar = new FileInputStream(_inFile)){
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
-			//TODO wrap exception?
 			throw new IllegalArgumentException("Input file " + _inFile + " could not be opened");
 		}
 
@@ -290,18 +287,16 @@ public class Main {
 			try {
 				outChar = new BufferedOutputStream(new FileOutputStream(_outFile));
 			} catch (IOException ioe) {
-				//TODO wrap exception? Need to close stream here?
 				throw new IllegalArgumentException("Output file " + _outFile + " could not be opened");
 			}
 		} else {
-			outChar = System.out; //TODO doesn't work, Yo creo que si funciona (a mi me ha funcionado)
+			outChar = System.out;
 		}
 
 		if (_expectedOutFile != null) {
 			try {
 				expectedOut = new BufferedInputStream(new FileInputStream(_expectedOutFile));
 			} catch (IOException ioe) {
-				//TODO wrap exception? Need to close stream here?
 				throw new IllegalArgumentException("Expected output file " + _expectedOutFile + " could not be opened");
 			}
 		}

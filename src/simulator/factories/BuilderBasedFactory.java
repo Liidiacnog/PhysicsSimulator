@@ -3,8 +3,7 @@ package simulator.factories;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
-import simulator.model.*;
-import simulator.misc.*;
+
 
 public class BuilderBasedFactory<T> implements Factory<T> {
 
@@ -24,7 +23,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
     /*tries the builders one by one until it succeeds to create a corresponding instance — throws IllegalArgumentException in
     case of failure.*/
     @Override
-    public T createInstance(JSONObject info) throws IllegalArgumentException { //TODO since it inherits from RunTimeExc should we declare that it throws it?
+    public T createInstance(JSONObject info) throws IllegalArgumentException { 
         T inst = null;
         boolean found = false;
         for (int i = 0; i < _builders.size() && !found; ++i){
@@ -34,7 +33,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
             }
         }
         
-        if (inst == null){//TODO okay?, or simply by returning null we are saying the same?
+        if (inst == null){
             throw new IllegalArgumentException("No valid type found matching the information provided"); 
         }
 
@@ -48,61 +47,4 @@ information in the constructor, to avoid creating it every time).*/
     public List<JSONObject> getInfo() {
         return info;
     }
-
-    /*public static void main(String[] args) {
-        test1();
-    }
-
-    public static void test1(){ //TODO remove
-        List<Builder<Body>> bodyBuilders = new ArrayList<>();
-        bodyBuilders.add(new BasicBodyBuilder());
-        bodyBuilders.add(new MassLosingBodyBuilder());
-        Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
-
-        JSONObject j1 = new JSONObject();
-        JSONObject data1 = new JSONObject();
-        data1.put("id", "1");
-        data1.put("v", new Vector2D().asJSONArray());
-        data1.put("p", new Vector2D().asJSONArray());
-        data1.put("m", 10);
-        //data1.put("freq", 0.1);
-        //data1.put("factor", 3);
-        j1.put("type", "basic");
-        j1.put("data", data1);
-
-        JSONObject j2 = new JSONObject();
-        JSONObject data2 = new JSONObject();
-        data2.put("id", "2");
-        data2.put("v", new Vector2D().asJSONArray());
-        data2.put("p", new Vector2D(1, 1).asJSONArray());
-        data2.put("m", 10);
-        data2.put("freq", 0.1);
-        data2.put("factor", 3);
-        j2.put("type", "mlb");
-        j2.put("data", data2);
-
-        Body b1 = bodyFactory.createInstance(j1);
-        Body b2 = bodyFactory.createInstance(j2);
-		double t = 0.5;
-		List<Body> bs = new ArrayList<>();
-		bs.add(b1);
-		bs.add(b2);
-		double G = 6.67E-11;
-		NewtonUniversalGravitation f = new NewtonUniversalGravitation(G);
-		f.apply(bs);
-		for (int i = 0; i < 300; i++) {
-			System.out.println("f: " + b1.getForce() + ", p: " + b1.getPosition());
-			b1.move(t);
-			System.out.println("f: " + b2.getForce() + ", p: " + b2.getPosition());
-			b2.move(t);
-		} 
-    }
-
-    public static void test2() {
-        List<Builder<Body>> bodyBuilders = new ArrayList<>();
-        bodyBuilders.add(new BasicBodyBuilder());
-        bodyBuilders.add(new MassLosingBodyBuilder());
-        Factory<Body> bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
-    }
-    */
 }

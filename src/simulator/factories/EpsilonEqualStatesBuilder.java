@@ -27,13 +27,13 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
 
     protected StateComparator createNewT(JSONObject info) throws IllegalArgumentException {
         try {
-            return new EpsilonEqualStates(info.getDouble("eps"));
+            if (!info.isNull("eps")) {
+                return new EpsilonEqualStates(info.getDouble("eps"));
+            } else {
+                return new EpsilonEqualStates();
+            }
         } catch (JSONException e) {
-            return new EpsilonEqualStates();
-            //TODO necessary?: throw new IllegalArgumentException("Epsilon state comparator could not be created with the given epsilon");
-            //y si le han dado un valor a eps, pero el valor no es valido (por ejemplo es un string) //TODO should we check sth else or just create it with the default value for eps?
-            //debería entonces tirar excepción o coger el valor predeterminado?
-            //yo creo que lo primero, el predeterminado sería si no tiene valor
+            throw new IllegalArgumentException("Invalid value for eps");
         }
     }
 

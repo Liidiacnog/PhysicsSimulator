@@ -21,7 +21,7 @@ public class NewtonUniversalGravitation implements ForceLaws {
 
 	public void apply(List<Body> bs){
 		for(int i = 0; i < bs.size(); ++i)
-			for(int j = i + 1; j < bs.size(); ++j){ //TODO change by implementing Iterator?
+			for(int j = i + 1; j < bs.size(); ++j){ //TODO Iterator?
 				 computeForce(bs.get(i), bs.get(j));
 			}
 	}

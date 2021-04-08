@@ -29,8 +29,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
             else
                 return new NewtonUniversalGravitation();
         } catch (JSONException e) {
-             //TODO okay or should we check that they have introduced either a valid G or nothing, and no other parameter?
-             throw new IllegalArgumentException("Invalid value for G");
+            throw new IllegalArgumentException("Invalid value for parameter G");
         }
     }
 }

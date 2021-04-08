@@ -18,6 +18,16 @@ public class MovingTowardsFixedPoint implements ForceLaws {
         _c = new Vector2D(c);
 	}
 
+	public MovingTowardsFixedPoint(Vector2D c){
+		_g = Default_g;
+        _c = new Vector2D(c);
+	}
+
+	public MovingTowardsFixedPoint(double g){
+		_g = g;
+        _c = Default_c;
+	}
+
 	public MovingTowardsFixedPoint(){
 		_g = Default_g;
         _c = Default_c;
@@ -26,7 +36,7 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 	
 
 	public void apply(List<Body> bs){
-		for(int j = 0; j < bs.size(); ++j){ //TODO change by implementing Iterator?
+		for(int j = 0; j < bs.size(); ++j){ //TODO Iterator?
             computeForce(bs.get(j));
         }
 	}

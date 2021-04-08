@@ -20,10 +20,10 @@ public class PhysicsSimulator {
             _forces = forces;
         }
         else
-            throw new IllegalArgumentException(); //TODO message?
+            throw new IllegalArgumentException("Invalid parameters for Physics Simulator"); 
         
         _current_t = 0.0;
-        _l = new ArrayList<>();
+        _l = new ArrayList<Body>();
     }
 
     

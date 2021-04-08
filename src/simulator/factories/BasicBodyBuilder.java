@@ -37,8 +37,8 @@ public class BasicBodyBuilder extends Builder<Body> {
             double m = info.getDouble("m");
             
             return new Body(id, v, p, m);
-        } catch (JSONException e) { // TODO okay to catch JSONException?
-            throw new IllegalArgumentException("Basic body could not be created with the given data"); //TODO add message
+        } catch (JSONException e) { 
+            throw new IllegalArgumentException("Basic body could not be created with the given data"); 
         }
     }
 

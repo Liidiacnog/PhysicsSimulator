@@ -26,11 +26,21 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
 
     protected ForceLaws createNewT(JSONObject info) {
         try {
-            Vector2D c = new Vector2D(info.getJSONArray("c"));
-            return new MovingTowardsFixedPoint(c, info.getDouble("g"));
-        } catch (JSONException e) { //no params provided, so default values are used
-            return new MovingTowardsFixedPoint();
-            //TODO same as epsilon state cmp
+            if (!info.isNull("c") || !info.isNull("g")) {
+                if (info.isNull("c")) {
+                    return new MovingTowardsFixedPoint(info.getDouble("g"));
+                } else if (info.isNull("g")) {
+                    Vector2D c = new Vector2D(info.getJSONArray("c"));
+                    return new MovingTowardsFixedPoint(c);
+                } else {
+                    Vector2D c = new Vector2D(info.getJSONArray("c"));
+                    return new MovingTowardsFixedPoint(c, info.getDouble("g"));
+                }
+            } else
+                return new MovingTowardsFixedPoint();
+            
+        } catch (JSONException e) { //No params provided, so default values are used
+            throw new IllegalArgumentException("Invalid values for moving towrds fixed point");
         }
     }
 }

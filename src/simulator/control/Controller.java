@@ -58,11 +58,12 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
     
         p.println("{");
         p.println("\"states\": [");
-        //print s0:
-        p.println(_sim.toString() + ',');
+        //print s0: //TODO fuera
+        //p.println(_sim.toString() + ',');
+        
 
         try{
-            if(arrayExpStates != null){//TODO better way? (shorter)
+            /*if(arrayExpStates != null){//TODO better way? (shorter)
                 //compare s0
                 compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(0), cmp, 0);
                 // run the simulation n steps
@@ -85,6 +86,18 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
                     _sim.advance();
                     p.println(_sim.toString());
                 }
+            }*/
+            
+            for (int i = 0; i < n; ++i){ //TODO should it show state 0?
+                if(arrayExpStates != null)
+                    compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(i), cmp, i);
+                p.println(_sim.toString() + ',');
+                _sim.advance();
+            }
+            if(n > 1){ //last one (sn), it has no final comma
+                p.println(_sim.toString());
+                if(arrayExpStates != null)
+                    compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(n), cmp, n);
             }
 
             p.println("]");
@@ -94,7 +107,6 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
             p.println(ex.getMessage());
             p.println("Cause: ");
             p.println(ex.getCause().getMessage());
-            //TODO needed here?
         }
        
     }
@@ -106,7 +118,7 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
             cmp.equal(j1, j2);
         }catch(StatesMismatchException c){
             throw new StatesMismatchException(String.format("Simulation step number: " + execStep + " . %n States j1: " + j1.toString(5) + 
-                                                "%n%n and %n%n" + "j2: " + j2.toString(5) + "%n%n" + "Differ %n"), c); //TODO leave like this?
+                                                "%n%n and %n%n" + "j2: " + j2.toString(5) + "%n%n" + "Differ %n"), c);
         }
     }
 
