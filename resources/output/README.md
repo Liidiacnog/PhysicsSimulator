@@ -10,7 +10,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex1.2body.json -eo resources/output/out.1.json -s 10000 -dt 10000 -fl nlug-cmp espeq:{eps:0.1}
+  -i resources/examples/ex1.2body.json -eo resources/output/out.1.json -s 10000 -dt 10000 -fl nlug-cmp epseq:{eps:0.1}
 
 # out.2.json
 
@@ -66,7 +66,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex3.4body.json -eo resources/output/out.5.json -s 10000 -dt 10000 -fl nlug-cmp espeq:{eps:0.1}
+  -i resources/examples/ex3.4body.json -eo resources/output/out.5.json -s 10000 -dt 10000 -fl nlug -cmp epseq:{eps:0.1}
 
 # out.6.json
 
@@ -80,7 +80,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex3.4body.json -eo resources/output/out.6.json -s 10000 -dt 10000 -fl mtfp-cmp espeq:{eps:0.1}
+  -i resources/examples/ex3.4body.json -eo resources/output/out.6.json -s 10000 -dt 10000 -fl mtfp -cmp espeq:{eps:0.1}
 
 # out.7.json
 
@@ -108,7 +108,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex4.4body.json -eo resources/output/out.8.json -s 10000 -dt 10000 -fl mtfp-cmp espeq:{eps:0.1}
+  -i resources/examples/ex4.4body.json -eo resources/output/out.8.json -s 10000 -dt 10000 -fl mtfp-cmp epseq:{eps:0.1}
 
 # out.1s.json
 
@@ -122,7 +122,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex1.2body.json -eo resources/output/out.1s.json -s 10000 -fl nlug-cmp espeq:{eps:0.1}
+  -i resources/examples/ex1.2body.json -eo resources/output/out.1s.json -s 10000 -fl nlug-cmp epseq:{eps:0.1}
 
 # out.2s.json
 
@@ -136,7 +136,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex1.2body.json -eo resources/output/out.2s.json -s 10000 -fl mtfp-cmp espeq:{eps:0.1}
+  -i resources/examples/ex1.2body.json -eo resources/output/out.2s.json -s 10000 -fl mtfp-cmp epseq:{eps:0.1}
 
 # out.3s.json
 
@@ -150,7 +150,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex2.3body.json -eo resources/output/out.3s.json -s 10000 -fl nlug-cmp espeq:{eps:0.1}
+  -i resources/examples/ex2.3body.json -eo resources/output/out.3s.json -s 10000 -fl nlug-cmp epseq:{eps:0.1}
 
 # out.4s.json
 
@@ -164,7 +164,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex2.3body.json -eo resources/output/out.4s.json -s 10000 -fl mtfp-cmp espeq:{eps:0.1}
+  -i resources/examples/ex2.3body.json -eo resources/output/out.4s.json -s 10000 -fl mtfp-cmp epseq:{eps:0.1}
 
 # out.5s.json
 
@@ -178,7 +178,7 @@
 
 * check epsilon-equivalence (with eps=0.1) using the commnd-line
 
-  -i resources/examples/ex3.4body.json -eo resources/output/out.5s.json -s 10000 -fl nlug-cmp espeq:{eps:0.1}
+  -i resources/examples/ex3.4body.json -eo resources/output/out.5s.json -s 10000 -fl nlug-cmp epseq:{eps:0.1}
 
 # out.6s.json
 
