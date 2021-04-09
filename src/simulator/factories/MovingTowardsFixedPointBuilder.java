@@ -9,7 +9,7 @@ import simulator.misc.*;
 
 public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
     
-    private static String MovingTowardsFixedPointBuilderType = "mtcp";
+    private static String MovingTowardsFixedPointBuilderType = "mtfp";
     private static final String MovingTowardsFixedPointBuilderDesc = "Applying a force in the direction of a fixed point";
 
     public MovingTowardsFixedPointBuilder(){
