@@ -36,8 +36,8 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 	
 
 	public void apply(List<Body> bs){
-		for(int j = 0; j < bs.size(); ++j){ //TODO Iterator?
-            computeForce(bs.get(j));
+		for(Body b: bs){
+            computeForce(b);
         }
 	}
 

@@ -58,37 +58,11 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
     
         p.println("{");
         p.println("\"states\": [");
-        //print s0: //TODO fuera
-        //p.println(_sim.toString() + ',');
         
 
         try{
-            /*if(arrayExpStates != null){//TODO better way? (shorter)
-                //compare s0
-                compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(0), cmp, 0);
-                // run the simulation n steps
-                for(int i = 1; i < n; ++i){
-                    _sim.advance();
-                    p.println(_sim.toString() + ',');
-                    compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(i), cmp, i);
-                }
-                if(n > 1){ //last one (sn), it has no final comma
-                    _sim.advance();
-                    p.println(_sim.toString());
-                    compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(n), cmp, n);
-                }
-            }else{
-                for(int i = 1; i < n; ++i){
-                    _sim.advance();
-                    p.println(_sim.toString() + ',');
-                }
-                if(n > 1){ //last one (sn), has no final comma
-                    _sim.advance();
-                    p.println(_sim.toString());
-                }
-            }*/
             
-            for (int i = 0; i < n; ++i){ //TODO should it show state 0?
+            for (int i = 0; i < n; ++i){
                 if(arrayExpStates != null)
                     compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(i), cmp, i);
                 p.println(_sim.toString() + ',');

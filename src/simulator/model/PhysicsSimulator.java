@@ -30,9 +30,10 @@ public class PhysicsSimulator {
 /*applies one simulation step: (1) it calls resetForce() of each body; (2) calls apply() of the force laws; (3) it calls
 move(dt) of each body where dt is the real time per step; and (4) increments the current time by dt seconds.*/
 public void advance(){
+
     //1
-    for(int i = 0; i < _l.size(); ++i){ //TODO iterator?
-        _l.get(i).resetForce();
+    for(Body b: _l){
+        b.resetForce();
     }
     //2
     _forces.apply(_l);
