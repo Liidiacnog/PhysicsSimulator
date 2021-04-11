@@ -24,7 +24,10 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
         return data;
     }
 
-    protected ForceLaws createNewT(JSONObject info) {
+    protected ForceLaws createNewT(JSONObject info) { //TODO correct:
+        /*the way you treat the default values is a bit complicated because you have to make and 'if' for all combinations 
+        (exponential). Better to choose the default values in the builder and have only one constructor for MovingTowardsFixedPoint.
+         This way you will only have one 'if' for each option.*/
         try {
             if (!info.isNull("c") || !info.isNull("g")) {
                 if (info.isNull("c")) {

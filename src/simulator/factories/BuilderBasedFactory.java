@@ -14,8 +14,8 @@ public class BuilderBasedFactory<T> implements Factory<T> {
         _builders = new ArrayList<Builder<T>>(builders);
 
         info = new ArrayList<JSONObject>();
-        for (int i = 0; i < builders.size(); i++) {
-            info.add(builders.get(i).getBuilderInfo());
+        for (Builder<T> b : builders) {
+            info.add(b.getBuilderInfo());
         }
     }
 

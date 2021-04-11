@@ -6,7 +6,7 @@ import simulator.model.NoForce;
 
 public class NoForceBuilder extends Builder<ForceLaws> {
     
-    private static String NoForceBuilderType = "ng";
+    private static String NoForceBuilderType = "nf";
     private static final String NoForceBuilderDesc = "No force acts upon the bodies"; 
 
     public NoForceBuilder(){

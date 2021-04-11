@@ -43,15 +43,15 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 
 	//computes the corresponding Fixed Point force, and adds it to b1's force vector
 	private void computeForce(Body b1) {
-		Vector2D dir =  _c.minus(b1.p);
+		Vector2D dir =  _c.minus(b1.getPosition());
         double distance = dir.magnitude();
 		if(distance > 0 && b1.getMass() > 0 && _g > 0){
-			Vector2D dirUnityV = dir.scale(1/distance);
+			Vector2D dirUnityV = dir.direction();
 			double factor = b1.getMass() / _g;
 			
             Vector2D result = dirUnityV.scale(factor);
 
-			b1.f = b1.f.plus(result);
+			b1.addForce(b1.getForce().plus(result));
         }
 	}
 

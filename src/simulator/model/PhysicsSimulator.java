@@ -64,8 +64,8 @@ public JSONObject getState(){
     jo.put("time", _current_t);
 
     JSONArray ja = new JSONArray();
-    for(int i = 0; i <_l.size(); ++i)
-        ja.put(_l.get(i).getState());
+    for(Body b: _l)
+        ja.put(b.getState());
                 
     jo.put("bodies", ja);
 	

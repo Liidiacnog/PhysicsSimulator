@@ -27,7 +27,7 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
 
     protected StateComparator createNewT(JSONObject info) throws IllegalArgumentException {
         try {
-            if (!info.isNull("eps")) {
+            if (info.has("eps")) {
                 return new EpsilonEqualStates(info.getDouble("eps"));
             } else {
                 return new EpsilonEqualStates();

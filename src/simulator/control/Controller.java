@@ -6,13 +6,12 @@ import java.io.PrintStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import simulator.control.exceptions.StatesMismatchException;
 import simulator.factories.Factory;
 import simulator.model.Body;
 import simulator.model.PhysicsSimulator;
 
-public class Controller {
+public class Controller { //TODO missing corrections by Samir on whole "control" package 
 
     private PhysicsSimulator _sim;
     private Factory<Body> _fB;

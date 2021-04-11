@@ -28,16 +28,16 @@ public class NewtonUniversalGravitation implements ForceLaws {
 
 	//computes the corresponding Newton's Universal Gravitation force, and adds it to b1 and b2's forces
 	private void computeForce(Body b1, Body b2) {
-		Vector2D dirB1ToB2 =  b2.p.minus(b1.p);
+		Vector2D dirB1ToB2 =  b2.p.minus(b1.getPosition());
 		double distance = dirB1ToB2.magnitude();
 		if(distance > 0 && b1.getMass() > 0 && b2.getMass() > 0){
-			Vector2D dirUnityV = dirB1ToB2.scale(1/distance);
+			Vector2D dirUnityV = dirB1ToB2.direction();
 			double factor = _G*b1.getMass()*b2.getMass() / (distance*distance);
 			
 			Vector2D result = dirUnityV.scale(factor);
 
-			b1.f = b1.f.plus(result);
-			b2.f = b2.f.plus(result.scale(-1)); //opposite directions, same magnitude
+			b1.addForce(b1.getForce().plus(result));
+			b2.addForce(b2.getForce().plus(result.scale(-1))); //opposite directions, same magnitude
 		}
 	}
 

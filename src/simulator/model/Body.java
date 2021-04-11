@@ -4,9 +4,9 @@ import org.json.JSONObject;
 import simulator.misc.Vector2D;
 
 public class Body {
-	protected String id;
-	protected Vector2D v, f, p;
-	protected double m;
+	private String id;
+	private Vector2D v, f, p;
+	private double m;
 	
 	public Body(String str, Vector2D v, Vector2D p, double mass) {
 		id = str;

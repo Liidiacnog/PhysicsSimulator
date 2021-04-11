@@ -1,7 +1,6 @@
 package simulator.factories;
 
 import org.json.JSONObject;
-
 import simulator.control.MassEqualStates;
 import simulator.control.StateComparator;
 
