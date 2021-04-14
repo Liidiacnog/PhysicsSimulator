@@ -13,7 +13,7 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 
     /*simulates a scenario in which we apply a force in the direction of a fixed point c.
     F = m/g in the direction of (c - pos of Body)*/
-	public MovingTowardsFixedPoint(Vector2D c, double g){
+	public MovingTowardsFixedPoint(Vector2D c, double g){//TODO not so many required
 		_g = g;
         _c = new Vector2D(c);
 	}

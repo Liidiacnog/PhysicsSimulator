@@ -6,7 +6,7 @@ import simulator.misc.Vector2D;
 public class Body {
 	private String id;
 	private Vector2D v, f, p;
-	private double m;
+	protected double m; //TODO okay if rest are private since they are not needed?
 	
 	public Body(String str, Vector2D v, Vector2D p, double mass) {
 		id = str;
@@ -59,7 +59,7 @@ public class Body {
 	}
 
 	//equal bodies if they have the same identifier
-	public boolean equals(Body b){
+	public boolean equals(Body b){//TODO change to receive an Object and also compare pointers!!
 		return id.equals(b.getId());
 	}
 
