@@ -8,12 +8,7 @@ import simulator.control.exceptions.*;
 public class EpsilonEqualStates implements StateComparator {
 
     private double _eps;
-    private static final double DefaultEps = 0.0;
-
-    public EpsilonEqualStates(){
-        _eps = DefaultEps;
-    }
-
+    
     public EpsilonEqualStates (double eps){
         _eps = eps;
     }
@@ -27,25 +22,24 @@ public class EpsilonEqualStates implements StateComparator {
     operations (because of the use of floating point arithmetic).
     */
     @Override
-    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException{
-        boolean eq = false;
+    public boolean equal(JSONObject s1, JSONObject s2) throws StatesMismatchException {
+
         if(s1.getDouble("time") == s2.getDouble("time")){ 
+
             JSONArray ja1 = s1.getJSONArray("bodies");
             JSONArray ja2 = s2.getJSONArray("bodies");
             if(ja1.length() == ja2.length()){
-                eq = true;
-                for(int i = 0; i < ja1.length() && eq; ++i){
+
+                for(int i = 0; i < ja1.length(); ++i){
                     String id1 = ja1.getJSONObject(i).getString("id"),  
                            id2 = ja2.getJSONObject(i).getString("id");
                     if(!id1.equals(id2)){
-                         eq = false;
                          throw new StatesMismatchException("Differing IDs: "+ id1 + " , " + id2);
                     }
 
                     double m1 = ja1.getJSONObject(i).getDouble("m"), 
                            m2 = ja2.getJSONObject(i).getDouble("m");
                     if(!epsEqual(m1, m2)){
-                        eq = false;
                         throw new StatesMismatchException("Differing masses: "+ m1 + " , " + m2);
                     }
                         
@@ -56,7 +50,7 @@ public class EpsilonEqualStates implements StateComparator {
             }
         }
 
-        return eq;
+        return true;
     }
     
 

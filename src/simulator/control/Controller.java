@@ -11,7 +11,7 @@ import simulator.factories.Factory;
 import simulator.model.Body;
 import simulator.model.PhysicsSimulator;
 
-public class Controller { //TODO missing corrections by Samir on whole "control" package 
+public class Controller {  
 
     private PhysicsSimulator _sim;
     private Factory<Body> _fB;
@@ -58,7 +58,6 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
         p.println("{");
         p.println("\"states\": [");
         
-
         try{
             
             for (int i = 0; i < n; ++i){
@@ -67,11 +66,10 @@ creates a corresponding body b using the bodies factory, and adds it to the simu
                 p.println(_sim.toString() + ',');
                 _sim.advance();
             }
-            if(n > 1){ //last one (sn), it has no final comma
-                p.println(_sim.toString());
-                if(arrayExpStates != null)
-                    compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(n), cmp, n);
-            }
+            //last one has no final comma 
+            p.println(_sim.toString());
+            if(arrayExpStates != null)
+                compareUsingCmp(_sim.getState(), arrayExpStates.getJSONObject(n), cmp, n);
 
             p.println("]");
             p.println("}");

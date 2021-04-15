@@ -6,7 +6,7 @@ import simulator.misc.Vector2D;
 public class Body {
 	private String id;
 	private Vector2D v, f, p;
-	protected double m; //TODO okay if rest are private since they are not needed?
+	protected double m;
 	
 	public Body(String str, Vector2D v, Vector2D p, double mass) {
 		id = str;
@@ -59,9 +59,32 @@ public class Body {
 	}
 
 	//equal bodies if they have the same identifier
-	public boolean equals(Body b){//TODO change to receive an Object and also compare pointers!!
-		return id.equals(b.getId());
+	public boolean equals(Object o){
+		if(this == o)
+			return true;
+		if(o == null)
+			return false;
+		if(o.getClass() != getClass())
+			return false;
+
+		Body b = (Body) o;
+		if(b.getId() == null)
+			if(id == null)
+				return true;
+		else if(id.equals(b.getId()))
+			return true;
+		
+		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;	
+	}
+
 
 /*returns the JSON structure that includes the body’s information:
 { "id": id, "m": m, "p": p, "v": v, "f": f } */

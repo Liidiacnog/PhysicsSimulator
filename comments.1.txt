@@ -1,0 +1,127 @@
+general
+=======
+
+- In general it is quite OK. 
+
+- The errors in EpsilonEqualStates.java are not important, I am sure you missed it while refactoring.
+
+- The errors of accessing a field of other classes directly is a serious error, though I won't penalise 
+  this time as I am sure (hope) you did not mean to do it, please fix for next assignment.
+    > DONE
+
+- always prefer for each style for loops, eg. for(Body b : _l), over traversing with an index
+    > DONE
+
+
+model
+=====
+
+# Body.java: ok
+
+# ForceLaws.java: ok
+
+# MassLosingBody.java: ok
+
+# MovingTowardsFixedPoint.java:
+
+- Instead of dir.scale(1/distance) use dir.direction() --- it does the same
+    > DONE
+
+! You are accessing fields of other object directly!! This should be done using addForce
+    > DONE
+
+
+# NewtonUniversalGravitation.java:
+
+- Instead of dirB1ToB2.scale(1/distance) use dirB1ToB2.direction() --- it does the same
+    > DONE
+
+! You are accessing fields of other object directly!! This should be done using addForce
+
+     b1.f = b1.f.plus(result);
+     b2.f = b2.f.plus(result.scale(-1)); //opposite directions, same magnitude
+    > DONE
+
+# NoForce.java: ok
+
+# PhysicsSimulator.java:
+
+- better use for(Body b : _l)
+
+    for(int i = 0; i <_l.size(); ++i)
+        ja.put(_l.get(i).getState());
+    > DONE
+
+
+factories
+=========
+
+# BasicBodyBuilder.java: ok
+
+# Builder.java:
+
+- better use o.put("data", new JSONObject()) which generates data:{}. This is important for the next assignment 
+
+        o.put("data", "No data required");
+    > DONE
+
+
+# BuilderBasedFactory.java:
+
+- better use for(Builder<T> b : builders) instead of
+
+        for (int i = 0; i < builders.size(); i++) {
+            info.add(builders.get(i).getBuilderInfo());
+        }
+    > DONE
+
+
+# EpsilonEqualStatesBuilder.java:
+
+# Factory.java: ok
+
+# MassEqualStatesBuilder.java:
+
+- instead of info.isNull("eps") use info.has("eps"), because some 'null' is valid value for a key
+    > DONE
+
+# MassLosingBodyBuilder.java: ok
+
+# MovingTowardsFixedPointBuilder.java:
+
+- use info.has instead of info.isNull
+    > DONE
+
+- the way you treat the default values is a bit complicated because you have to make and 'if' for all combinations (exponential). Better to choose the default values in the builder and have only one constructor for MovingTowardsFixedPoint. This way you will only have one 'if' for each option.
+    > DONE
+
+# NewtonUniversalGravitationBuilder.java:
+
+- use info.has instead of info.isNull
+    > DONE
+
+# NoForceBuilder.java
+
+- use info.has instead of info.isNull
+    > DONE
+
+
+control
+=======
+
+# Controller.java:
+- for n=0 it should print the initial state (just remove the n>1 condition)
+    > DONE
+
+# EpsilonEqualStates.java:
+
+- somehow the flag 'eq' is not needed since you are throwing an exception in case of false
+    > DONE
+
+- you do not take into account the value of the calls to cmp_using_key, so of they return false you might still say they are equal.
+    > DONE
+
+# MassEqualStates.java:
+
+- somehow the flag 'eq' is not needed since you are throwing an exception in case of false
+    > DONE

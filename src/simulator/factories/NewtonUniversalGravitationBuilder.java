@@ -10,7 +10,9 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     
     private static String NewtonUniversalGravitationBuilderType = "nlug";
     private static final String NewtonUniversalGravitationBuilderDesc = "Newton’s law of universal gravitation"; 
-    
+    private final static Double DefaultGravitationalConstant = 6.67E-11;
+
+	
     public NewtonUniversalGravitationBuilder(){
         _type = NewtonUniversalGravitationBuilderType;
         _desc = NewtonUniversalGravitationBuilderDesc;
@@ -27,7 +29,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
             if (info.has("G"))
                 return new NewtonUniversalGravitation(info.getDouble("G"));
             else
-                return new NewtonUniversalGravitation();
+                return new NewtonUniversalGravitation(DefaultGravitationalConstant);
         } catch (JSONException e) {
             throw new IllegalArgumentException("Invalid value for parameter G");
         }

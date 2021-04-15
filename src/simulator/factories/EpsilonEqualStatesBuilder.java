@@ -12,7 +12,8 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
     private static String EpsilonEqualStatesBuilderType = "epseq";
     private static final String EpsilonEqualStatesBuilderDesc = "Compares 2 states in terms of their “time” and “id” keys," +
                                 " and epsilon equality for keys “m”, “p”, “v” and “f” of the i-th bodies in their lists";
-
+    private static final double DefaultEps = 0.0;
+                            
 
     public EpsilonEqualStatesBuilder(){
         _type = EpsilonEqualStatesBuilderType;
@@ -30,7 +31,7 @@ public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
             if (info.has("eps")) {
                 return new EpsilonEqualStates(info.getDouble("eps"));
             } else {
-                return new EpsilonEqualStates();
+                return new EpsilonEqualStates(DefaultEps);
             }
         } catch (JSONException e) {
             throw new IllegalArgumentException("Invalid value for eps");
