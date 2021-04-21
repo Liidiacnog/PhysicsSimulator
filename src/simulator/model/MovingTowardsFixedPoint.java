@@ -35,7 +35,10 @@ public class MovingTowardsFixedPoint implements ForceLaws {
 			b1.addForce(b1.getForce().plus(result));
         }
 	}
-
+	
+	public String toString(){
+		return "Moving towards " + _c + " with constant acceleration " +_g;
+	}
 
 }
 

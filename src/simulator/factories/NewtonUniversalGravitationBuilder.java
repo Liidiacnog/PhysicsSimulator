@@ -20,7 +20,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
     
     protected JSONObject getData() { 
         JSONObject data = new JSONObject();
-        data.put("G", "Constant of universal gravitation");
+        data.put("G", "the gravitational constant (a number)");
         return data;
     }
 

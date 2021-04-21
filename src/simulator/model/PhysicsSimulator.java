@@ -5,76 +5,136 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class PhysicsSimulator {
-   
-    private double _dt; //actual time (in seconds) that corresponds to a simulation step
-    //it will be passed to method move of the bodies
+public class PhysicsSimulator implements Observable<SimulatorObserver>{
+
+    private double _dt; // actual time (in seconds) that corresponds to a simulation step
+    // it will be passed to method move of the bodies
 
     private double _current_t;
     private ForceLaws _forces;
-    private List<Body> _l;
+    private List<Body> _bodies;
+    private List<SimulatorObserver> observers; //TODO okay if observers are only SimulatorObserver? or better if we have a more generic observer class? would we use it?
 
-    public PhysicsSimulator(double delta_t, ForceLaws forces) throws IllegalArgumentException{
-        if(delta_t > 0 && forces != null){
-            _dt = delta_t;
-            _forces = forces;
+    public PhysicsSimulator(double delta_t, ForceLaws forces) throws IllegalArgumentException {
+        try {
+            observers = new ArrayList<>();
+            setDeltaTime(delta_t);
+            setForceLaws(forces);
+            reset(); //TODO okay here or better explicit call to only necessary methods?
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid parameters for Physics Simulator", e);
         }
-        else
-            throw new IllegalArgumentException("Invalid parameters for Physics Simulator"); 
-        
+    }
+
+    /*
+     * applies one simulation step: (1) it calls resetForce() of each body; (2)
+     * calls apply() of the force laws; (3) it calls move(dt) of each body where dt
+     * is the real time per step; and (4) increments the current time by dt seconds.
+     */
+    public void advance() {
+
+        // 1
+        for (Body b : _bodies) {
+            b.resetForce();
+        }
+        // 2
+        _forces.apply(_bodies);
+        // 3
+        for (int i = 0; i < _bodies.size(); ++i) {
+            _bodies.get(i).move(_dt);
+        }
+        // 4
+        _current_t += _dt;
+
+        for(SimulatorObserver o: observers)
+            o.onAdvance(_bodies, _current_t); 
+    }
+
+    /*
+     * adds body b to the simulator, and throws IllegalArgumentException if it
+     * already exists
+     */
+    public void addBody(Body b) throws IllegalArgumentException {
+        if (_bodies.contains(b))
+            throw new IllegalArgumentException();
+
+        _bodies.add(b);
+        for(SimulatorObserver o: observers)
+            o.onBodyAdded(_bodies, b); 
+    }
+
+    /*
+     * returns the JSON structure that includes the simulator’s state: { "time": t,
+     * "bodies": [json1, json2, . . .] } where t is the current time and jsoni is
+     * the JSONObject returned by getState() of the i-th body in the list of bodies.
+     */
+    public JSONObject getState() {
+        JSONObject jo = new JSONObject();
+
+        jo.put("time", _current_t);
+
+        JSONArray ja = new JSONArray();
+        for (Body b : _bodies)
+            ja.put(b.getState());
+
+        jo.put("bodies", ja);
+
+        return jo;
+    }
+
+    public String toString() {
+        return getState().toString();
+    }
+
+    /* clears the list of bodies and sets the current time to 0.0 */
+    public void reset() {
         _current_t = 0.0;
-        _l = new ArrayList<Body>();
+        _bodies = new ArrayList<Body>();
+        for(SimulatorObserver o: observers)
+            o.onReset(_bodies, _current_t, _dt, fLawsDesc); //TODO fLawsDesc? 
+            /*fLawsDesc is a description of the current force laws (obtained by calling toString of the current force laws) */
     }
 
-    
-/*applies one simulation step: (1) it calls resetForce() of each body; (2) calls apply() of the force laws; (3) it calls
-move(dt) of each body where dt is the real time per step; and (4) increments the current time by dt seconds.*/
-public void advance(){
+    /*
+     * changes the current value of the delta-time (i.e. the real time per step) to
+     * dt. It should throw an IllegalArgumentException exception exception if the
+     * value is not valid.
+     */
+    public void setDeltaTime(double dt) throws IllegalArgumentException{
+        if (dt > 0)
+            _dt = dt;
+        else
+            throw new IllegalArgumentException("Invalid delta time");
 
-    //1
-    for(Body b: _l){
-        b.resetForce();
+        for(SimulatorObserver o: observers)
+            o.onDeltaTimeChanged(_dt); 
     }
-    //2
-    _forces.apply(_l);
-    //3
-    for(int i = 0; i < _l.size(); ++i){
-        _l.get(i).move(_dt);
+
+    /*
+     * changes the force laws of the simulator to forceLaws. It should throw an
+     * IllegalArgumentException if the value is not valid (i.e., null).
+     */
+    public void setForceLaws(ForceLaws forceLaws) {
+        if (forceLaws != null) {
+            _forces = forceLaws;
+        } else
+            throw new IllegalArgumentException("Invalid force laws");
+
+        for(SimulatorObserver o: observers)
+            o.onForceLawsChanged(fLawsDesc); //TODO again
     }
-    //4
-    _current_t += _dt;
-
-}
-
- /* adds body b to the simulator, and throws IllegalArgumentException if it already exists */
-public void addBody(Body b) throws IllegalArgumentException{
-    if(_l.contains(b))
-        throw new IllegalArgumentException();
-    
-    _l.add(b);
-}
 
 
-/*returns the JSON structure that includes the simulator’s state:
-    { "time": t, "bodies": [json1, json2, . . .] }
-where t is the current time and jsoni is the JSONObject returned by getState() of the i-th body in the list of bodies. */
-public JSONObject getState(){
-    JSONObject jo = new JSONObject();
-
-    jo.put("time", _current_t);
-
-    JSONArray ja = new JSONArray();
-    for(Body b: _l)
-        ja.put(b.getState());
-                
-    jo.put("bodies", ja);
-	
-    return jo;
-}
-
-public String toString(){
-    return getState().toString();
-}
+    /* add o to the list of observers, if it is not there already */
+    public void addObserver(SimulatorObserver o){
+        if(!observers.contains(o)){
+            o.onRegister(_bodies, _current_t, _dt, fLawsDesc); //TODO again
+            observers.add(o);
+        }
+        else{
+            //TODO do sth?
+        }
+    }
 
 
 }
