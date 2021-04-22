@@ -4,7 +4,7 @@ import java.util.List;
 import simulator.misc.Vector2D;
 
 
-public class MovingTowardsFixedPoint implements ForceLaws {
+public class MovingTowardsFixedPoint implements ForceLaw {
 	
 	private double _g;
     private Vector2D _c;

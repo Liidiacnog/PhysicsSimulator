@@ -38,24 +38,23 @@ public class Main {
 	private static String _inFile = null;
 	private static String _outFile = null;
 	private static String _expectedOutFile = null;
-	private static JSONObject 
-	_forceLawsInfo = null;
+	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
-	private static Factory<ForceLaws> _forceLawsFactory;
+	private static Factory<ForceLaw> _forceLawsFactory;
 	private static Factory<StateComparator> _stateComparatorFactory;
 
 	private static void init() {
 		// initializing the bodies factory
 		List<Builder<Body>> bodyBuilders = new ArrayList<>();
-        bodyBuilders.add(new BasicBodyBuilder());
-        bodyBuilders.add(new MassLosingBodyBuilder());
-        _bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
+		bodyBuilders.add(new BasicBodyBuilder());
+		bodyBuilders.add(new MassLosingBodyBuilder());
+		_bodyFactory = new BuilderBasedFactory<>(bodyBuilders);
 
 		// initializing the force laws factory
-		List<Builder<ForceLaws>> lawBuilders = new ArrayList<>();
+		List<Builder<ForceLaw>> lawBuilders = new ArrayList<>();
 		lawBuilders.add(new NewtonUniversalGravitationBuilder());
 		lawBuilders.add(new MovingTowardsFixedPointBuilder());
 		lawBuilders.add(new NoForceBuilder());
@@ -108,7 +107,6 @@ public class Main {
 
 	}
 
-	
 	private static Options buildOptions() {
 		Options cmdLineOptions = new Options();
 
@@ -118,15 +116,15 @@ public class Main {
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
-		//output
+		// output
 		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
 				.desc("Output file, where output is written. Default value: the standard output.").build());
 
-		//steps
+		// steps
 		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
 				.desc("An integer representing the number of simulation steps. Default value: 150.").build());
 
-		//expected output
+		// expected output
 		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg()
 				.desc("The expected output file. If not provided no comparison is applied").build());
 
@@ -185,12 +183,11 @@ public class Main {
 		}
 	}
 
-
-	private static void parseExpectedFileOption(CommandLine line){
+	private static void parseExpectedFileOption(CommandLine line) {
 		_expectedOutFile = line.getOptionValue("eo");
 	}
 
-	private static void parseStepsOption(CommandLine line) throws ParseException{
+	private static void parseStepsOption(CommandLine line) throws ParseException {
 		String steps = line.getOptionValue("s", _stepsDefaultValue.toString());
 		try {
 			_steps = Integer.parseInt(steps);
@@ -203,7 +200,6 @@ public class Main {
 	private static void parseOutFileOption(CommandLine line) {
 		_outFile = line.getOptionValue("o");
 	}
-
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _dtimeDefaultValue.toString());
@@ -270,14 +266,16 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		ForceLaws force = _forceLawsFactory.createInstance(_forceLawsInfo);
+		ForceLaw force = _forceLawsFactory.createInstance(_forceLawsInfo);
 		StateComparator comp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
-		Controller c = new Controller(sim, _bodyFactory);
+		Controller c = new Controller(sim, _bodyFactory, _forceLawsFactory);
+		
+		//TODO is all of this needed?
 		OutputStream outChar = null;
 		BufferedInputStream expectedOut = null;
 
-		try (InputStream inChar = new FileInputStream(_inFile)){
+		try (InputStream inChar = new FileInputStream(_inFile)) {
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Input file " + _inFile + " could not be opened");
@@ -301,12 +299,16 @@ public class Main {
 			}
 		}
 
-		c.run(_steps, outChar, expectedOut, comp);
+		//TODO eliminate after debugging?
+		// c.run(_steps, outChar, expectedOut, comp);
 
-		if(outChar != null)
+		//doesn't print any output
+		c.run(_steps);
+
+		if (outChar != null)
 			outChar.close();
-		if(expectedOut != null)
-			expectedOut.close();		
+		if (expectedOut != null)
+			expectedOut.close();
 	}
 
 	private static void start(String[] args) throws Exception {

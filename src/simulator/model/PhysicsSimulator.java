@@ -11,11 +11,11 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
     // it will be passed to method move of the bodies
 
     private double _current_t;
-    private ForceLaws _forces;
+    private ForceLaw _force;
     private List<Body> _bodies;
-    private List<SimulatorObserver> observers; //TODO okay if observers are only SimulatorObserver? or better if we have a more generic observer class? would we use it?
-
-    public PhysicsSimulator(double delta_t, ForceLaws forces) throws IllegalArgumentException {
+    private List<SimulatorObserver> observers; 
+    
+    public PhysicsSimulator(double delta_t, ForceLaw forces) throws IllegalArgumentException {
         try {
             observers = new ArrayList<>();
             setDeltaTime(delta_t);
@@ -38,7 +38,7 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
             b.resetForce();
         }
         // 2
-        _forces.apply(_bodies);
+        _force.apply(_bodies);
         // 3
         for (int i = 0; i < _bodies.size(); ++i) {
             _bodies.get(i).move(_dt);
@@ -91,8 +91,7 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
         _current_t = 0.0;
         _bodies = new ArrayList<Body>();
         for(SimulatorObserver o: observers)
-            o.onReset(_bodies, _current_t, _dt, fLawsDesc); //TODO fLawsDesc? 
-            /*fLawsDesc is a description of the current force laws (obtained by calling toString of the current force laws) */
+            o.onReset(_bodies, _current_t, _dt, "" + _force);
     }
 
     /*
@@ -114,25 +113,22 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
      * changes the force laws of the simulator to forceLaws. It should throw an
      * IllegalArgumentException if the value is not valid (i.e., null).
      */
-    public void setForceLaws(ForceLaws forceLaws) {
+    public void setForceLaws(ForceLaw forceLaws) {
         if (forceLaws != null) {
-            _forces = forceLaws;
+            _force = forceLaws;
         } else
             throw new IllegalArgumentException("Invalid force laws");
 
         for(SimulatorObserver o: observers)
-            o.onForceLawsChanged(fLawsDesc); //TODO again
+            o.onForceLawsChanged("" + _force); 
     }
 
 
     /* add o to the list of observers, if it is not there already */
     public void addObserver(SimulatorObserver o){
         if(!observers.contains(o)){
-            o.onRegister(_bodies, _current_t, _dt, fLawsDesc); //TODO again
+            o.onRegister(_bodies, _current_t, _dt, "" + _force); 
             observers.add(o);
-        }
-        else{
-            //TODO do sth?
         }
     }
 

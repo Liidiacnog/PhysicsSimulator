@@ -1,12 +1,12 @@
 package simulator.factories;
 
-import simulator.model.ForceLaws;
+import simulator.model.ForceLaw;
 import org.json.JSONException;
 import org.json.JSONObject;
 import simulator.model.NewtonUniversalGravitation;
 
 
-public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
+public class NewtonUniversalGravitationBuilder extends Builder<ForceLaw> {
     
     private static String NewtonUniversalGravitationBuilderType = "nlug";
     private static final String NewtonUniversalGravitationBuilderDesc = "Newton’s law of universal gravitation"; 
@@ -24,7 +24,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
         return data;
     }
 
-    protected ForceLaws createNewT(JSONObject info) {
+    protected ForceLaw createNewT(JSONObject info) {
         try {
             if (info.has("G"))
                 return new NewtonUniversalGravitation(info.getDouble("G"));

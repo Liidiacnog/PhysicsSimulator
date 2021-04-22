@@ -1,10 +1,10 @@
 package simulator.factories;
 
 import org.json.JSONObject;
-import simulator.model.ForceLaws;
+import simulator.model.ForceLaw;
 import simulator.model.NoForce;
 
-public class NoForceBuilder extends Builder<ForceLaws> {
+public class NoForceBuilder extends Builder<ForceLaw> {
     
     private static String NoForceBuilderType = "nf";
     private static final String NoForceBuilderDesc = "No force"; 
@@ -14,7 +14,7 @@ public class NoForceBuilder extends Builder<ForceLaws> {
         _desc = NoForceBuilderDesc;
     }
     
-    protected ForceLaws createNewT(JSONObject info) {
+    protected ForceLaw createNewT(JSONObject info) {
         return new NoForce();
     }
 

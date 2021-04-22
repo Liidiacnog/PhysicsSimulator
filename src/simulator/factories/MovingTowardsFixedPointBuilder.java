@@ -1,13 +1,13 @@
 package simulator.factories;
 
 import simulator.model.MovingTowardsFixedPoint;
-import simulator.model.ForceLaws;
+import simulator.model.ForceLaw;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import simulator.misc.*;
 
-public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
+public class MovingTowardsFixedPointBuilder extends Builder<ForceLaw> {
 
     private static String MovingTowardsFixedPointBuilderType = "mtfp";
     private static final String MovingTowardsFixedPointBuilderDesc = "Moving towards a fixed point";
@@ -26,7 +26,7 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
         return data;
     }
 
-    protected ForceLaws createNewT(JSONObject info) { 
+    protected ForceLaw createNewT(JSONObject info) { 
         try {
             if (!info.has("c") && !info.has("g")) // No params provided, so default values are used
                 return new MovingTowardsFixedPoint(Default_c, Default_g);
