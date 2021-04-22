@@ -1,8 +1,13 @@
 package simulator.view;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 import simulator.control.Controller;
 import java.awt.Color;
+import java.awt.BorderLayout;
 
 public class BodiesTable extends JPanel {
 
