@@ -17,6 +17,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         _bodies = new ArrayList<>();
         ctrl.addObserver(this);
     }
+    
     @Override
     public int getRowCount() {
         return _bodies.size();
