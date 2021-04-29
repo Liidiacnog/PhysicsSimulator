@@ -6,31 +6,46 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch BodiesTable",
+            "request": "launch",
+            "mainClass": "simulator.view.BodiesTable",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
             "name": "TRIALS' LAUNCH",
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex4.4body.json",
-                "-o", "resources/output/OURSout.7.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "nlfFFFFFFF FFFFFFug",
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex4.4body.json",
+                "-o",
+                "resources/output/OURSout.7.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "nlfFFFFFFF FFFFFFug"
             ],
             "projectName": "TP-II"
-        },{
+        },
+        {
             "type": "java",
             "name": "out.7.json without comp",
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex4.4body.json",
-                "-o", "resources/output/OURSout.7.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "nlug",
-                //"-cmp", "epseq:{eps:0.1}"
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex4.4body.json",
+                "-o",
+                "resources/output/OURSout.7.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "nlug"
             ],
             "projectName": "TP-II"
         },
@@ -40,13 +55,16 @@
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex3.4body.json",
-                "-o", "resources/output/OURSout.6.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "mtfp:{c:0.0, g:9.81}",
-                //"-cmp", "epseq:{eps:0.1}"
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex3.4body.json",
+                "-o",
+                "resources/output/OURSout.6.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "mtfp:{c:0.0, g:9.81}"
             ],
             "projectName": "TP-II"
         },
@@ -56,13 +74,16 @@
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex3.4body.json",
-                "-o", "resources/output/OURSout.5.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "nlug",
-                //"-cmp", "epseq:{eps:0.1}"
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex3.4body.json",
+                "-o",
+                "resources/output/OURSout.5.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "nlug"
             ],
             "projectName": "TP-II"
         },
@@ -72,13 +93,16 @@
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex2.3body.json",
-                "-o", "resources/output/OURSout.3.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "nlug",
-                //"-cmp", "epseq:{eps:0.1}"
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex2.3body.json",
+                "-o",
+                "resources/output/OURSout.3.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "nlug"
             ],
             "projectName": "TP-II"
         },
@@ -88,45 +112,54 @@
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex1.2body.json",
-                //"-eo", "resources/output/out.1.json",
-                "-o", "resources/output/OURSout.1.json",
-                "-s", "10000", 
-                "-dt", "10000", 
-                "-fl", "nlug",
-                "-cmp", "epseq:{eps:0.1}"
-                //"-cmp", "epseq:{eps:0}"
+                "-i",
+                "resources/examples/ex1.2body.json",
+                "-o",
+                "resources/output/OURSout.1.json",
+                "-s",
+                "10000",
+                "-dt",
+                "10000",
+                "-fl",
+                "nlug",
+                "-cmp",
+                "epseq:{eps:0.1}"
             ],
             "projectName": "TP-II"
         },
-
-    {
-    "type": "java",
+        {
+            "type": "java",
             "name": "Launch with Arguments for out.8.json with huge eps comp",
             "request": "launch",
             "mainClass": "simulator.launcher.Main",
             "args": [
-                "-i", "resources/examples/ex4.4body.json",
-                "-eo", "resources/output/out.8s.json",
-                "-o", "resources/output/OURSout.1.json",
-                "-s", "10000", 
-                "-fl", "mtfp",
-                "-dt", "2500.0",
-                //"-cmp", "epseq:{eps:0.2}"
-                "-cmp", "epseq:{eps:2e25}"
+                "-i",
+                "resources/examples/ex4.4body.json",
+                "-eo",
+                "resources/output/out.8s.json",
+                "-o",
+                "resources/output/OURSout.1.json",
+                "-s",
+                "10000",
+                "-fl",
+                "mtfp",
+                "-dt",
+                "2500.0",
+                "-cmp",
+                "epseq:{eps:2e25}"
             ],
             "projectName": "TP-II"
         },
-
         {
-        "type": "java",
-        "name": "Launch with Argument HELP",
-        "request": "launch",
-        "mainClass": "simulator.launcher.Main",
-        "args": [
-            "-h", ""
-        ],
-        "projectName": "TP-II"
+            "type": "java",
+            "name": "Launch with Argument HELP",
+            "request": "launch",
+            "mainClass": "simulator.launcher.Main",
+            "args": [
+                "-h",
+                ""
+            ],
+            "projectName": "TP-II"
         },
         {
             "type": "java",
@@ -135,6 +168,5 @@
             "mainClass": "extra.json.UseExample",
             "projectName": "TP-II"
         }
-        
     ]
 }
