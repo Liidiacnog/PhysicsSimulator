@@ -1,14 +1,10 @@
 package simulator.view;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import org.json.JSONObject;
 import simulator.factories.*;
-import simulator.model.ForceLaw;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -46,21 +42,36 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		_items = new JComboBox<String>(names);
 		_items.setSelectedIndex(IntitialItemComboBox);
 		_items.addActionListener(this);
-		updateTableData(names[IntitialItemComboBox]);
+		_table.updateData(info.get(IntitialItemComboBox));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//TODO check origin: combobox OR table (values column only)
-		JComboBox<String> cb = (JComboBox<String>) e.getSource();
-		String name = (String) cb.getSelectedItem();
-		updateTableData(name);
-		// TODO
+		if(e.getSource() == _items){
+			JComboBox<String> cb = (JComboBox<String>) e.getSource();
+			String name = (String) cb.getSelectedItem();
+			_table.updateData(searchNameInInfo(name));
+		}
+		else if(e.getSource() == _table){
+			//TODO
+		}
 	}
 
 	
+	private JSONObject searchNameInInfo(String name) {
+		boolean found = false;
+		int i = 0;
+		while(i < info.size() && !found){
+			if(info.get(i).getString("desc").equals(name))
+				found = true;
+			else		
+				++i;
+		};
+		assert(i < info.size());//name will always be one contained in the JList so it'll be one in the info
+		return info.get(i);
+	}
 
-	
 	private void initGUI() {
 
 		setTitle(_title); // "Force Laws Selection"
@@ -76,9 +87,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
 		// CENTER
-
-		// TODO on selection of a force, update data
-		_table = new SelectionDialogTable(IntitialItemComboBox);
+		_table = new SelectionDialogTable(IntitialItemComboBox, info.get(IntitialItemComboBox));
 		_table.add(new JScrollPane(_table));
 		mainPanel.add(_table, BorderLayout.CENTER);
 

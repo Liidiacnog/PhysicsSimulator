@@ -17,12 +17,6 @@ import java.awt.BorderLayout;
 
 public class BodiesTable extends JPanel {
 
-    /*
-    You need to complete the code to (1) create an instance of BodiesTableModel and pass
-    it to a corresponding JTable; and (2) add the JTable to the panel (this) with a JScrollPane.
-    */
-    
-    
     BodiesTable(Controller ctr) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder(
