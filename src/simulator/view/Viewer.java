@@ -128,9 +128,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
         int x1, int y1, //
         int x2, int y2, //
         int w, int h, //
-        Color lineColor, Color arrowColor) {
-
-        
+        Color lineColor, Color arrowColor)
+    {
         int dx = x2 - x1, dy = y2 - y1;
         double D = Math.sqrt(dx * dx + dy * dy);
         double xm = D - w, xn = xm, ym = h, yn = -h, x;
