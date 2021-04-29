@@ -37,8 +37,9 @@ public class Main {
 	private static int _steps = 0;
 	private static String _inFile = null;
 	private static String _outFile = null;
-	private static String _expectedOutFile = null;
+	private static String _mode = null;
 	private static JSONObject _forceLawsInfo = null;
+	private static String _expectedOutFile = null;
 	private static JSONObject _stateComparatorInfo = null;
 
 	// factories
@@ -88,6 +89,7 @@ public class Main {
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
+			parseModeOption(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -148,6 +150,11 @@ public class Main {
 						+ _stateComparatorDefaultValue + "'.")
 				.build());
 
+		//Program mode
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
+				.desc("Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'batch'")
+				.build()); //TODO method to get possible values?
+
 		return cmdLineOptions;
 	}
 
@@ -199,6 +206,10 @@ public class Main {
 
 	private static void parseOutFileOption(CommandLine line) {
 		_outFile = line.getOptionValue("o");
+	}
+
+	private static void parseModeOption(CommandLine line) {
+		_mode = line.getOptionValue("m");
 	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
@@ -299,11 +310,7 @@ public class Main {
 			}
 		}
 
-		//TODO eliminate after debugging?
-		// c.run(_steps, outChar, expectedOut, comp);
-
-		//doesn't print any output
-		c.run(_steps);
+		c.run(_steps, outChar, expectedOut, comp);
 
 		if (outChar != null)
 			outChar.close();
@@ -311,9 +318,27 @@ public class Main {
 			expectedOut.close();
 	}
 
+	private static void startGUIMode() throws Exception{
+		ForceLaw force = _forceLawsFactory.createInstance(_forceLawsInfo);
+		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
+		Controller c = new Controller(sim, _bodyFactory, _forceLawsFactory);
+
+		try (InputStream inChar = new FileInputStream(_inFile)) {
+			c.loadBodies(inChar);
+		} catch (IOException ioe) {
+			
+		}
+
+		//doesn't print any output
+		c.run(_steps);
+	}
+
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
-		startBatchMode();
+		if (_mode.equalsIgnoreCase("gui"))
+			startGUIMode();
+		else 
+			startBatchMode();
 	}
 
 	public static void main(String[] args) {

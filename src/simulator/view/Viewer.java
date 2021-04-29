@@ -11,6 +11,8 @@ import simulator.control.Controller;
 import simulator.misc.Vector2D;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
+import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class Viewer extends JComponent implements SimulatorObserver {
@@ -28,7 +30,13 @@ public class Viewer extends JComponent implements SimulatorObserver {
     }
 
     private void initGUI() {
-        // TODO add border with title
+        setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.DARK_GRAY, 2), 
+            "Viewer", 
+            TitledBorder.LEFT,
+            TitledBorder.RIGHT
+            )
+        );
 
         _bodies = new ArrayList<>();
         _scale = 1.0;
@@ -124,6 +132,19 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
         // TODO draw a cross at center
         // TODO draw bodies (with vectors if _showVectors is true)
+        // TODO draw help if _showHelp is true
+
+        gr.drawString("+", _centerX, _centerY);
+        for (Body b : _bodies) {
+            int x = _centerX + (int) (b.getPosition().getX()/_scale);
+            int y = _centerY + (int) (b.getPosition().getY()/_scale);
+            gr.drawOval(x, y, 5, 5); //TODO width and height make constant
+            if (_showVectors) {
+                drawLineWithArrow(gr, x, y, (int) b.getVelocity().getX(), (int) b.getVelocity().getY(), 2, 3, Color.GREEN, Color.GREEN);
+                drawLineWithArrow(gr, x, y, (int) b.getForce().getX(), (int) b.getForce().getY(), 2, 3, Color.RED, Color.RED);
+            }
+            
+        }
         // TODO draw help if _showHelp is true
     }
 

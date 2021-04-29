@@ -10,7 +10,7 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
-
+//TODO change to JToolBar
     private Controller _ctrl;
     private boolean _stopped;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
