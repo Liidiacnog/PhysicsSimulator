@@ -18,6 +18,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         ctrl.addObserver(this);
     }
 
+    //for test porpuses
     BodiesTableModel(List<Body> bodies) {
         _bodies = new ArrayList<>(bodies);
     }

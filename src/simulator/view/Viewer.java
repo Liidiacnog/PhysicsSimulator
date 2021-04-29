@@ -109,6 +109,24 @@ public class Viewer extends JComponent implements SimulatorObserver {
         });
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // use ’gr’ to draw not ’g’ --- it gives nicer results
+        Graphics2D gr = (Graphics2D) g;
+        gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // calculate the center
+        _centerX = getWidth() / 2;
+        _centerY = getHeight() / 2;
+
+        // TODO draw a cross at center
+        // TODO draw bodies (with vectors if _showVectors is true)
+        // TODO draw help if _showHelp is true
+    }
+
     private void autoScale() {
         double max = 1.0;
         for (Body b : _bodies) {
@@ -124,12 +142,12 @@ public class Viewer extends JComponent implements SimulatorObserver {
     // The arrow is of height h and width w.
     // The last two arguments are the colors of the arrow and the line
     private void drawLineWithArrow(//
-        Graphics g, //
-        int x1, int y1, //
-        int x2, int y2, //
-        int w, int h, //
-        Color lineColor, Color arrowColor)
-    {
+            Graphics g, //
+            int x1, int y1, //
+            int x2, int y2, //
+            int w, int h, //
+            Color lineColor, Color arrowColor) {
+
         int dx = x2 - x1, dy = y2 - y1;
         double D = Math.sqrt(dx * dx + dy * dy);
         double xm = D - w, xn = xm, ym = h, yn = -h, x;
@@ -150,26 +168,32 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        // TODO Auto-generated method stub
+        _bodies = new ArrayList<>(bodies);
+        autoScale();
+        repaint();
 
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        // TODO Auto-generated method stub
+        _bodies = new ArrayList<>(bodies);
+        autoScale();
+        repaint();
 
     }
 
     @Override
     public void onBodyAdded(List<Body> bodies, Body b) {
-        // TODO Auto-generated method stub
+        _bodies = new ArrayList<>(bodies);
+        autoScale();
+        repaint();
 
     }
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-        // TODO Auto-generated method stub
-
+        _bodies = new ArrayList<>(bodies);
+        repaint();
     }
 
     @Override
