@@ -2,6 +2,8 @@ package simulator.view;
 
 import javax.swing.*;
 import org.json.JSONObject;
+
+import simulator.control.Controller;
 import simulator.factories.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,7 +18,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 	protected int _status;//TODO what for?
 
 	private JComboBox<String> _items;
-	private List<JSONObject> info;
+	private List<JSONObject> _info;
 	private static int IntitialItemComboBox = 0; //by default selection on ComboBox is item nr 0
 
 	private String _title;
@@ -24,25 +26,31 @@ public class SelectionDialog extends JDialog implements ActionListener {
 	
 	private SelectionDialogTable _table;
 
-	public SelectionDialog(JFrame parent, BuilderBasedFactory bBF, String title, String instructions) {
-		super(parent, true); // change true to false for non-modal
-		info = new ArrayList(bBF.getInfo());
-		_title = title;
-		_instructions = instructions;
+	private Controller _ctrl;
+
+	//TODO generalize?
+	//public SelectionDialog(Controller ctrl, String title, String instructions) {
+	public SelectionDialog(Controller ctrl){
+		super(); // change true to false for non-modal TODO ?
+		_info = new ArrayList<>(ctrl.getForceLawsInfo());
+		_title = "Force Laws Selection";
+		_instructions = "Select a force law and provide values for the parameters in the 'Value' column"
+		 				+ "(default values are used for parameters with no user defined value)";
+		_ctrl = ctrl;
 		initGUI();
 	}
 
 	private void setComboBoxNames() {
-		String[] names = new String[info.size()];
+		String[] names = new String[_info.size()];
 		int i = 0;
-		for (JSONObject o : info) {
+		for (JSONObject o : _info) {
 			names[i] = o.getString("desc");
 			++i;
 		}
 		_items = new JComboBox<String>(names);
 		_items.setSelectedIndex(IntitialItemComboBox);
 		_items.addActionListener(this);
-		_table.updateData(info.get(IntitialItemComboBox));
+		_table.updateData(_info.get(IntitialItemComboBox).getJSONObject("data"));
 	}
 
 	@Override
@@ -51,43 +59,45 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		if(e.getSource() == _items){
 			JComboBox<String> cb = (JComboBox<String>) e.getSource();
 			String name = (String) cb.getSelectedItem();
-			_table.updateData(searchNameInInfo(name));
+			JSONObject newSelection = _info.get(searchNameInInfo(name)).getJSONObject("data");
+			_table.updateData(newSelection);
+			/*once selected, change the force laws of the simulator to the chosen one */
+			_ctrl.setForceLaws(newSelection);
 		}
 		else if(e.getSource() == _table){
 			//TODO
+			/*  The user can edit only the “Values” column. You should
+display a corresponding error message (e.g., using JOptionPane.showMessageDialog)
+if the change of force laws did not succeed.*/
 		}
 	}
 
-	
-	private JSONObject searchNameInInfo(String name) {
+	// returns the index which the item with description == name has in the info list
+	private int searchNameInInfo(String name) {
 		boolean found = false;
 		int i = 0;
-		while(i < info.size() && !found){
-			if(info.get(i).getString("desc").equals(name))
+		while(i < _info.size() && !found){
+			if(_info.get(i).getString("desc").equals(name))
 				found = true;
 			else		
 				++i;
 		};
-		assert(i < info.size());//name will always be one contained in the JList so it'll be one in the info
-		return info.get(i);
+		assert(i < _info.size());//name will always be one contained in the JList so it'll be one in the info
+		return i;
 	}
 
 	private void initGUI() {
 
-		setTitle(_title); // "Force Laws Selection"
+		setTitle(_title); 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		// PAGE_START
 		JPanel topPanel = new JPanel();
 		topPanel.add(new JLabel(_instructions));
-		/*
-		 * "Select a force law and provide values for the parameters in the 'Value' column"
-		 * + "(default values are used for parameters with no user defined value)"
-		 */
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
 		// CENTER
-		_table = new SelectionDialogTable(IntitialItemComboBox, info.get(IntitialItemComboBox));
+		_table = new SelectionDialogTable(IntitialItemComboBox, _info.get(IntitialItemComboBox).getJSONObject("data"));
 		_table.add(new JScrollPane(_table));
 		mainPanel.add(_table, BorderLayout.CENTER);
 

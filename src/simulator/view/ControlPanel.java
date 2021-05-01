@@ -15,11 +15,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private boolean _stopped;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
     JFileChooser fc;
+    SelectionDialog _selectionDialog;
 
     ControlPanel(Controller ctrl) {
         _ctrl = ctrl;
         _stopped = true;
         initGUI();
+        _selectionDialog = new SelectionDialog(_ctrl);
         _ctrl.addObserver(this);
     }
 
@@ -52,26 +54,27 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         ldForcesB.setSize(120, 30); // TODO okay?
         ldForcesB.addActionListener((e) -> {
             // (1) open a dialog box and ask the user to select one of the available force laws – see Figure 2;
-            JOptionPane.showOptionDialog();
+            _selectionDialog.setVisible(true);
             
         });
-        /*  and (2) once selected, change the force laws
-of the simulator to the chosen one (using _ctrl.setForceLaws(...)). In order to get
-information on the available force laws you can use _ctrl.getForceLawsInfo(). The
-combo-box should include the list of all available force laws, where the description of
-each is obtained from the value of the key “desc” of the corresponding JSONObject
-that describes the force laws. Once a force law is selected in the combo-box, the
-parameters table should change to include a list of corresponding parameters (the
-keys of the corresponding “data” section) so the use can provide corresponding values:
-the first column is the parameter name, the second is where the user provide values,
-and the this is a description that is taken from the value of the corresponding key
-in the “data” section. The user can edit only the “Values” column. You should
-display a corresponding error message (e.g., using JOptionPane.showMessageDialog)
-if the change of force laws did not succeed.*/
+        
         goB = new JButton("resources/icons/run.png");
-        ;
+        goB.setSize(120, 30); // TODO okay?
+        goB.addActionListener((e) -> {
+            disableAllButtons(stopB);
+            _stopped = false;
+            /* TODO (2) set the current delta-time of the simulator to the
+one specified in the corresponding text field;*/
+            /* TODO (3) call method run_sim with the
+current value of steps as specified in the JSpinner*/
+            run_sim(n);
+
+
+
+        });
+
         stopB = new JButton("resources/icons/stop.png");
-        ;
+        stopB.addActionListener((e)));;
         exitB = new JButton("resources/icons/exit.png");
         exitB.addActionListener((e) -> {
             //TODO : _ctrl.requestExit(); ?
@@ -100,13 +103,19 @@ if the change of force laws did not succeed.*/
     }
 
     private void run_sim(int n) {
+         /* You should complete method run_sim to enable all buttons again once the execution is over. 
+        Note that method
+run_sim as provided above guarantees that the interface will not block, in order to
+understand this behaviour change the body of method run_sim a single instruction
+_ctrl.run(n) — you will not see the intermediate steps, only the final result, and in
+the meantime the interface will be completely blocked. */
         if (n > 0 && !_stopped) {
             try {
                 _ctrl.run(1);
             } catch (Exception e) {
                 // TODO show the error in a dialog box
-                // TODO enable all buttons
                 _stopped = true;
+                enableAllButtons();
                 return;
             }
             SwingUtilities.invokeLater(new Runnable() {
@@ -117,8 +126,28 @@ if the change of force laws did not succeed.*/
             });
         } else {
             _stopped = true;
-            // TODO enable all buttons
+            enableAllButtons();
         }
+    }
+
+    //disables all buttons except b
+    private void disableAllButtons(JButton b){
+        ldBodiesB.disable();
+        ldForcesB.disable();
+        goB.disable(); 
+        stopB.disable(); 
+        exitB.disable();
+
+        if(b != null) //TODO too dirty?
+            b.enable();
+    }
+
+    private void enableAllButtons(){
+        ldBodiesB.enable();
+        ldForcesB.enable();
+        goB.enable(); 
+        stopB.enable(); 
+        exitB.enable();
     }
 
     // SimulatorObserver methods:

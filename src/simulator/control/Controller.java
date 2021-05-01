@@ -146,7 +146,7 @@ public class Controller {
      * indicated in info, and then changes the simulator’s force laws to the new
      * one.
      */
-    public void setForcesLaws(JSONObject info) {
+    public void setForceLaws(JSONObject info) {
         _sim.setForceLaws(_fFL.createInstance(info));
     }
 

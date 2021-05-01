@@ -30,7 +30,7 @@ public class SelectionDialogTable extends JPanel  {
 
 		private int _numCols;
 		private int _numRows;
-		private JSONObject _onDisplay; // JSONObject containing info of the item currently selected on the JCombobox in
+		private JSONObject _dataOnDisplay; // JSONObject containing info of the item currently selected on the JCombobox in
 										// the SelectionDialog
 
 		public ParamsTableModel(int itemIndex, JSONObject onDisplay) {
@@ -42,16 +42,16 @@ public class SelectionDialogTable extends JPanel  {
 		}
 
 		public void update(JSONObject onDisplay) {
-			_onDisplay = onDisplay;
-			for (int row = 1; row < _onDisplay.keySet().size(); row++) {
+			_dataOnDisplay = onDisplay;
+			for (int row = 1; row < _dataOnDisplay.keySet().size(); row++) {
 				int col = 0;
-				data[row][col] = _onDisplay.getString("key");
+				data[row][col] = _dataOnDisplay.getString("key");
 				col++;
-				// value column is initially empty, and has to be filled by the user or we will
+				// value column is initially empty, and has to be filled by the user, otherwise we will
 				// introduce default values for the simulator
 				data[row][col] = "";
 				col++;
-				data[row][col] = _onDisplay.getString("desc");
+				data[row][col] = _dataOnDisplay.getString("desc");
 			}
 			fireTableStructureChanged();
 		}
@@ -82,6 +82,7 @@ public class SelectionDialogTable extends JPanel  {
 			// TODO on change of column VALUES ...
 			
 		}
+		
 		//in charge of managing changes due to new selection of user in combobox
 		public void actionPerformed(JSONObject newOnDisplay) {
 			update(newOnDisplay);
