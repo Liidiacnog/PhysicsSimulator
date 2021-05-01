@@ -13,7 +13,7 @@ import simulator.model.SimulatorObserver;
 public class ControlPanel extends JPanel implements SimulatorObserver {
     private static final double Default_deltaT = 2500.0;
 
-    // TODO change to JToolBar
+    private JToolBar _toolBar;
     
     private Controller _ctrl;
     private PhysicsSimulator _simulator;
@@ -24,7 +24,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     JSpinner _stepsSpinner;
     JTextField _deltaT;
 
-    ControlPanel(Controller ctrl, PhysicsSimulator simulator) {
+    public ControlPanel(Controller ctrl, PhysicsSimulator simulator) {
         _ctrl = ctrl;
         _simulator = simulator;
         _stopped = true;
@@ -36,7 +36,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private void initGUI() {
 
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // TODO okay?
-        this.setVisible(true);
+        
+        _toolBar = new JToolBar();
 
         // TODO build the tool bar by adding buttons, etc.
 
@@ -57,6 +58,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 
             }
         });
+        _toolBar.add(ldBodiesB);
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+        
 
         ldForcesB = new JButton("resources/icons/physics.png");
         ldForcesB.setSize(120, 30); // TODO okay?
@@ -65,6 +69,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             _selectionDialog.setVisible(true);
             
         });
+        _toolBar.add(ldForcesB);
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+        
         
         goB = new JButton("resources/icons/run.png");
         goB.setSize(120, 30); // TODO okay?
@@ -81,49 +88,47 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             /*(3) call method run_sim with the current value of steps as specified in the JSpinner*/
             run_sim((Integer) _stepsSpinner.getValue()); //TODO ok?
         });
+        _toolBar.add(goB);
 
         stopB = new JButton("resources/icons/stop.png");
         stopB.addActionListener( (e) -> _stopped = true  );
+        _toolBar.add(stopB);
+
+
+        //JSpinner for steps:
+
+        _toolBar.add(new JLabel("Steps: "));
+        int currentSteps = 0;                           
+                                                        //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
+        _stepsSpinner = new JSpinner(stepsModel);
+        //l.setLabelFor(spinner);
+         _toolBar.add(_stepsSpinner);
+
+
+        //Make the year be formatted without a thousands separator.
+        //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
+         
+
+        //Delta-Time area using a JTextField.
+        _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
+        _deltaT.setEditable(true);
+        _toolBar.add(new JLabel("Delta-Time: "));
+        _toolBar.add(_deltaT);
+
+
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
 
         exitB = new JButton("resources/icons/exit.png");
         exitB.addActionListener((e) -> {
             //TODO : _ctrl.requestExit(); ?
             System.exit(0); //TODO Ok?
         });
+        _toolBar.add(exitB);
+                
 
-
-        this.add(ldBodiesB);
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-        this.add(ldForcesB);
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-        this.add(goB);
-        this.add(stopB);
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-
-        
-         
-        this.add(new JLabel("Steps: "));
-        int currentSteps = 0;                           
-                                                        //initial value, min, max, step
-        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
-        _stepsSpinner = new JSpinner(stepsModel);
-        //l.setLabelFor(spinner);
-        this.add(_stepsSpinner);
-
-
-        //Make the year be formatted without a thousands separator.
-        _stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
-         
-
-        //Delta-Time area using a JTextField.
-        _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
-        _deltaT.setEditable(true);
-        this.add(new JLabel("Delta-Time: "));
-        this.add(_deltaT);
-
-
-        this.add(new JSeparator(SwingConstants.VERTICAL));
-        this.add(exitB);
+        this.add(_toolBar);
+        this.setVisible(true);
 
         /*
          * TODO All buttons should have tooltips to describe the corresponding operations,
@@ -218,5 +223,4 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         // TODO Auto-generated method stub
 
     }
-
 }

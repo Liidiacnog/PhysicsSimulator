@@ -1,6 +1,8 @@
 package simulator.view;
 
 import simulator.control.Controller;
+import simulator.model.PhysicsSimulator;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JComponent;
@@ -23,7 +25,7 @@ public class MainWindow extends JFrame {
         // TODO complete this method to build the GUI
         // ...
 
-        JPanel controlPanel = new ControlPanel(_ctrl);
+        JPanel controlPanel = new ControlPanel(_ctrl, null); //TODO change
         mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
         JPanel centerPanel = new JPanel();
@@ -39,5 +41,6 @@ public class MainWindow extends JFrame {
 
         this.setVisible(true);
     }
+
 
 }

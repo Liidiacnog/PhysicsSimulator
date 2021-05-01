@@ -15,12 +15,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+
+import javax.swing.SwingUtilities;
+
 import org.json.JSONObject;
 
+//import extra.dialog.ex1.MainWindow;
 import simulator.control.Controller;
 import simulator.control.StateComparator;
 import simulator.factories.*;
 import simulator.model.*;
+import simulator.view.ControlPanel;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -66,7 +72,6 @@ public class Main {
 		comparatorBuider.add(new EpsilonEqualStatesBuilder());
 		comparatorBuider.add(new MassEqualStatesBuilder());
 		_stateComparatorFactory = new BuilderBasedFactory<>(comparatorBuider);
-
 	}
 
 	private static void parseArgs(String[] args) {
@@ -330,7 +335,7 @@ public class Main {
 		}
 
 		//doesn't print any output
-		c.run(_steps);
+		c.run(_steps);  
 	}
 
 	private static void start(String[] args) throws Exception {
@@ -341,7 +346,7 @@ public class Main {
 			startBatchMode();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) { 
 		try {
 			init();
 			start(args);
@@ -351,4 +356,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
+
 }
