@@ -7,18 +7,26 @@ import java.util.List;
 import javax.swing.*;
 import simulator.control.Controller;
 import simulator.model.Body;
+import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
-//TODO change to JToolBar
+    private static final double Default_deltaT = 2500.0;
+
+    // TODO change to JToolBar
+    
     private Controller _ctrl;
+    private PhysicsSimulator _simulator;
     private boolean _stopped;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
     JFileChooser fc;
     SelectionDialog _selectionDialog;
+    JSpinner _stepsSpinner;
+    JTextField _deltaT;
 
-    ControlPanel(Controller ctrl) {
+    ControlPanel(Controller ctrl, PhysicsSimulator simulator) {
         _ctrl = ctrl;
+        _simulator = simulator;
         _stopped = true;
         initGUI();
         _selectionDialog = new SelectionDialog(_ctrl);
@@ -63,18 +71,20 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         goB.addActionListener((e) -> {
             disableAllButtons(stopB);
             _stopped = false;
-            /* TODO (2) set the current delta-time of the simulator to the
-one specified in the corresponding text field;*/
-            /* TODO (3) call method run_sim with the
-current value of steps as specified in the JSpinner*/
-            run_sim(n);
-
-
-
+            /* (2) set the current delta-time of the simulator to the one specified in the corresponding text field;*/
+            try{
+                _simulator.setDeltaTime(Double.parseDouble(_deltaT.getText()));
+            }catch(NullPointerException ex){
+                _simulator.setDeltaTime(Default_deltaT);
+            }
+            
+            /*(3) call method run_sim with the current value of steps as specified in the JSpinner*/
+            run_sim((Integer) _stepsSpinner.getValue()); //TODO ok?
         });
 
         stopB = new JButton("resources/icons/stop.png");
-        stopB.addActionListener((e)));;
+        stopB.addActionListener( (e) -> _stopped = true  );
+
         exitB = new JButton("resources/icons/exit.png");
         exitB.addActionListener((e) -> {
             //TODO : _ctrl.requestExit(); ?
@@ -90,25 +100,46 @@ current value of steps as specified in the JSpinner*/
         this.add(stopB);
         this.add(new JSeparator(SwingConstants.VERTICAL));
 
-        // TODO add steps and delta time
+        
+         
+        this.add(new JLabel("Steps: "));
+        int currentSteps = 0;                           
+                                                        //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
+        _stepsSpinner = new JSpinner(stepsModel);
+        //l.setLabelFor(spinner);
+        this.add(_stepsSpinner);
+
+
+        //Make the year be formatted without a thousands separator.
+        _stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
+         
+
+        //Delta-Time area using a JTextField.
+        _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
+        _deltaT.setEditable(true);
+        this.add(new JLabel("Delta-Time: "));
+        this.add(_deltaT);
+
 
         this.add(new JSeparator(SwingConstants.VERTICAL));
         this.add(exitB);
 
         /*
-         * For the steps selector use a JSpinner and for the Delta-Time area use a JTextField.
          * TODO All buttons should have tooltips to describe the corresponding operations,
          */
 
     }
 
     private void run_sim(int n) {
-         /* You should complete method run_sim to enable all buttons again once the execution is over. 
-        Note that method
-run_sim as provided above guarantees that the interface will not block, in order to
-understand this behaviour change the body of method run_sim a single instruction
-_ctrl.run(n) — you will not see the intermediate steps, only the final result, and in
-the meantime the interface will be completely blocked. */
+        /*
+         * You should complete method run_sim to enable all buttons again once the
+         * execution is over. Note that method run_sim as provided above guarantees that
+         * the interface will not block, in order to understand this behaviour change
+         * the body of method run_sim a single instruction _ctrl.run(n) — you will not
+         * see the intermediate steps, only the final result, and in the meantime the
+         * interface will be completely blocked.
+         */
         if (n > 0 && !_stopped) {
             try {
                 _ctrl.run(1);
@@ -130,23 +161,23 @@ the meantime the interface will be completely blocked. */
         }
     }
 
-    //disables all buttons except b
-    private void disableAllButtons(JButton b){
+    // disables all buttons except b
+    private void disableAllButtons(JButton b) {
         ldBodiesB.disable();
         ldForcesB.disable();
-        goB.disable(); 
-        stopB.disable(); 
+        goB.disable();
+        stopB.disable();
         exitB.disable();
 
-        if(b != null) //TODO too dirty?
+        if (b != null) // TODO too dirty?
             b.enable();
     }
 
-    private void enableAllButtons(){
+    private void enableAllButtons() {
         ldBodiesB.enable();
         ldForcesB.enable();
-        goB.enable(); 
-        stopB.enable(); 
+        goB.enable();
+        stopB.enable();
         exitB.enable();
     }
 
