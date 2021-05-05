@@ -25,6 +25,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     JSpinner _stepsSpinner;
     JTextField _deltaT;
 
+/*TODO In addition, catch all exceptions thrown by the controller/simulator and show a corresponding
+message using a dialog box (e.g., using JOptionPane.showMessageDialog). In the
+observer methods modify the value of delta-time in the corresponding JTextField when
+needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
+
     public ControlPanel(Controller ctrl, PhysicsSimulator simulator) {
         _ctrl = ctrl;
         _simulator = simulator;
@@ -64,9 +69,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
             ldForcesB.setPreferredSize(new Dimension(50, 50)); 
             ldForcesB.addActionListener((e) -> {
-                // (1) open a dialog box and ask the user to select one of the available force laws – see Figure 2;
-                _selectionDialog.setVisible(true);
-                
+                // (1) open a dialog box and ask the user to select one of the available force laws;
+                _selectionDialog.open();       
             });
             ldForcesB.setToolTipText("Select one of the available force laws"); 
             _toolBar.add(ldForcesB);
@@ -106,7 +110,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
             _toolBar.add(stepsLabel);
             int currentSteps = 0;                           
-                                                            //initial value, min, max, step
+                                                        //initial value, min, max, step
             SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
             _stepsSpinner = new JSpinner(stepsModel);
             _stepsSpinner.setPreferredSize(new Dimension(80, 30)); 
@@ -133,7 +137,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
             exitB.setPreferredSize(new Dimension(50, 50)); 
             exitB.addActionListener((e) -> {
-                //TODO : _ctrl.requestExit(); ?
+                //TODO ask for the user’s confirmation and then exit using System.exit(0)
+                //: _ctrl.requestExit(); ?
                 System.exit(0); //TODO Ok?
             });
             exitB.setToolTipText("Exit the simulator");

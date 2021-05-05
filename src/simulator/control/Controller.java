@@ -13,11 +13,9 @@ import simulator.model.Body;
 import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
-import simulator.view.MainWindow;
-
 import java.util.List;
 
-import javax.swing.SwingUtilities;
+
 
 public class Controller {
 
