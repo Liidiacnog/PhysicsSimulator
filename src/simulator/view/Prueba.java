@@ -1,14 +1,13 @@
 package simulator.view;
 
 
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.*;
 import simulator.control.Controller;
 import simulator.model.Body;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
-
-
 
 
 public class Prueba extends JPanel implements SimulatorObserver {
@@ -36,60 +35,65 @@ public class Prueba extends JPanel implements SimulatorObserver {
     
         private void initGUI() {
     
-            this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS)); // TODO okay?
+            _toolBar = new JToolBar(); //TODO make it resizable
             
-            _toolBar = new JToolBar();
-    
-            // TODO build the tool bar by adding buttons, etc.
-    
-            ldBodiesB = new JButton("resources/icons/open.png");
-            ldBodiesB.setSize(120, 30); // TODO okay?
+            ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
+            ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
             ldBodiesB.addActionListener((e) -> {
                 // (1) ask the user to select a file using a JFileChooser
                 fc = new JFileChooser();
-                if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //TODO okay? see recording 07/04 part 2 : min 44
+                if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //TODO see recording 07/04 part 2 : min 44
                                        
                 }
             });
+            ldBodiesB.setToolTipText("Load a bodies json file");
             _toolBar.add(ldBodiesB);
+            
+            
             _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
             
     
-            ldForcesB = new JButton("resources/icons/physics.png");
-            ldForcesB.setSize(120, 30); // TODO okay?
+            ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
+            ldForcesB.setPreferredSize(new Dimension(50, 50)); 
             ldForcesB.addActionListener((e) -> {
                 // (1) open a dialog box and ask the user to select one of the available force laws – see Figure 2;
                 //_selectionDialog.setVisible(true);
                 
             });
+            ldForcesB.setToolTipText("Select one of the available force laws"); 
             _toolBar.add(ldForcesB);
+            
+            
             _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
             
             
-            goB = new JButton("resources/icons/run.png");
-            goB.setSize(120, 30); // TODO okay?
+            goB = new JButton(new ImageIcon("resources/icons/run.png"));
+            goB.setPreferredSize(new Dimension(50, 50)); 
             goB.addActionListener((e) -> {
                 disableAllButtons(stopB);
                 _stopped = false;
-                
-                
             });
+            goB.setToolTipText("Start the simulation"); 
             _toolBar.add(goB);
     
-            stopB = new JButton("resources/icons/stop.png");
+            stopB = new JButton(new ImageIcon("resources/icons/stop.png"));
             stopB.addActionListener( (e) -> _stopped = true  );
+            stopB.setToolTipText("Stop the simulation"); 
+            stopB.setPreferredSize(new Dimension(50, 50));
             _toolBar.add(stopB);
     
     
             //JSpinner for steps:
     
-            _toolBar.add(new JLabel("Steps: "));
+            JLabel stepsLabel = new JLabel("Steps: ");
+            stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar
+            _toolBar.add(stepsLabel);
             int currentSteps = 0;                           
                                                             //initial value, min, max, step
             SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
             _stepsSpinner = new JSpinner(stepsModel);
-            //l.setLabelFor(spinner);
-             _toolBar.add(_stepsSpinner);
+            _stepsSpinner.setPreferredSize(new Dimension(80, 30)); 
+            _toolBar.add(_stepsSpinner);
     
     
             //Make the year be formatted without a thousands separator.
@@ -99,26 +103,28 @@ public class Prueba extends JPanel implements SimulatorObserver {
             //Delta-Time area using a JTextField.
             _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
             _deltaT.setEditable(true);
-            _toolBar.add(new JLabel("Delta-Time: "));
+            _deltaT.setPreferredSize(new Dimension(80, 30));
+            JLabel dtLabel = new JLabel("Delta-Time: ");
+            stepsLabel.setLabelFor(_deltaT); //TODO consultar
+            _toolBar.add(dtLabel);
             _toolBar.add(_deltaT);
     
     
             _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
     
-            exitB = new JButton("resources/icons/exit.png");
+            
+            exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
+            exitB.setPreferredSize(new Dimension(50, 50)); 
             exitB.addActionListener((e) -> {
                 //TODO : _ctrl.requestExit(); ?
                 System.exit(0); //TODO Ok?
             });
+            exitB.setToolTipText("Exit the simulator");
             _toolBar.add(exitB);
                     
     
             this.add(_toolBar);
             this.setVisible(true);
-    
-            /*
-             * TODO All buttons should have tooltips to describe the corresponding operations,
-             */
     
         }
     

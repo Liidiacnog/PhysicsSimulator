@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Prueba",
+            "request": "launch",
+            "mainClass": "simulator.view.Prueba",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
             "name": "Launch BodiesTable",
             "request": "launch",
             "mainClass": "simulator.view.BodiesTable",
@@ -28,7 +35,7 @@
                 "-fl",
                 "nlug",
                 "-m",
-                "gui",
+                "gui"
             ],
             "projectName": "TP-II"
         },
