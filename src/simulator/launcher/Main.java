@@ -25,7 +25,6 @@ import simulator.control.Controller;
 import simulator.control.StateComparator;
 import simulator.factories.*;
 import simulator.model.*;
-import simulator.view.ControlPanel;
 import simulator.view.MainWindow;
 
 public class Main {
@@ -333,6 +332,13 @@ public class Main {
 		} catch (IOException ioe) {
 			
 		}
+
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+			new MainWindow(c);
+			}
+		});
 
 		//doesn't print any output
 		c.run(_steps);  
