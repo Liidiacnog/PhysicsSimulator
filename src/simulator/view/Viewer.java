@@ -141,8 +141,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
             gr.setColor(Color.BLUE);
             gr.fillOval(x, y, 8, 8); //TODO width and height make constant
             if (_showVectors) {
-                drawLineWithArrow(gr, x, y, (int) b.getVelocity().getX(), (int) b.getVelocity().getY(), 2, 3, Color.GREEN, Color.GREEN);
-                drawLineWithArrow(gr, x, y, (int) b.getForce().getX(), (int) b.getForce().getY(), 2, 3, Color.RED, Color.RED);
+                // drawLineWithArrow(gr, x, y, (int) b.getVelocity().getX(), (int) b.getVelocity().getY(), 2, 3, Color.GREEN, Color.GREEN);
+                // drawLineWithArrow(gr, x, y, (int) b.getForce().getX(), (int) b.getForce().getY(), 2, 3, Color.RED, Color.RED);
             }
             
         }

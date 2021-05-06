@@ -187,7 +187,7 @@ public class Prueba extends JPanel implements SimulatorObserver {
     
         }
 
-    //TODO remove:
+
     public static void main(String[] args){
 
 

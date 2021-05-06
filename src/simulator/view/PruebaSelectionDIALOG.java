@@ -11,7 +11,7 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SelectionDialog extends JDialog implements ActionListener {
+public class PruebaSelectionDIALOG extends JDialog implements ActionListener {
 
 	protected int _status;//TODO what for?
 
@@ -30,7 +30,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 
 	//TODO generalize?
 	//public SelectionDialog(Controller ctrl, String title, String instructions) {
-	public SelectionDialog(Controller ctrl){
+	public PruebaSelectionDIALOG(Controller ctrl){
 		// TODO right now it is non-modal bc it extends JDialog directly, change? 
 		_info = new ArrayList<>(ctrl.getForceLawsInfo()); 
 		//TODO best way to generalize is passing a factory instead of the controller nd then having to call fLaws.info or bodies.info()
@@ -122,7 +122,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 			// create the new force law
 			newSelection.put("data", _table.getData());
 			/* once selected, change the force laws of the simulator to the chosen one */
-			_ctrl.setForceLaws(newSelection);
+			//_ctrl.setForceLaws(newSelection);
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
@@ -148,4 +148,28 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		return _status; //TODO ?
 	}
 
+
+ 
+    public static void main(String[] args){
+
+
+        //SwingUtilities.invokeLater(new Runnable() {
+            //public void run() {
+                JFrame f = new JFrame();
+
+                PruebaSelectionDIALOG m = new PruebaSelectionDIALOG(null);
+
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                f.setSize(400, 400);
+                f.setContentPane(m);
+                f.setVisible(true);
+                
+         //   }
+        //});
+    }
+
+
 }
+
+
+

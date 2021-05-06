@@ -8,23 +8,21 @@ import javax.swing.JPanel;
 import javax.swing.JComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import javax.swing.BoxLayout;
 
 public class MainWindow extends JFrame {
 
     private Controller _ctrl;
+    private PhysicsSimulator _sim;
 
-    public MainWindow(Controller ctrl) {
+    public MainWindow(Controller ctrl, PhysicsSimulator simulator) {
         super("Physics Simulator");
+        _sim = simulator;
         _ctrl = ctrl;
         initGUI();
     }
 
     private void initGUI() {
-
-        // TODO complete this method to build the GUI
-        // ...
 
         this.setSize(800, 650);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,8 +30,8 @@ public class MainWindow extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
-        //JPanel controlPanel = new ControlPanel(_ctrl, null); //TODO change
-        //mainPanel.add(controlPanel, BorderLayout.PAGE_START);
+        JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
+        mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
         JPanel centerPanel = new JPanel();
         JPanel bodiesTable = new BodiesTable(_ctrl);

@@ -21,7 +21,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private boolean _stopped;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
     JFileChooser fc;
-    SelectionDialog _selectionDialog;
+    SelectionDialog _selectionDialog; //TODO change to JDialog? then there is no open()
     JSpinner _stepsSpinner;
     JTextField _deltaT;
 
@@ -30,123 +30,123 @@ message using a dialog box (e.g., using JOptionPane.showMessageDialog). In the
 observer methods modify the value of delta-time in the corresponding JTextField when
 needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
 
-    public ControlPanel(Controller ctrl, PhysicsSimulator simulator) {
+    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator) {
         _ctrl = ctrl;
         _simulator = simulator;
         _stopped = true;
-        initGUI();
-        _selectionDialog = new SelectionDialog(_ctrl);
+        _selectionDialog = new SelectionDialog(_ctrl); //TODO pass it simulator
         _ctrl.addObserver(this);
+        initGUI();
     }
 
     private void initGUI() {
 
         _toolBar = new JToolBar(); //TODO make it resizable
             
-            ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
-            ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
-            ldBodiesB.addActionListener((e) -> {
-                // (1) ask the user to select a file using a JFileChooser
-                fc = new JFileChooser();
-                if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //TODO see recording 07/04 part 2 : min 44
-                    // (2) reset the simulator
-                    _ctrl.reset();
-                    // (3) load the selected file into the simulator
-                    try (InputStream inChar = new FileInputStream(fc.getSelectedFile().getName())) { //TODO is "try" necessary?
-                        _ctrl.loadBodies(inChar);
-                    } catch (IOException ioe) {
-                        throw new IllegalArgumentException("Input file could not be opened"); // TODO okay?
-                    }
+        ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
+        ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
+        ldBodiesB.addActionListener((e) -> {
+            // (1) ask the user to select a file using a JFileChooser
+            fc = new JFileChooser();
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //TODO see recording 07/04 part 2 : min 44
+                // (2) reset the simulator
+                _ctrl.reset();
+                // (3) load the selected file into the simulator
+                try (InputStream inChar = new FileInputStream(fc.getSelectedFile().getName())) { //TODO is "try" necessary?
+                    _ctrl.loadBodies(inChar);
+                } catch (IOException ioe) {
+                    throw new IllegalArgumentException("Input file could not be opened"); // TODO okay?
                 }
-            } );
-            ldBodiesB.setToolTipText("Load a bodies json file");
-            _toolBar.add(ldBodiesB);
+            }
+        } );
+        ldBodiesB.setToolTipText("Load a bodies json file");
+        _toolBar.add(ldBodiesB);
             
             
-            _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+        
+
+        ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
+        ldForcesB.setPreferredSize(new Dimension(50, 50)); 
+        ldForcesB.addActionListener((e) -> {
+            // (1) open a dialog box and ask the user to select one of the available force laws;
+            _selectionDialog.open();       
+        });
+        ldForcesB.setToolTipText("Select one of the available force laws"); 
+        _toolBar.add(ldForcesB);
+        
+        
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
             
-    
-            ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
-            ldForcesB.setPreferredSize(new Dimension(50, 50)); 
-            ldForcesB.addActionListener((e) -> {
-                // (1) open a dialog box and ask the user to select one of the available force laws;
-                _selectionDialog.open();       
-            });
-            ldForcesB.setToolTipText("Select one of the available force laws"); 
-            _toolBar.add(ldForcesB);
             
+        goB = new JButton(new ImageIcon("resources/icons/run.png"));
+        goB.setPreferredSize(new Dimension(50, 50)); 
+        goB.addActionListener((e) -> {
+            disableAllButtons(stopB);
+            _stopped = false;
+            /* (2) set the current delta-time of the simulator to the one specified in the corresponding text field;*/
+            try{
+                _simulator.setDeltaTime(Double.parseDouble(_deltaT.getText()));
+            }catch(NullPointerException ex){
+                _simulator.setDeltaTime(Default_deltaT);
+            }
             
-            _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
-            
-            
-            goB = new JButton(new ImageIcon("resources/icons/run.png"));
-            goB.setPreferredSize(new Dimension(50, 50)); 
-            goB.addActionListener((e) -> {
-                disableAllButtons(stopB);
-                _stopped = false;
-                /* (2) set the current delta-time of the simulator to the one specified in the corresponding text field;*/
-                try{
-                    _simulator.setDeltaTime(Double.parseDouble(_deltaT.getText()));
-                }catch(NullPointerException ex){
-                    _simulator.setDeltaTime(Default_deltaT);
-                }
-                
-                /*(3) call method run_sim with the current value of steps as specified in the JSpinner*/
-                run_sim((Integer) _stepsSpinner.getValue()); //TODO ok?
-            });
-            goB.setToolTipText("Start the simulation"); 
-            _toolBar.add(goB);
-    
-            stopB = new JButton(new ImageIcon("resources/icons/stop.png"));
-            stopB.addActionListener( (e) -> _stopped = true  );
-            stopB.setToolTipText("Stop the simulation"); 
-            stopB.setPreferredSize(new Dimension(50, 50));
-            _toolBar.add(stopB);
+            /*(3) call method run_sim with the current value of steps as specified in the JSpinner*/
+            run_sim((Integer) _stepsSpinner.getValue()); //TODO ok?
+        });
+        goB.setToolTipText("Start the simulation"); 
+        _toolBar.add(goB);
+
+        stopB = new JButton(new ImageIcon("resources/icons/stop.png"));
+        stopB.addActionListener( (e) -> _stopped = true  );
+        stopB.setToolTipText("Stop the simulation"); 
+        stopB.setPreferredSize(new Dimension(50, 50));
+        _toolBar.add(stopB);
     
     
             //JSpinner for steps:
     
-            JLabel stepsLabel = new JLabel("Steps: ");
-            stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
-            _toolBar.add(stepsLabel);
-            int currentSteps = 0;                           
-                                                        //initial value, min, max, step
-            SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
-            _stepsSpinner = new JSpinner(stepsModel);
-            _stepsSpinner.setPreferredSize(new Dimension(80, 30)); 
-            _toolBar.add(_stepsSpinner);
+        JLabel stepsLabel = new JLabel("Steps: ");
+        stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
+        _toolBar.add(stepsLabel);
+        int currentSteps = 0;                           
+                                                    //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
+        _stepsSpinner = new JSpinner(stepsModel);
+        _stepsSpinner.setPreferredSize(new Dimension(80, 30)); 
+        _toolBar.add(_stepsSpinner);
     
     
-            //Make the year be formatted without a thousands separator.
-            //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
-             
-    
-            //Delta-Time area using a JTextField.
-            _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
-            _deltaT.setEditable(true);
-            _deltaT.setPreferredSize(new Dimension(80, 30));
-            JLabel dtLabel = new JLabel("Delta-Time: ");
-            stepsLabel.setLabelFor(_deltaT); //TODO consultar
-            _toolBar.add(dtLabel);
-            _toolBar.add(_deltaT);
-    
-    
-            _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
-    
+        //Make the year be formatted without a thousands separator.
+        //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
             
-            exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
-            exitB.setPreferredSize(new Dimension(50, 50)); 
-            exitB.addActionListener((e) -> {
-                //TODO ask for the user’s confirmation and then exit using System.exit(0)
-                //: _ctrl.requestExit(); ?
-                System.exit(0); //TODO Ok?
-            });
-            exitB.setToolTipText("Exit the simulator");
-            _toolBar.add(exitB);
-                    
     
-            this.add(_toolBar);
-            this.setVisible(true);
+        //Delta-Time area using a JTextField.
+        _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
+        _deltaT.setEditable(true);
+        _deltaT.setPreferredSize(new Dimension(80, 30));
+        JLabel dtLabel = new JLabel("Delta-Time: ");
+        stepsLabel.setLabelFor(_deltaT); //TODO consultar
+        _toolBar.add(dtLabel);
+        _toolBar.add(_deltaT);
+
+
+        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+
+        
+        exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
+        exitB.setPreferredSize(new Dimension(50, 50)); 
+        exitB.addActionListener((e) -> {
+            //TODO ask for the user’s confirmation and then exit using System.exit(0)
+            //: _ctrl.requestExit(); ?
+            System.exit(0); //TODO Ok?
+        });
+        exitB.setToolTipText("Exit the simulator");
+        _toolBar.add(exitB);
+                
+
+        this.add(_toolBar);
+        this.setVisible(true);
     }
 
     private void run_sim(int n) {
