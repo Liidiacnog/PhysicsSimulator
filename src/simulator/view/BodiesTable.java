@@ -18,7 +18,6 @@ import java.awt.BorderLayout;
 public class BodiesTable extends JPanel {
 
     BodiesTable(Controller ctr) {
-        setLayout(new BorderLayout());
         setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.DARK_GRAY, 2), 
             "Bodies", 
@@ -26,8 +25,8 @@ public class BodiesTable extends JPanel {
             TitledBorder.RIGHT
             )
         );
-        JTable table = new JTable(new BodiesTableModel(ctr));
-        JScrollPane scrollPane = new JScrollPane(table);
+        setLayout(new BorderLayout());
+        JScrollPane scrollPane = new JScrollPane(new JTable(new BodiesTableModel(ctr)));
         this.add(scrollPane);
     }
 

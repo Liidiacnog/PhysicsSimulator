@@ -24,27 +24,31 @@ public class MainWindow extends JFrame {
 
     private void initGUI() {
 
-        this.setSize(800, 650);
+        //this.setPreferredSize(new Dimension(900, 650));
+        this.setSize(900, 650);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
-        JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
-        mainPanel.add(controlPanel, BorderLayout.PAGE_START);
+        // JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
+        // mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
         JPanel centerPanel = new JPanel();
         JPanel bodiesTable = new BodiesTable(_ctrl);
-        bodiesTable.setPreferredSize(new Dimension(800, 200));
+        bodiesTable.setPreferredSize(new Dimension(900, 200));
         JComponent viewer = new Viewer(_ctrl);
-        viewer.setPreferredSize(new Dimension(800, 450));
+        viewer.setPreferredSize(new Dimension(900, 450));
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.add(bodiesTable);
         centerPanel.add(viewer);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
+        JPanel statusBar = new StatusBar(_ctrl);
+        statusBar.setPreferredSize(new Dimension(900, 30));
+        mainPanel.add(statusBar, BorderLayout.PAGE_END);
+
         //TODO check sizes (you can use method setPreferredSize)
-        //TODO add status bar
 
         this.setVisible(true);
     }

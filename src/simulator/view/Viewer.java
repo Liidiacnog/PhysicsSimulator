@@ -135,14 +135,21 @@ public class Viewer extends JComponent implements SimulatorObserver {
         // TODO draw help if _showHelp is true
 
         gr.drawString("+", _centerX, _centerY);
+        int radius = 4;
         for (Body b : _bodies) {
             int x = _centerX + (int) (b.getPosition().getX()/_scale);
             int y = _centerY + (int) (b.getPosition().getY()/_scale);
             gr.setColor(Color.BLUE);
-            gr.fillOval(x, y, 8, 8); //TODO width and height make constant
+            gr.fillOval(x, y, 2*radius, 2*radius);
             if (_showVectors) {
-                // drawLineWithArrow(gr, x, y, (int) b.getVelocity().getX(), (int) b.getVelocity().getY(), 2, 3, Color.GREEN, Color.GREEN);
-                // drawLineWithArrow(gr, x, y, (int) b.getForce().getX(), (int) b.getForce().getY(), 2, 3, Color.RED, Color.RED);
+                x += radius;
+                y += radius;
+                int x1 = (int) b.getVelocity().direction().scale(15).getX() + x;
+                int y1 = (int) b.getVelocity().direction().scale(15).getY() + y;
+                drawLineWithArrow(gr, x, y, x1, y1, 2, 2, Color.GREEN, Color.GREEN);
+                x1 = (int) b.getForce().direction().scale(15).getX() + x;
+                y1 = (int) b.getForce().direction().scale(15).getY() + y;
+                drawLineWithArrow(gr, x, y, x1, y1, 2, 3, Color.RED, Color.RED);
             }
             
         }
