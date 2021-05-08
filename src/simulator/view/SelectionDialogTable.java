@@ -8,6 +8,9 @@ import javax.swing.table.AbstractTableModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import simulator.misc.Vector2D;
+
 import java.awt.BorderLayout;
 
 public class SelectionDialogTable extends JPanel  {
@@ -69,13 +72,16 @@ public class SelectionDialogTable extends JPanel  {
 		public JSONObject getData() {
 			JSONObject data = new JSONObject();
 
-			if (_type != "mlsb") {
+			if (_type != "mtfp") {
 				for (int i = 0; i < _numRows; i++) {
 					data.put((String) getValueAt(i, 0), Double.parseDouble(((String) getValueAt(i, 1))));
 				}
 			} else {
-				String[] c = ((String) getValueAt(0, 1)).split(",");
-				data.put((String) getValueAt(0, 0), ""); //TODO terminar
+				String[] c = ((String) getValueAt(0, 1)).trim().split(",");
+				Double x = Double.parseDouble(c[0]);
+				Double y = Double.parseDouble(c[1].trim());
+				data.put((String) getValueAt(0, 0), (new Vector2D(x, y)).asJSONArray());
+				data.put("g", Double.parseDouble(((String) getValueAt(1, 1)))); //TODO da error pero tengo sueño
 			}
 			
 
@@ -100,7 +106,7 @@ public class SelectionDialogTable extends JPanel  {
 		public void update(JSONObject onDisplay) {
 			_dataOnDisplay = onDisplay.getJSONObject("data");
 			_type = onDisplay.getString("type");
-			_numRows = onDisplay.keySet().size();
+			_numRows = _dataOnDisplay.keySet().size();
 			_data = new String[_numRows][_numCols];
 			getTableContents(_data);
 			fireTableStructureChanged();

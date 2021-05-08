@@ -59,7 +59,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 				_table.updateData(newSelection);
 			}
 		);
-		_table.updateData(_info.get(IntitialItemCBox).getJSONObject("data")); //display current selection (default one) in the table
+		//_table.updateData(_info.get(IntitialItemCBox).getJSONObject("data")); //display current selection (default one) in the table
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 
 		//table:
-		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox).getJSONObject("data"));
+		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox));
 		//_table.add(new JScrollPane(_table)); //TODO así es como estaba pero da error
 		JScrollPane scrollTable = new JScrollPane(_table); //TODO set size
 		scrollTable.setPreferredSize(new Dimension(300, 250));
