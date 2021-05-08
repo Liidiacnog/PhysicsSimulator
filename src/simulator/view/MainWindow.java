@@ -24,15 +24,14 @@ public class MainWindow extends JFrame {
 
     private void initGUI() {
 
-        //this.setPreferredSize(new Dimension(900, 650));
-        this.setSize(900, 650);
+        this.setSize(900, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
-        // JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
-        // mainPanel.add(controlPanel, BorderLayout.PAGE_START);
+        JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
+        mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
         JPanel centerPanel = new JPanel();
         JPanel bodiesTable = new BodiesTable(_ctrl);

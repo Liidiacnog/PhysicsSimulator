@@ -336,12 +336,9 @@ public class Main {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-			new MainWindow(c, sim);
+				new MainWindow(c, sim);
 			}
-		});
-
-		//doesn't print any output
-		c.run(_steps);  
+		}); 
 	}
 
 	private static void start(String[] args) throws Exception {

@@ -31,10 +31,8 @@ public abstract class Builder<T> {
     }
 
     //default behaviour,  to be overwritten by some subclasses
-    protected JSONObject getData(){
-        JSONObject o = new JSONObject();
-        o.put("data", new JSONObject()); //equivalent to "data{}" (no data required)
-        return o;
+    protected JSONObject getData(){ //equivalent to "data{}" (no data required)
+        return new JSONObject();
     }
 
     protected abstract T createNewT(JSONObject info) throws IllegalArgumentException;

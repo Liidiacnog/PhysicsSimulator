@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+
 import simulator.control.Controller;
 import simulator.misc.Vector2D;
 import simulator.model.Body;
@@ -23,6 +25,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
     private List<Body> _bodies;
     private boolean _showHelp;
     private boolean _showVectors;
+    private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
 
     Viewer(Controller ctrl) {
         initGUI();
@@ -130,10 +133,6 @@ public class Viewer extends JComponent implements SimulatorObserver {
         _centerX = getWidth() / 2;
         _centerY = getHeight() / 2;
 
-        // TODO draw a cross at center
-        // TODO draw bodies (with vectors if _showVectors is true)
-        // TODO draw help if _showHelp is true
-
         gr.drawString("+", _centerX, _centerY);
         int radius = 4;
         for (Body b : _bodies) {
@@ -151,9 +150,14 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 y1 = (int) b.getForce().direction().scale(15).getY() + y;
                 drawLineWithArrow(gr, x, y, x1, y1, 2, 3, Color.RED, Color.RED);
             }
+            if (_showHelp) {
+                String help = "Scaling ratio: " + _scale;
+                gr.setColor(Color.RED);
+                gr.drawString(_helpMsg, 8, 32);
+                gr.drawString(help, 8, 47);
+            }
             
         }
-        // TODO draw help if _showHelp is true
     }
 
     private void autoScale() {

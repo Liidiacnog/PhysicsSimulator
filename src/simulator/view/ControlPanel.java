@@ -13,6 +13,7 @@ import simulator.model.SimulatorObserver;
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
     private static final double Default_deltaT = 2500.0;
+    private static final int Default_steps = 10000;
 
     private JToolBar _toolBar;
     
@@ -33,7 +34,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
     public ControlPanel(Controller ctrl,  PhysicsSimulator simulator) {
         _ctrl = ctrl;
         _simulator = simulator;
-        _stopped = true;
+        _stopped = false;
         _selectionDialog = new SelectionDialog(_ctrl); //TODO pass it simulator
         _ctrl.addObserver(this);
         initGUI();
@@ -42,7 +43,8 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
     private void initGUI() {
 
         _toolBar = new JToolBar(); //TODO make it resizable
-            
+        
+        //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
         ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
         ldBodiesB.addActionListener((e) -> {
@@ -52,7 +54,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
                 // (2) reset the simulator
                 _ctrl.reset();
                 // (3) load the selected file into the simulator
-                try (InputStream inChar = new FileInputStream(fc.getSelectedFile().getName())) { //TODO is "try" necessary?
+                try (InputStream inChar = new FileInputStream(fc.getSelectedFile().toPath().toString())) { //TODO is "try" necessary?
                     _ctrl.loadBodies(inChar);
                 } catch (IOException ioe) {
                     throw new IllegalArgumentException("Input file could not be opened"); // TODO okay?
@@ -62,23 +64,21 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         ldBodiesB.setToolTipText("Load a bodies json file");
         _toolBar.add(ldBodiesB);
             
-            
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
         
-
+        //Change force button
         ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
         ldForcesB.setPreferredSize(new Dimension(50, 50)); 
         ldForcesB.addActionListener((e) -> {
             // (1) open a dialog box and ask the user to select one of the available force laws;
-            _selectionDialog.open();       
+            _selectionDialog.open();    
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
         _toolBar.add(ldForcesB);
         
-        
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
             
-            
+        //start button
         goB = new JButton(new ImageIcon("resources/icons/run.png"));
         goB.setPreferredSize(new Dimension(50, 50)); 
         goB.addActionListener((e) -> {
@@ -92,7 +92,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
             }
             
             /*(3) call method run_sim with the current value of steps as specified in the JSpinner*/
-            run_sim((Integer) _stepsSpinner.getValue()); //TODO ok?
+            run_sim((Integer) _stepsSpinner.getValue());  //TODO okay?
         });
         goB.setToolTipText("Start the simulation"); 
         _toolBar.add(goB);
@@ -103,23 +103,18 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         stopB.setPreferredSize(new Dimension(50, 50));
         _toolBar.add(stopB);
     
-    
-            //JSpinner for steps:
-    
+        //JSpinner for steps:
         JLabel stepsLabel = new JLabel("Steps: ");
         stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
         _toolBar.add(stepsLabel);
-        int currentSteps = 0;                           
-                                                    //initial value, min, max, step
-        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); 
+        int currentSteps = 10000;
+        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
-        _stepsSpinner.setPreferredSize(new Dimension(80, 30)); 
+        _stepsSpinner.setPreferredSize(new Dimension(80, 30));
         _toolBar.add(_stepsSpinner);
-    
     
         //Make the year be formatted without a thousands separator.
         //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
-            
     
         //Delta-Time area using a JTextField.
         _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
@@ -130,10 +125,9 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         _toolBar.add(dtLabel);
         _toolBar.add(_deltaT);
 
-
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
 
-        
+        //Exit button
         exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
         exitB.setPreferredSize(new Dimension(50, 50)); 
         exitB.addActionListener((e) -> {
@@ -181,22 +175,26 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
 
     // disables all buttons except b
     private void disableAllButtons(JButton b) {
-        ldBodiesB.disable();
-        ldForcesB.disable();
-        goB.disable();
-        stopB.disable();
-        exitB.disable();
+        ldBodiesB.setEnabled(false);
+        ldForcesB.setEnabled(false);
+        goB.setEnabled(false);
+        stopB.setEnabled(false);
+        exitB.setEnabled(false);
+        _deltaT.setEnabled(false);
+        _stepsSpinner.setEnabled(false);
 
         if (b != null) // TODO too dirty?
-            b.enable();
+            b.setEnabled(true);
     }
-
+    //TODO yo lo que haria con estos dos metodos es combinarlos en uno donde le pasas un boolean
     private void enableAllButtons() {
-        ldBodiesB.enable();
-        ldForcesB.enable();
-        goB.enable();
-        stopB.enable();
-        exitB.enable();
+        ldBodiesB.setEnabled(true);
+        ldForcesB.setEnabled(true);
+        goB.setEnabled(true);
+        stopB.setEnabled(true);
+        exitB.setEnabled(true);
+        _deltaT.setEnabled(true);
+        _stepsSpinner.setEnabled(true);
     }
 
     // SimulatorObserver methods:

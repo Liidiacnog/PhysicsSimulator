@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch PruebaSelectionDIALOG",
+            "request": "launch",
+            "mainClass": "simulator.view.PruebaSelectionDIALOG",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
             "name": "Launch Prueba",
             "request": "launch",
             "mainClass": "simulator.view.Prueba",
@@ -31,7 +38,7 @@
                 "-s",
                 "9000000",
                 "-dt",
-                "1000",
+                "100",
                 "-fl",
                 "nlug",
                 "-m",

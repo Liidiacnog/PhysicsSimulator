@@ -37,6 +37,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		_title = "Force Laws Selection"; //TODO to generalize, act as parameter in constructor
 		_instructions = "Select a force law and provide values for the parameters in the 'Value' column" //TODO same
 		 				+ "(default values are used for parameters with no user defined value)";
+		newSelection = new JSONObject();
 		_ctrl = ctrl;
 		initGUI();
 	}
@@ -50,7 +51,14 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		}
 		_CBox = new JComboBox<String>(names);
 		_CBox.setSelectedIndex(IntitialItemCBox);
-		_CBox.addActionListener(this); //TODO ok?
+		//_CBox.addActionListener(this); //TODO ok? creo que es mejor _CBox.addActionListener((e) - > lo que sea);
+		_CBox.addActionListener((e) -> 
+			{
+				String name = _CBox.getSelectedItem().toString();
+				newSelection = _info.get(searchNameInInfo(name));
+				_table.updateData(newSelection);
+			}
+		);
 		_table.updateData(_info.get(IntitialItemCBox).getJSONObject("data")); //display current selection (default one) in the table
 	}
 
@@ -90,19 +98,28 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
 		// CENTER
+		JPanel center = new JPanel();
+		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+
+		//table:
 		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox).getJSONObject("data"));
-		_table.add(new JScrollPane(_table));
-		mainPanel.add(_table, BorderLayout.CENTER);
+		//_table.add(new JScrollPane(_table)); //TODO así es como estaba pero da error
+		JScrollPane scrollTable = new JScrollPane(_table); //TODO set size
+		scrollTable.setPreferredSize(new Dimension(300, 250));
+		center.add(scrollTable);
 
-		// PAGE_END
-			//combo box:
-
+		//combo box:
 		setComboBoxNames();
 		JPanel forcesCBoxPanel = new JPanel();
-		forcesCBoxPanel.add(_CBox, "Select one: ");
+		forcesCBoxPanel.add(_CBox, "Select one: "); //TODO set size
+		forcesCBoxPanel.setPreferredSize(new Dimension(300, 50));
+		center.add(forcesCBoxPanel);
 
-			//buttons:
+		mainPanel.add(center, BorderLayout.CENTER);
 
+		// PAGE_END
+
+		//buttons:
 		JPanel buttonsPanel = new JPanel();// TODO functionality of everything
 
 		JButton cancelButton = new JButton("Cancel");
@@ -121,15 +138,17 @@ public class SelectionDialog extends JDialog implements ActionListener {
 			// Afterwards, newSelection is the JSONObject that will be passed as info to the controller to 
 			// create the new force law
 			newSelection.put("data", _table.getData());
+			if (!newSelection.has("type")) // if does not have type the combo box was not open
+				newSelection.put("type", "nlug");
 			/* once selected, change the force laws of the simulator to the chosen one */
 			_ctrl.setForceLaws(newSelection);
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
 
-		forcesCBoxPanel.add(buttonsPanel);
+		//forcesCBoxPanel.add(buttonsPanel);
 
-		mainPanel.add(forcesCBoxPanel, BorderLayout.PAGE_END);
+		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 
 		setContentPane(mainPanel);
 		setMinimumSize(new Dimension(100, 100));
