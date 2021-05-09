@@ -2,19 +2,18 @@ package simulator.view;
 
 import javax.swing.*;
 import org.json.JSONObject;
-import java.awt.Frame;
 
 import simulator.control.Controller;
-import simulator.factories.Factory;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+public class SelectionDialog extends JDialog implements ActionListener {
 
-public class SelectionDialog<T> extends JDialog {
-
-	protected int _status;
+	protected int _status;//TODO what for?
 
 	private JComboBox<String> _CBox;
 	private List<JSONObject> _info;
@@ -24,21 +23,22 @@ public class SelectionDialog<T> extends JDialog {
 	private String _instructions;
 	
 	private SelectionDialogTable _table;
+
 	private Controller _ctrl;
 
-	private Factory<T> _factory; //TODO do we need an attribute?
+	private JSONObject newSelection;
 
-
-	//TODO generalize:
-	//public SelectionDialog(Factory factory, Frame parent, String title, String instructions) {
-	public SelectionDialog(Controller ctrl, Factory<T> factory, Frame parent){
-		super(parent, true);
-		_info = new ArrayList<>(factory.getInfo()); 
-		_ctrl = ctrl;
+	//TODO generalize?
+	//public SelectionDialog(Controller ctrl, String title, String instructions) {
+	public SelectionDialog(Controller ctrl){
+		// TODO right now it is non-modal bc it extends JDialog directly, change? 
+		_info = new ArrayList<>(ctrl.getForceLawsInfo()); 
+		//TODO best way to generalize is passing a factory instead of the controller nd then having to call fLaws.info or bodies.info()
 		_title = "Force Laws Selection"; //TODO to generalize, act as parameter in constructor
 		_instructions = "Select a force law and provide values for the parameters in the 'Value' column" //TODO same
 		 				+ "(default values are used for parameters with no user defined value)";
-		_factory = factory;
+		newSelection = new JSONObject();
+		_ctrl = ctrl;
 		initGUI();
 	}
 
@@ -51,28 +51,26 @@ public class SelectionDialog<T> extends JDialog {
 		}
 		_CBox = new JComboBox<String>(names);
 		_CBox.setSelectedIndex(IntitialItemCBox);
-		/* _CBox.addActionListener((e) -> 
+		//_CBox.addActionListener(this); //TODO ok? creo que es mejor _CBox.addActionListener((e) - > lo que sea);
+		_CBox.addActionListener((e) -> 
 			{
 				String name = _CBox.getSelectedItem().toString();
 				newSelection = _info.get(searchNameInInfo(name));
 				_table.updateData(newSelection);
 			}
 		);
-		} */ //TODO choose one
-		_CBox.addActionListener( (e) ->  
-			{
-				JComboBox<String> comboBox = (JComboBox<String>) e.getSource(); //TODO why is it needed?
-				int index_in_info_list = searchNameInInfo( (String) comboBox.getSelectedItem() );
-				
-				//copy into newSelection the data of the selected item  
-				JSONObject newSelection = new JSONObject();
-				
-				if(JSONObject.getNames(_info.get(index_in_info_list).getJSONObject("data")) != null){ // if it has some keys to retrieve
-					for(String key: JSONObject.getNames(_info.get(index_in_info_list).getJSONObject("data")))
-						newSelection.put(key, _info.get(index_in_info_list).getJSONObject("data").getString(key));
-				}
-				_table.updateData(newSelection);
-			} );
+		//_table.updateData(_info.get(IntitialItemCBox).getJSONObject("data")); //display current selection (default one) in the table
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		//TODO ok?
+		if(e.getSource() == _CBox){
+			JComboBox<String> cb = (JComboBox<String>) e.getSource();
+			String name = (String) cb.getSelectedItem();
+			newSelection = _info.get(searchNameInInfo(name)).getJSONObject("data");
+			_table.updateData(newSelection);
+		}
 	}
 
 	// returns the index which the item with description == 'name' has in the info list
@@ -89,20 +87,6 @@ public class SelectionDialog<T> extends JDialog {
 		return i;
 	}
 
-	/* we return a JSONObject with the info necessary to create an instance of the item being selected, 
-	including the 'data' section according to the values the user has introduced in the table.
-	
-	Afterwards, this JSONObject will be passed to the controller to create a new force law */
-	private JSONObject getData(){
-		//get whole JSONObject corresponding to info necessary to create an instance of the item being selected
-		JSONObject newSelection = new JSONObject(_info.get(searchNameInInfo(getForceName())));
-		
-		//add the 'data' section according to the table's values
-		newSelection.put("data", _table.getData());
-        
-		return newSelection;
-	}
-
 	private void initGUI() {
 
 		setTitle(_title); 
@@ -114,36 +98,34 @@ public class SelectionDialog<T> extends JDialog {
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
 		// CENTER
-		JPanel centerP = new JPanel();
-		centerP.setLayout(new BoxLayout(centerP, BoxLayout.Y_AXIS));
+		JPanel center = new JPanel();
+		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 
-			//table:
-		/*  TODO is it needed?
-		JScrollPane scrollTable = new JScrollPane(_table);
+		//table:
+		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox));
+		//_table.add(new JScrollPane(_table)); //TODO así es como estaba pero da error
+		JScrollPane scrollTable = new JScrollPane(_table); //TODO set size
 		scrollTable.setPreferredSize(new Dimension(300, 250));
-		center.add(scrollTable); 
-		*/
-		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox).getJSONObject("data"));
-		centerP.add(_table); //TODO , BorderLayout.PAGE_START
+		center.add(scrollTable);
 
-			//combo box:
+		//combo box:
 		setComboBoxNames();
 		JPanel forcesCBoxPanel = new JPanel();
-		forcesCBoxPanel.add(_CBox, "Select one: ");
+		forcesCBoxPanel.add(_CBox, "Select one: "); //TODO set size
 		forcesCBoxPanel.setPreferredSize(new Dimension(300, 50));
-		centerP.add(forcesCBoxPanel);
+		center.add(forcesCBoxPanel);
 
-		mainPanel.add(centerP, BorderLayout.CENTER);
+		mainPanel.add(center, BorderLayout.CENTER);
 
-		//PAGE_END:
-			//buttons:
+		// PAGE_END
 
-		JPanel buttonsPanel = new JPanel();
+		//buttons:
+		JPanel buttonsPanel = new JPanel();// TODO functionality of everything
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setPreferredSize(new Dimension(80, 20)); 
 		cancelButton.addActionListener((e) -> {
-			_status = 0;
+			_status = 0; //TODO ?
 			this.setVisible(false);
 		});
 		buttonsPanel.add(cancelButton);
@@ -151,32 +133,38 @@ public class SelectionDialog<T> extends JDialog {
 		JButton OKButton = new JButton("OK");
 		OKButton.setPreferredSize(new Dimension(80, 20)); 
 		OKButton.addActionListener((e) -> {
-			_status = 1;
+			_status = 1; //TODO ?
+			//we change content of newSelection according to the values the user has introduced in the table.
+			// Afterwards, newSelection is the JSONObject that will be passed as info to the controller to 
+			// create the new force law
+			newSelection.put("data", _table.getData());
+			if (!newSelection.has("type")) // if does not have type the combo box was not open
+				newSelection.put("type", "nlug");
 			/* once selected, change the force laws of the simulator to the chosen one */
-			_ctrl.setForceLaws(getData()); //TODO move to controller atthe end of ldForcesButton actionlistener ?
+			_ctrl.setForceLaws(newSelection);
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
 
-		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
+		//forcesCBoxPanel.add(buttonsPanel);
 
+		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 
 		setContentPane(mainPanel);
 		setMinimumSize(new Dimension(100, 100));
 		setVisible(false);
 	}
 
-	public String getForceName() {
-		return (String) _CBox.getSelectedItem();
+	public int getForceNr() {
+		return (Integer) _CBox.getSelectedItem();
 	}
 
 
 	public int open() {
-		setLocation(getParent().getLocation().x + 50, getParent().getLocation().y + 50);// TODO ok ?
+		//setLocation(getParent().getLocation().x + 50, getParent().getLocation().y + 50);// TODO ?
 		pack();
 		setVisible(true);
-		return _status;
+		return _status; //TODO ?
 	}
 
 }
-

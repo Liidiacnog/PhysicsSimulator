@@ -336,7 +336,7 @@ public class Main {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				new MainWindow(c, sim, _forceLawsFactory);
+				new MainWindow(c, sim);
 			}
 		}); 
 	}
