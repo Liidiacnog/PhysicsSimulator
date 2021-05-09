@@ -5,11 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-
 import org.json.JSONObject;
-
 import simulator.misc.Vector2D;
-
 import java.awt.BorderLayout;
 
 public class SelectionDialogTable extends JPanel  {
@@ -34,7 +31,7 @@ public class SelectionDialogTable extends JPanel  {
 		_model.actionPerformed(newOnDisplay);
 	}
 
-	//returns the JSONArray for new "data" section of the force, according to values introduced by the user in the JTable
+	//returns the JSONObject for new "data" section of the force, according to values introduced by the user in the JTable
 	public JSONObject getData() {
 		return _model.getData();
 	}
@@ -42,32 +39,24 @@ public class SelectionDialogTable extends JPanel  {
 	class ParamsTableModel extends AbstractTableModel{
 
 		private String[] headers = { "Key", "Value", "Description" };
-		private String[][] _data = {};
+		private String[][] _data; //remark: (it doesn't contain the headers)
 
 		private int _numCols = headers.length; //only initialized once
 		private int _numRows;
-		private String _type;
 		private JSONObject _dataOnDisplay; // JSONObject containing info of the item currently selected on the JCombobox in
 										// the SelectionDialog, in the case of forces it'll be the JSONObject corresponding
 										// to the 'data' section of a certain force law
+										//(e.g. for mtfp law: "c", "g" and their descriptions; 
+										//		for nlug: "G" and their descriptions)
 
 		public ParamsTableModel(int itemIndex, JSONObject onDisplay) {
 			// fill in data:
 			update(onDisplay);
 		}
 
-		// public JSONArray getData() {
-		// 	String[][] sArray = new String[_model.getRowCount()][_model.getColumnCount()];
-			
-		// 	for(int i = 0; i < _model.getRowCount(); ++i){
-		// 		sArray[i][0] = JSONObject.getNames(_dataOnDisplay)[i];
-		// 	}
-		// 	getTableContents(sArray);
-		// 	JSONArray values = new JSONArray(sArray); //TODO is it built properly according to factories' format?
-						
-		// 	return values;
-		// }
-
+		
+		 
+		/*
 		public JSONObject getData() {
 			JSONObject data = new JSONObject();
 
@@ -86,8 +75,43 @@ public class SelectionDialogTable extends JPanel  {
 
 			return data;
 		}
+		*/ //TODO choose
+
+		//returns JSONObject necessary to create the 'data' section of an instance of the item being selected (body, force law, ...)
+		public JSONObject getData() {
+			JSONObject data = new JSONObject();
+
+			//add the values of the keys being displayed in the table (e.g. for mtfp law: "c", "g") to data
+			if(JSONObject.getNames(_dataOnDisplay) != null) // if it has some keys to retrieve
+					for(int i = 0; i < _model.getRowCount(); ++i){
+						System.out.println(i);
+						data.put(JSONObject.getNames(_dataOnDisplay)[i], Double.parseDouble( (String) _table.getValueAt(i, 1) )); //TODO 1 bc it's 'values' column + Use (String) _table.getValueAt(row, col) instead?
+					}
+
+			return data;
+		}
 
 
+
+		public void initTableData(){
+			for (int row = 0; row < _numRows; row++) {
+				int col = 0;
+				//set names of keys:
+				for(String s: JSONObject.getNames(_dataOnDisplay))//TODO remove
+					System.out.println(s + " " + row);
+				String keyName = JSONObject.getNames(_dataOnDisplay)[row];
+				_data[row][col] = keyName; //TODO use setValueAt() instead?
+				col++;
+				// set column 'value': initially empty, and has to be filled by the user, otherwise we will
+				// introduce default values for the simulator:
+				_data[row][col] = ""; 
+				col++;
+				//set description of the keys:
+				_data[row][col] = _dataOnDisplay.getString(keyName);
+			}
+		}
+
+/* //TODO choose
 		public void getTableContents(Object[][] a){
 			for (int row = 0; row < _numRows; row++) { //(row 0 contains headers so it remains untouched) NOOO!
 				int col = 0;
@@ -101,14 +125,23 @@ public class SelectionDialogTable extends JPanel  {
 				a[row][col] = _dataOnDisplay.getString(keys[row]);
 			}
 		}
+*/
 
 		public void update(JSONObject onDisplay) {
+			_dataOnDisplay = onDisplay;
+			_numRows = onDisplay.keySet().size(); //numRows doesn't count the hearders' row
+			_data = new String[_numRows][_numCols];
+			initTableData();
+			fireTableStructureChanged();
+
+			/* TODO remove?
 			_dataOnDisplay = onDisplay.getJSONObject("data");
 			_type = onDisplay.getString("type");
 			_numRows = _dataOnDisplay.keySet().size();
 			_data = new String[_numRows][_numCols];
 			getTableContents(_data);
 			fireTableStructureChanged();
+			*/
 		}
 
 		@Override
@@ -133,6 +166,7 @@ public class SelectionDialogTable extends JPanel  {
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
+			assert rowIndex < _numRows && columnIndex < _numCols;
 			return _data[rowIndex][columnIndex];
 		}
 

@@ -4,10 +4,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.util.List;
 import javax.swing.*;
 import simulator.control.Controller;
+import simulator.factories.Factory;
 import simulator.model.Body;
+import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
 
@@ -22,7 +25,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private boolean _stopped;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
     JFileChooser fc;
-    SelectionDialog _selectionDialog; //TODO change to JDialog? then there is no open()
+    //SelectionDialog<Body> _selDialogB; //TODO dialog for bodies' selection 
+    SelectionDialog<ForceLaw> _selDialogFL; 
     JSpinner _stepsSpinner;
     JTextField _deltaT;
 
@@ -31,14 +35,25 @@ message using a dialog box (e.g., using JOptionPane.showMessageDialog). In the
 observer methods modify the value of delta-time in the corresponding JTextField when
 needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
 
-    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator) {
+    /*public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL, Factory<Body> fB) {
         _ctrl = ctrl;
         _simulator = simulator;
         _stopped = false;
-        _selectionDialog = new SelectionDialog(_ctrl); //TODO pass it simulator
+        _selDialogFL = new SelectionDialog<>(_ctrl, fFL, (Frame) SwingUtilities.getWindowAncestor(this));
+        _selDialogB = new SelectionDialog<>(_ctrl, fB, (Frame) SwingUtilities.getWindowAncestor(this)); //TODO
+        _ctrl.addObserver(this);
+        initGUI();
+    }*/
+
+    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> f) {
+        _ctrl = ctrl;
+        _simulator = simulator;
+        _stopped = false;
+        _selDialogFL = new SelectionDialog<>(_ctrl, f, (Frame) SwingUtilities.getWindowAncestor(this));
         _ctrl.addObserver(this);
         initGUI();
     }
+
 
     private void initGUI() {
 
@@ -69,9 +84,20 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         //Change force button
         ldForcesB = new JButton(new ImageIcon("resources/icons/physics.png"));
         ldForcesB.setPreferredSize(new Dimension(50, 50)); 
+        /* ldForcesB.addActionListener((e) -> {
+            // (1) open a dialog box and ask the user to select one of the available force laws;
+            int status = _selectionDialog.open(); 
+            if(status == 1){
+                // (2) once selected, change the force laws of the simulator to the chosen one
+                _ctrl.setForceLaws(_selectionDialog.getData());
+            } 
+              
+        });
+         */ //TODO do we need the status attribute in selectionDialog?
+        
         ldForcesB.addActionListener((e) -> {
             // (1) open a dialog box and ask the user to select one of the available force laws;
-            _selectionDialog.open();    
+            _selDialogFL.open();              
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
         _toolBar.add(ldForcesB);
@@ -82,7 +108,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         goB = new JButton(new ImageIcon("resources/icons/run.png"));
         goB.setPreferredSize(new Dimension(50, 50)); 
         goB.addActionListener((e) -> {
-            disableAllButtons(stopB);
+            setAllButtons(stopB, false);
             _stopped = false;
             /* (2) set the current delta-time of the simulator to the one specified in the corresponding text field;*/
             try{
@@ -107,17 +133,13 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         JLabel stepsLabel = new JLabel("Steps: ");
         stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
         _toolBar.add(stepsLabel);
-        int currentSteps = 10000;
-        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 0, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
         _stepsSpinner.setPreferredSize(new Dimension(80, 30));
         _toolBar.add(_stepsSpinner);
     
-        //Make the year be formatted without a thousands separator.
-        //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
-    
         //Delta-Time area using a JTextField.
-        _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
+        _deltaT = new JTextField("" + Default_deltaT);
         _deltaT.setEditable(true);
         _deltaT.setPreferredSize(new Dimension(80, 30));
         JLabel dtLabel = new JLabel("Delta-Time: ");
@@ -133,7 +155,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         exitB.addActionListener((e) -> {
             //TODO ask for the user’s confirmation and then exit using System.exit(0)
             //: _ctrl.requestExit(); ?
-            System.exit(0); //TODO Ok?
+            System.exit(0); 
         });
         exitB.setToolTipText("Exit the simulator");
         _toolBar.add(exitB);
@@ -158,7 +180,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
             } catch (Exception e) {
                 // TODO show the error in a dialog box
                 _stopped = true;
-                enableAllButtons();
+                setAllButtons(null, true);
                 return;
             }
             SwingUtilities.invokeLater(new Runnable() {
@@ -169,33 +191,24 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
             });
         } else {
             _stopped = true;
-            enableAllButtons();
+            setAllButtons(null, true);
         }
     }
 
-    // disables all buttons except b
-    private void disableAllButtons(JButton b) {
-        ldBodiesB.setEnabled(false);
-        ldForcesB.setEnabled(false);
-        goB.setEnabled(false);
-        stopB.setEnabled(false);
-        exitB.setEnabled(false);
-        _deltaT.setEnabled(false);
-        _stepsSpinner.setEnabled(false);
+    // disables/enables all buttons except b
+    private void setAllButtons(JButton b, boolean bool) {
+        ldBodiesB.setEnabled(bool);
+        ldForcesB.setEnabled(bool);
+        goB.setEnabled(bool);
+        stopB.setEnabled(bool);
+        exitB.setEnabled(bool);
+        _deltaT.setEnabled(bool);
+        _stepsSpinner.setEnabled(bool);
 
         if (b != null) // TODO too dirty?
-            b.setEnabled(true);
+            b.setEnabled(!bool);
     }
-    //TODO yo lo que haria con estos dos metodos es combinarlos en uno donde le pasas un boolean
-    private void enableAllButtons() {
-        ldBodiesB.setEnabled(true);
-        ldForcesB.setEnabled(true);
-        goB.setEnabled(true);
-        stopB.setEnabled(true);
-        exitB.setEnabled(true);
-        _deltaT.setEnabled(true);
-        _stepsSpinner.setEnabled(true);
-    }
+    
 
     // SimulatorObserver methods:
 
