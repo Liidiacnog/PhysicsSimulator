@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch MainWindow",
+            "request": "launch",
+            "mainClass": "extra.dialog.ex1.MainWindow",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
             "name": "Launch PruebaSelectionDIALOG",
             "request": "launch",
             "mainClass": "simulator.view.PruebaSelectionDIALOG",

@@ -6,7 +6,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import simulator.misc.Vector2D;
@@ -74,14 +73,14 @@ public class SelectionDialogTable extends JPanel  {
 
 			if (_type != "mtfp") {
 				for (int i = 0; i < _numRows; i++) {
-					data.put((String) getValueAt(i, 0), Double.parseDouble(((String) getValueAt(i, 1))));
+					data.put("" + getValueAt(i, 0), Double.parseDouble(getValueAt(i, 1) + ""));
 				}
 			} else {
-				String[] c = ((String) getValueAt(0, 1)).trim().split(",");
+				String[] c = ("" + getValueAt(0, 1)).trim().split(",");
 				Double x = Double.parseDouble(c[0]);
 				Double y = Double.parseDouble(c[1].trim());
 				data.put((String) getValueAt(0, 0), (new Vector2D(x, y)).asJSONArray());
-				data.put("g", Double.parseDouble(((String) getValueAt(1, 1)))); //TODO da error pero tengo sueño
+				data.put((String) getValueAt(1, 0), Double.parseDouble(getValueAt(1, 1) + ""));
 			}
 			
 
