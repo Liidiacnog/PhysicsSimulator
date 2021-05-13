@@ -3,11 +3,15 @@ package simulator.view;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import simulator.factories.Factory;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.util.List;
 import javax.swing.*;
+
 import simulator.control.Controller;
 import simulator.model.Body;
+import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
 
@@ -26,16 +30,25 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     JSpinner _stepsSpinner;
     JTextField _deltaT;
 
+
+    private static String ForcesSelectionDialogTitle = "Force Laws Selection"; 
+    private static String ForcesSelectionDialogInstr = 
+            "Select a force law and provide values for the parameters in the 'Value' column"
+		 		 +  "(default values are used for parameters with no user defined value)"; 
+    
+    
+
 /*TODO In addition, catch all exceptions thrown by the controller/simulator and show a corresponding
 message using a dialog box (e.g., using JOptionPane.showMessageDialog). In the
 observer methods modify the value of delta-time in the corresponding JTextField when
 needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
 
-    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator) {
+    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL, Factory<Body> fB) {
         _ctrl = ctrl;
         _simulator = simulator;
         _stopped = false;
-        _selectionDialog = new SelectionDialog(_ctrl); //TODO pass it simulator
+        _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL, _ctrl,
+                 ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);  //TODO at some point give it fB as well
         _ctrl.addObserver(this);
         initGUI();
     }
@@ -50,14 +63,14 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         ldBodiesB.addActionListener((e) -> {
             // (1) ask the user to select a file using a JFileChooser
             fc = new JFileChooser();
-            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //TODO see recording 07/04 part 2 : min 44
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 // (2) reset the simulator
                 _ctrl.reset();
                 // (3) load the selected file into the simulator
                 try (InputStream inChar = new FileInputStream(fc.getSelectedFile().toPath().toString())) { //TODO is "try" necessary?
                     _ctrl.loadBodies(inChar);
                 } catch (IOException ioe) {
-                    throw new IllegalArgumentException("Input file could not be opened"); // TODO okay?
+                    throw new IllegalArgumentException("Input file could not be opened");
                 }
             }
         } );
@@ -107,14 +120,10 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         JLabel stepsLabel = new JLabel("Steps: ");
         stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
         _toolBar.add(stepsLabel);
-        int currentSteps = 10000;
-        SpinnerModel stepsModel = new SpinnerNumberModel(currentSteps, 0, null, 100); //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 0, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
         _stepsSpinner.setPreferredSize(new Dimension(80, 30));
         _toolBar.add(_stepsSpinner);
-    
-        //Make the year be formatted without a thousands separator.
-        //_stepsSpinner.setEditor(new JSpinner.NumberEditor(_stepsSpinner, "#")); //TODO check out
     
         //Delta-Time area using a JTextField.
         _deltaT = new JTextField("" + Default_deltaT); //TODO ok?
@@ -132,7 +141,7 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         exitB.setPreferredSize(new Dimension(50, 50)); 
         exitB.addActionListener((e) -> {
             //TODO ask for the user’s confirmation and then exit using System.exit(0)
-            //: _ctrl.requestExit(); ?
+            //_ctrl.requestExit(); ?
             System.exit(0); //TODO Ok?
         });
         exitB.setToolTipText("Exit the simulator");
@@ -186,6 +195,8 @@ needed (i.e., in onRegister, onReset, and onDeltaTimeChanged). */
         if (b != null) // TODO too dirty?
             b.setEnabled(true);
     }
+
+    
     //TODO yo lo que haria con estos dos metodos es combinarlos en uno donde le pasas un boolean
     private void enableAllButtons() {
         ldBodiesB.setEnabled(true);

@@ -2,18 +2,18 @@ package simulator.view;
 
 import javax.swing.*;
 import org.json.JSONObject;
-
 import simulator.control.Controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Frame;
+import simulator.factories.Factory;
 
-public class SelectionDialog extends JDialog implements ActionListener {
 
-	protected int _status;//TODO what for?
+public class SelectionDialog extends JDialog {
+
+	protected int _status;
 
 	private JComboBox<String> _CBox;
 	private List<JSONObject> _info;
@@ -26,21 +26,18 @@ public class SelectionDialog extends JDialog implements ActionListener {
 
 	private Controller _ctrl;
 
-	private JSONObject newSelection;
+	private JSONObject _CBoxSelection;
 
-	//TODO generalize?
-	//public SelectionDialog(Controller ctrl, String title, String instructions) {
-	public SelectionDialog(Controller ctrl){
-		// TODO right now it is non-modal bc it extends JDialog directly, change? 
-		_info = new ArrayList<>(ctrl.getForceLawsInfo()); 
-		//TODO best way to generalize is passing a factory instead of the controller nd then having to call fLaws.info or bodies.info()
-		_title = "Force Laws Selection"; //TODO to generalize, act as parameter in constructor
-		_instructions = "Select a force law and provide values for the parameters in the 'Value' column" //TODO same
-		 				+ "(default values are used for parameters with no user defined value)";
-		newSelection = new JSONObject();
+	public SelectionDialog(Frame parent, Factory<?> factory, Controller ctrl, String title, String instr) {
+		super(parent, true); //true for modal
+		_info = new ArrayList<>(factory.getInfo()); 
+		_title = title;
+		_instructions = instr; 
 		_ctrl = ctrl;
+		_CBoxSelection = _info.get(IntitialItemCBox); 
 		initGUI();
 	}
+
 
 	private void setComboBoxNames() {
 		String[] names = new String[_info.size()];
@@ -51,27 +48,15 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		}
 		_CBox = new JComboBox<String>(names);
 		_CBox.setSelectedIndex(IntitialItemCBox);
-		//_CBox.addActionListener(this); //TODO ok? creo que es mejor _CBox.addActionListener((e) - > lo que sea);
 		_CBox.addActionListener((e) -> 
 			{
 				String name = _CBox.getSelectedItem().toString();
-				newSelection = _info.get(searchNameInInfo(name));
-				_table.updateData(newSelection);
+				_CBoxSelection = _info.get(searchNameInInfo(name));
+				_table.updateData(_CBoxSelection);
 			}
 		);
-		//_table.updateData(_info.get(IntitialItemCBox).getJSONObject("data")); //display current selection (default one) in the table
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		//TODO ok?
-		if(e.getSource() == _CBox){
-			JComboBox<String> cb = (JComboBox<String>) e.getSource();
-			String name = (String) cb.getSelectedItem();
-			newSelection = _info.get(searchNameInInfo(name)).getJSONObject("data");
-			_table.updateData(newSelection);
-		}
-	}
 
 	// returns the index which the item with description == 'name' has in the info list
 	private int searchNameInInfo(String name) {
@@ -83,7 +68,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 			else		
 				++i;
 		};
-		assert(i < _info.size());//name will always be one contained in the JList so it'll be one in the info
+		assert(i < _info.size()); //name will always be one contained in the JList so it'll be one in the info
 		return i;
 	}
 
@@ -102,16 +87,13 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 
 		//table:
-		_table = new SelectionDialogTable(IntitialItemCBox, _info.get(IntitialItemCBox));
-		//_table.add(new JScrollPane(_table)); //TODO así es como estaba pero da error
-		JScrollPane scrollTable = new JScrollPane(_table); //TODO set size
-		scrollTable.setPreferredSize(new Dimension(300, 250));
-		center.add(scrollTable);
+		_table = new SelectionDialogTable(_CBoxSelection);
+		center.add(_table);
 
 		//combo box:
 		setComboBoxNames();
 		JPanel forcesCBoxPanel = new JPanel();
-		forcesCBoxPanel.add(_CBox, "Select one: "); //TODO set size
+		forcesCBoxPanel.add(_CBox, "Select one: ");
 		forcesCBoxPanel.setPreferredSize(new Dimension(300, 50));
 		center.add(forcesCBoxPanel);
 
@@ -120,12 +102,12 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		// PAGE_END
 
 		//buttons:
-		JPanel buttonsPanel = new JPanel();// TODO functionality of everything
+		JPanel buttonsPanel = new JPanel();
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setPreferredSize(new Dimension(80, 20)); 
 		cancelButton.addActionListener((e) -> {
-			_status = 0; //TODO ?
+			_status = 0;
 			this.setVisible(false);
 		});
 		buttonsPanel.add(cancelButton);
@@ -133,15 +115,13 @@ public class SelectionDialog extends JDialog implements ActionListener {
 		JButton OKButton = new JButton("OK");
 		OKButton.setPreferredSize(new Dimension(80, 20)); 
 		OKButton.addActionListener((e) -> {
-			_status = 1; //TODO ?
+			_status = 1;
 			//we change content of newSelection according to the values the user has introduced in the table.
 			// Afterwards, newSelection is the JSONObject that will be passed as info to the controller to 
 			// create the new force law
-			newSelection.put("data", _table.getData());
-			if (!newSelection.has("type")) // if does not have type the combo box was not open
-				newSelection.put("type", "nlug");
+			_CBoxSelection.put("data", _table.getData());
 			/* once selected, change the force laws of the simulator to the chosen one */
-			_ctrl.setForceLaws(newSelection);
+			_ctrl.setForceLaws(_CBoxSelection);
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
@@ -161,7 +141,7 @@ public class SelectionDialog extends JDialog implements ActionListener {
 
 
 	public int open() {
-		//setLocation(getParent().getLocation().x + 50, getParent().getLocation().y + 50);// TODO ?
+		setLocation(getParent().getLocation().x + 50, getParent().getLocation().y + 50);// TODO ?
 		pack();
 		setVisible(true);
 		return _status; //TODO ?

@@ -1,6 +1,9 @@
 package simulator.view;
 
 import simulator.control.Controller;
+import simulator.factories.Factory;
+import simulator.model.Body;
+import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 
 import javax.swing.JFrame;
@@ -14,11 +17,16 @@ public class MainWindow extends JFrame {
 
     private Controller _ctrl;
     private PhysicsSimulator _sim;
+    private Factory<ForceLaw> _fFL;
+    private Factory<Body> _fB;
 
-    public MainWindow(Controller ctrl, PhysicsSimulator simulator) {
+
+    public MainWindow(Controller ctrl, PhysicsSimulator simulator, Factory<ForceLaw> fFL, Factory<Body> fB) {
         super("Physics Simulator");
         _sim = simulator;
         _ctrl = ctrl;
+        _fFL = fFL;
+        _fB = fB;
         initGUI();
     }
 
@@ -30,7 +38,7 @@ public class MainWindow extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
-        JPanel controlPanel = new ControlPanel(_ctrl,  _sim);
+        JPanel controlPanel = new ControlPanel(_ctrl,  _sim, _fFL, _fB);
         mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
         JPanel centerPanel = new JPanel();

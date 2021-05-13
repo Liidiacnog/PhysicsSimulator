@@ -327,18 +327,18 @@ public class Main {
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
 		Controller c = new Controller(sim, _bodyFactory, _forceLawsFactory);
 
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				new MainWindow(c, sim, _forceLawsFactory, _bodyFactory);
+			}
+		});
+
 		try (InputStream inChar = new FileInputStream(_inFile)) {
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
 			
 		}
-
-		SwingUtilities.invokeAndWait(new Runnable() {
-			@Override
-			public void run() {
-				new MainWindow(c, sim);
-			}
-		}); 
 	}
 
 	private static void start(String[] args) throws Exception {
@@ -362,3 +362,5 @@ public class Main {
 
 
 }
+// & 'c:\Users\olbap tenrof\.vscode\extensions\vscjava.vscode-java-debug-0.33.1\scripts\launcher.bat' 'C:\Program Files\AdoptOpenJDK\jdk-11.0.10.9-hotspot\bin\java.exe' '-Dfile.encoding=UTF-8' '@C:\Users\OLBAPT~1\AppData\Local\Temp\cp_2jo3x8d0z0opslfv43nn57iap.argfile' 'simulator.launcher.Main' '-i' 'resources/examples/ex4.4body.json' '-o' 'resources/output/OURSout.7.json' '-s' '9000000' '-dt' '100' '-fl' 'nlug' '-m' 'gui'
+
