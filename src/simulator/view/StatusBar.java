@@ -2,14 +2,11 @@ package simulator.view;
 
 import simulator.control.Controller;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
@@ -62,9 +59,6 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         _numOfBodies.setText("Bodies: " + bodies.size());
         _currTime.setText("Time: " + time);
     }
-
-    @Override
-    public void onDeltaTimeChanged(double dt) {    }
 
     @Override
     public void onForceLawsChanged(String fLawsDesc) {

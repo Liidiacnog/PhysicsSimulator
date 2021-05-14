@@ -48,13 +48,11 @@ public class SelectionDialog extends JDialog {
 		}
 		_CBox = new JComboBox<String>(names);
 		_CBox.setSelectedIndex(IntitialItemCBox);
-		_CBox.addActionListener((e) -> 
-			{
-				String name = _CBox.getSelectedItem().toString();
+		_CBox.addActionListener((e) -> {
+ 				String name = _CBox.getSelectedItem().toString();
 				_CBoxSelection = _info.get(searchNameInInfo(name));
 				_table.updateData(_CBoxSelection);
-			}
-		);
+		});
 	}
 
 
@@ -116,17 +114,23 @@ public class SelectionDialog extends JDialog {
 		OKButton.setPreferredSize(new Dimension(80, 20)); 
 		OKButton.addActionListener((e) -> {
 			_status = 1;
-			//we change content of newSelection according to the values the user has introduced in the table.
+			// we change content of newSelection according to the values the user has introduced in the table.
 			// Afterwards, newSelection is the JSONObject that will be passed as info to the controller to 
 			// create the new force law
 			_CBoxSelection.put("data", _table.getData());
 			/* once selected, change the force laws of the simulator to the chosen one */
-			_ctrl.setForceLaws(_CBoxSelection);
+			try{
+				_ctrl.setForceLaws(_CBoxSelection);
+			}catch (IllegalArgumentException iae){
+				JOptionPane.showMessageDialog(new JFrame(),
+												"The following error occurred: " + iae.getMessage(),
+												"The change of force laws did not succeed:", 
+												JOptionPane.ERROR_MESSAGE, 
+												new ImageIcon("resources/icons/caution.jpg"));
+			}
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
-
-		//forcesCBoxPanel.add(buttonsPanel);
 
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 
@@ -141,7 +145,7 @@ public class SelectionDialog extends JDialog {
 
 
 	public int open() {
-		setLocation(getParent().getLocation().x + 50, getParent().getLocation().y + 50);// TODO ?
+		setLocation(getParent().getLocation().x + 100, getParent().getLocation().y + 100);
 		pack();
 		setVisible(true);
 		return _status; //TODO ?

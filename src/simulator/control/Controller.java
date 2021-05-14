@@ -102,8 +102,9 @@ public class Controller {
         run(n, new OutputStream() {
             @Override
             public void write(int b) throws IOException {
-            };
-        }, null, null); // TODO okay?
+                //Do nothing
+            }; 
+        }, null, null);
     }
 
     // compares JSONObject's j1 and j2 using StateComparator cmp, and throws

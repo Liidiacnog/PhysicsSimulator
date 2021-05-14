@@ -55,8 +55,6 @@ public class MainWindow extends JFrame {
         statusBar.setPreferredSize(new Dimension(900, 30));
         mainPanel.add(statusBar, BorderLayout.PAGE_END);
 
-        //TODO check sizes (you can use method setPreferredSize)
-
         this.setVisible(true);
     }
 

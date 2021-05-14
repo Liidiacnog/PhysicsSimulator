@@ -20,7 +20,7 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
             observers = new ArrayList<>();
             setDeltaTime(delta_t);
             setForceLaws(forces);
-            reset(); //TODO okay here or better explicit call to only necessary methods?
+            reset();
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid parameters for Physics Simulator", e);
         }
@@ -113,7 +113,7 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
      * changes the force laws of the simulator to forceLaws. It should throw an
      * IllegalArgumentException if the value is not valid (i.e., null).
      */
-    public void setForceLaws(ForceLaw forceLaws) {
+    public void setForceLaws(ForceLaw forceLaws) throws IllegalArgumentException{
         if (forceLaws != null) {
             _force = forceLaws;
         } else

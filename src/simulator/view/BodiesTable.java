@@ -6,9 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import simulator.control.Controller;
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 
 public class BodiesTable extends JPanel {

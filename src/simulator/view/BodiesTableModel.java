@@ -18,7 +18,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         ctrl.addObserver(this);
     }
 
-    //for test porpuses
+    //for test purposes
     BodiesTableModel(List<Body> bodies) {
         _bodies = new ArrayList<>(bodies);
     }
@@ -89,14 +89,12 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
         _bodies = new ArrayList<>(bodies);
         fireTableStructureChanged();
-        
     }
 
     @Override
     public void onBodyAdded(List<Body> bodies, Body b) {
         _bodies = new ArrayList<>(bodies);
         fireTableStructureChanged();
-        
     }
 
     @Override
@@ -105,11 +103,6 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         fireTableStructureChanged();
     }
 
-    @Override
-    public void onDeltaTimeChanged(double dt) {    } //Do nothing
-
-    @Override
-    public void onForceLawsChanged(String fLawsDesc) {    } //Do nothing
 
     // private void update(List<Body> bodies) {
     //     _bodies = new ArrayList<>(bodies);

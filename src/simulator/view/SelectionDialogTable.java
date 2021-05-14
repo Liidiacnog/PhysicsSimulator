@@ -20,11 +20,6 @@ public class SelectionDialogTable extends JPanel  {
 		JScrollPane scrollPane = new JScrollPane(_table);
 		this.add(scrollPane);
 	}
-
-	//TODO: when does that happen?
-			/*  You should display a corresponding error message (e.g., using JOptionPane.showMessageDialog)
-			if the change of force laws did not succeed.  
-			*/
 	
 	public void updateData(JSONObject newOnDisplay) {
 		_model.update(newOnDisplay);
@@ -35,7 +30,7 @@ public class SelectionDialogTable extends JPanel  {
 		return _model.getData();
 	}
 
-	class ParamsTableModel extends AbstractTableModel{
+	class ParamsTableModel extends AbstractTableModel {
 
 		private String[] headers = { "Key", "Value", "Description" };
 		private String[][] _data = {};
@@ -51,7 +46,7 @@ public class SelectionDialogTable extends JPanel  {
 			update(onDisplay);
 		}
 
-
+		//generates a JSONObject by parsing the text introduced by the user on the editable columns
 		public JSONObject getData() { 
 			StringBuilder s = new StringBuilder();
 			s.append('{');
@@ -79,14 +74,14 @@ public class SelectionDialogTable extends JPanel  {
 				int col = 0;
 				//set names of keys:
 				String keyName = JSONObject.getNames(_dataOnDisplay)[row];
-				_data[row][col] = keyName; //TODO use setValueAt() instead?
+				setValueAt(keyName, row, col); 
 				col++;
 				// set column 'value': initially empty, and has to be filled by the user, otherwise we will
 				// introduce default values for the simulator:
-				_data[row][col] = ""; 
+				setValueAt("", row, col); 
 				col++;
 				//set description of the keys:
-				_data[row][col] = _dataOnDisplay.getString(keyName);
+				setValueAt(_dataOnDisplay.getString(keyName), row, col);
 			}
 		}
 		

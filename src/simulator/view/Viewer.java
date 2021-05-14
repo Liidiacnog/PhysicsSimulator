@@ -7,8 +7,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-
 import simulator.control.Controller;
 import simulator.misc.Vector2D;
 import simulator.model.Body;
@@ -229,16 +227,5 @@ public class Viewer extends JComponent implements SimulatorObserver {
         repaint();
     }
 
-    @Override
-    public void onDeltaTimeChanged(double dt) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onForceLawsChanged(String fLawsDesc) {
-        // TODO Auto-generated method stub
-
-    }
 
 }

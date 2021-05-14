@@ -10,16 +10,28 @@ public interface SimulatorObserver {
      * toString of the current force laws)
      */
 
-    public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc);
+    default public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc){
+        //Default: do nothing
+    }
 
-    public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc);
+    default public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc){
+        //Default: do nothing
+    }
 
-    public void onBodyAdded(List<Body> bodies, Body b);
+    default public void onBodyAdded(List<Body> bodies, Body b){
+        //Default: do nothing
+    }
 
-    public void onAdvance(List<Body> bodies, double time);
+    default public void onAdvance(List<Body> bodies, double time){
+        //Default: do nothing
+    }
 
-    public void onDeltaTimeChanged(double dt);
+    default public void onDeltaTimeChanged(double dt){
+        //Default: do nothing
+    }
 
-    public void onForceLawsChanged(String fLawsDesc);
+    default public void onForceLawsChanged(String fLawsDesc){
+        //Default: do nothing
+    }
 
 }

@@ -362,5 +362,4 @@ public class Main {
 
 
 }
-// & 'c:\Users\olbap tenrof\.vscode\extensions\vscjava.vscode-java-debug-0.33.1\scripts\launcher.bat' 'C:\Program Files\AdoptOpenJDK\jdk-11.0.10.9-hotspot\bin\java.exe' '-Dfile.encoding=UTF-8' '@C:\Users\OLBAPT~1\AppData\Local\Temp\cp_2jo3x8d0z0opslfv43nn57iap.argfile' 'simulator.launcher.Main' '-i' 'resources/examples/ex4.4body.json' '-o' 'resources/output/OURSout.7.json' '-s' '9000000' '-dt' '100' '-fl' 'nlug' '-m' 'gui'
 
