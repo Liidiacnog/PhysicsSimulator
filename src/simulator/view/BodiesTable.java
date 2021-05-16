@@ -21,9 +21,9 @@ public class BodiesTable extends JPanel {
         );
         setLayout(new BorderLayout());
         JTable table = new JTable(new BodiesTableModel(ctr));
-        //table.setPreferredSize(new Dimension(900, 200));
+        //TODO? table.setPreferredSize(new Dimension(900, 200)); 
         JScrollPane scrollPane = new JScrollPane(table);
-        //scrollPane.setPreferredSize(new Dimension(900, 200));
+        //TODO? scrollPane.setPreferredSize(new Dimension(900, 200));
         this.add(scrollPane);
     }
 }

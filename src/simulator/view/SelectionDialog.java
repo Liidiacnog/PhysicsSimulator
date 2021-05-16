@@ -2,7 +2,6 @@ package simulator.view;
 
 import javax.swing.*;
 import org.json.JSONObject;
-import simulator.control.Controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -24,16 +23,13 @@ public class SelectionDialog extends JDialog {
 	
 	private SelectionDialogTable _table;
 
-	private Controller _ctrl;
-
 	private JSONObject _CBoxSelection;
 
-	public SelectionDialog(Frame parent, Factory<?> factory, Controller ctrl, String title, String instr) {
+	public SelectionDialog(Frame parent, Factory<?> factory, String title, String instr) {
 		super(parent, true); //true for modal
 		_info = new ArrayList<>(factory.getInfo()); 
 		_title = title;
 		_instructions = instr; 
-		_ctrl = ctrl;
 		_CBoxSelection = _info.get(IntitialItemCBox); 
 		initGUI();
 	}
@@ -114,20 +110,10 @@ public class SelectionDialog extends JDialog {
 		OKButton.setPreferredSize(new Dimension(80, 20)); 
 		OKButton.addActionListener((e) -> {
 			_status = 1;
-			// we change content of newSelection according to the values the user has introduced in the table.
-			// Afterwards, newSelection is the JSONObject that will be passed as info to the controller to 
+			// we change content of _CBoxSelection according to the values the user has introduced in the table.
+			// Afterwards, _CBoxSelection is the JSONObject that will be passed as info to the controller to 
 			// create the new force law
 			_CBoxSelection.put("data", _table.getData());
-			/* once selected, change the force laws of the simulator to the chosen one */
-			try{
-				_ctrl.setForceLaws(_CBoxSelection);
-			}catch (IllegalArgumentException iae){
-				JOptionPane.showMessageDialog(new JFrame(),
-												"The following error occurred: " + iae.getMessage(),
-												"The change of force laws did not succeed:", 
-												JOptionPane.ERROR_MESSAGE, 
-												new ImageIcon("resources/icons/caution.jpg"));
-			}
 			this.setVisible(false);
 		});
 		buttonsPanel.add(OKButton);
@@ -143,12 +129,17 @@ public class SelectionDialog extends JDialog {
 		return (Integer) _CBox.getSelectedItem();
 	}
 
+	public JSONObject getCBoxSelection() {
+		return _CBoxSelection;
+	}
+
 
 	public int open() {
+		//TODO _status = 0; es necesario para resetearlo?
 		setLocation(getParent().getLocation().x + 100, getParent().getLocation().y + 100);
 		pack();
 		setVisible(true);
-		return _status; //TODO ?
+		return _status;
 	}
 
 }

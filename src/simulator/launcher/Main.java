@@ -154,10 +154,10 @@ public class Main {
 						+ _stateComparatorDefaultValue + "'.")
 				.build());
 
-		//Program mode
-		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
-				.desc("Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'batch'")
-				.build()); //TODO method to get possible values?
+		// program mode
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc(
+				"Execution Mode. Possible values: 'batch' (Batch mode), 'gui' (Graphical User Interface mode). Default value: 'batch'")
+				.build());
 
 		return cmdLineOptions;
 	}
@@ -228,7 +228,7 @@ public class Main {
 
 	private static JSONObject parseWRTFactory(String v, Factory<?> factory) {
 
-		// the value of v is either a tag for the type, or a tag:data where data is a
+		// the value of v is either a tag for the type, or a tag: data where data is a
 		// JSON structure corresponding to the data of that type. We split this
 		// information
 		// into variables 'type' and 'data'
@@ -285,8 +285,7 @@ public class Main {
 		StateComparator comp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
 		Controller c = new Controller(sim, _bodyFactory, _forceLawsFactory);
-		
-		//TODO is all of this needed?
+
 		OutputStream outChar = null;
 		BufferedInputStream expectedOut = null;
 
@@ -322,12 +321,20 @@ public class Main {
 			expectedOut.close();
 	}
 
-	private static void startGUIMode() throws Exception{
+	private static void startGUIMode() throws Exception {
 		ForceLaw force = _forceLawsFactory.createInstance(_forceLawsInfo);
 		PhysicsSimulator sim = new PhysicsSimulator(_dtime, force);
 		Controller c = new Controller(sim, _bodyFactory, _forceLawsFactory);
 
-		SwingUtilities.invokeAndWait(new Runnable() {
+		/*
+		 * if we load a file with the "-i" option, there is chance that the viewer::
+		 * autoScale() method won't do the expected effect and the bodies will be drawn
+		 * close to the center (this is because if you call it from method onRegister,
+		 * the size of the component is still 0). To solve this issue:
+		 * 		load the bodies after SwingUtilities.invokeAndWait in startGUIMode
+		 */
+		
+		 SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {
 				new MainWindow(c, sim, _forceLawsFactory, _bodyFactory);
@@ -337,19 +344,20 @@ public class Main {
 		try (InputStream inChar = new FileInputStream(_inFile)) {
 			c.loadBodies(inChar);
 		} catch (IOException ioe) {
-			
+			throw new IllegalArgumentException("Input file " + _inFile + " could not be opened");
 		}
+		
 	}
 
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
 		if (_mode.equalsIgnoreCase("gui"))
 			startGUIMode();
-		else 
+		else
 			startBatchMode();
 	}
 
-	public static void main(String[] args) { 
+	public static void main(String[] args) {
 		try {
 			init();
 			start(args);
@@ -360,6 +368,4 @@ public class Main {
 		}
 	}
 
-
 }
-

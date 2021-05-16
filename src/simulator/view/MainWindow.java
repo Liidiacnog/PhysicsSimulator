@@ -5,7 +5,6 @@ import simulator.factories.Factory;
 import simulator.model.Body;
 import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JComponent;
@@ -38,19 +37,25 @@ public class MainWindow extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         setContentPane(mainPanel);
 
-        JPanel controlPanel = new ControlPanel(_ctrl,  _sim, _fFL, _fB);
+        //PAGE_START:
+        JPanel controlPanel = new ControlPanel(_ctrl,  _sim, _fFL);
         mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 
+        //CENTER:
         JPanel centerPanel = new JPanel();
+
         JPanel bodiesTable = new BodiesTable(_ctrl);
         bodiesTable.setPreferredSize(new Dimension(900, 200));
-        JComponent viewer = new Viewer(_ctrl);
+
+        JComponent viewer = new Viewer(_ctrl, _fB);
         viewer.setPreferredSize(new Dimension(900, 450));
+
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.add(bodiesTable);
         centerPanel.add(viewer);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
+        //PAGE_END:
         JPanel statusBar = new StatusBar(_ctrl);
         statusBar.setPreferredSize(new Dimension(900, 30));
         mainPanel.add(statusBar, BorderLayout.PAGE_END);

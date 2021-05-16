@@ -27,6 +27,10 @@ public class Body {
 	public Vector2D getPosition() {
 		return p;
 	}
+
+	public void setPosition(double x, double y) {
+		p = new Vector2D(x, y);
+	}
 	
 	public Vector2D getForce() {
 		return f;

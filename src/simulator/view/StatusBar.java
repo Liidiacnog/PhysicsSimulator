@@ -10,6 +10,10 @@ import java.awt.FlowLayout;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
+/*
+    displays some additional information related to the simulator’s state:
+    the current time, the total number of bodies, and the current force laws.
+ */
 public class StatusBar extends JPanel implements SimulatorObserver {
 
     private JLabel _currTime; // for current time
@@ -24,12 +28,15 @@ public class StatusBar extends JPanel implements SimulatorObserver {
     private void initGUI() {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBorder(BorderFactory.createBevelBorder(1));
+
         _currLaws.setPreferredSize(new Dimension(300, 30));
         _currTime.setPreferredSize(new Dimension(120, 30));
         _numOfBodies.setPreferredSize(new Dimension(80, 30));
+
         _currLaws.setVerticalAlignment(JLabel.TOP);
         _currTime.setVerticalAlignment(JLabel.TOP);
         _numOfBodies.setVerticalAlignment(JLabel.TOP);
+        
         this.add(_currTime);
         this.add(_numOfBodies);
         this.add(_currLaws);

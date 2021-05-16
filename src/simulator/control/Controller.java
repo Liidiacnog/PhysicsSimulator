@@ -54,6 +54,11 @@ public class Controller {
         }
     }
 
+    public void addBody(JSONObject bodyInfo) {
+        _sim.addBody(_fB.createInstance(bodyInfo));
+    }
+
+    
     /*
      * it runs the simulator n steps, and prints the different states out in the
      * following JSON format: { "states": [s0,s1,...,sn] } where s0 is the state of

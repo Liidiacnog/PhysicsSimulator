@@ -17,9 +17,7 @@ import simulator.model.SimulatorObserver;
 public class ControlPanel extends JPanel implements SimulatorObserver {
     private static final double Default_deltaT = 2500.0;
     private static final int Default_steps = 10000;
-
     private JToolBar _toolBar;
-    
     private Controller _ctrl;
     private PhysicsSimulator _simulator;
     private boolean _stopped;
@@ -37,19 +35,19 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     
 
 
-    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL, Factory<Body> fB) {
+    public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL) {
         _ctrl = ctrl;
         _simulator = simulator;
         _stopped = false;
-        _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL, _ctrl,
-                            ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);  //TODO at some point give it fB as well
+        _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL,
+                            ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);
         initGUI();
         _ctrl.addObserver(this);
     }
 
     private void initGUI() {
 
-        _toolBar = new JToolBar(); 
+        _toolBar = new JToolBar();
         
         //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
@@ -79,7 +77,20 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         ldForcesB.setPreferredSize(new Dimension(50, 50)); 
         ldForcesB.addActionListener((e) -> {
             // (1) open a dialog box and ask the user to select one of the available force laws;
-            _selectionDialog.open();    
+            //user has clicked OK, and wants to continue changing the force law:
+            if( _selectionDialog.open() == 1 ) {
+                /* once selected, change the force laws of the simulator to the chosen one  */
+			    try{
+                    _ctrl.setForceLaws(_selectionDialog.getCBoxSelection());
+                }catch (IllegalArgumentException iae){
+                    JOptionPane.showMessageDialog(new JFrame(),
+                                                    "The following error occurred: " + iae.getMessage(),
+                                                    "The change of force laws did not succeed:", 
+                                                    JOptionPane.ERROR_MESSAGE, 
+                                                    new ImageIcon("resources/icons/caution.jpg"));
+                }
+            }
+            //else : User has clicked Cancel (option nr 0) and we do nothing
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
         _toolBar.add(ldForcesB);
@@ -141,7 +152,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
         exitB.setPreferredSize(new Dimension(50, 50)); 
         exitB.addActionListener( (e) -> {
-            //_ctrl.requestExit(); TODO lo dijo en clase o por qué está aquí, para seguir MVC mejor?
             int option = JOptionPane.showOptionDialog(new JFrame(),
                             "Are sure you want to quit?", "Quitting simulator...",
                             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon("resources/icons/exit.png"),
