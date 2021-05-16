@@ -13,6 +13,7 @@ import simulator.model.Body;
 import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
+import java.awt.FlowLayout;
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
     private static final double Default_deltaT = 2500.0;
@@ -48,6 +49,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private void initGUI() {
 
         _toolBar = new JToolBar();
+        //_toolBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20)); TODO?
         
         //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
@@ -66,7 +68,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 }
             }
         } );
-        ldBodiesB.setToolTipText("Load a bodies json file");
+        ldBodiesB.setToolTipText("Load a bodies' JSON file");
         _toolBar.add(ldBodiesB);
             
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));

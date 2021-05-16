@@ -6,22 +6,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import simulator.control.Controller;
 import simulator.misc.Vector2D;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -29,7 +24,8 @@ import simulator.factories.Factory;
 
 public class Viewer extends JComponent implements SimulatorObserver {
 
-    private int _centerX, _centerY; // coordinates of its origin position (width and the height of the component by 2)
+    private int _centerX, _centerY; // coordinates of its origin position (width and the height of the component by
+                                    // 2)
     private final int _radius = 6; // current list of bodies for drawing them, updated when the state changes.
     private double _scale; // to scale the universe so we can draw it within the area of the component
     private List<Body> _bodies;
@@ -47,10 +43,9 @@ public class Viewer extends JComponent implements SimulatorObserver {
     private Controller _ctrl;
     private Body _dgBody;
     private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
-    private static String BodiesSelectionDialogTitle = "Addition of bodies"; 
-    private static String BodiesSelectionDialogInstr = 
-            "Select a body and provide values for the parameters in the 'Values' column"
-		 		 +  "(default values are used for parameters with no user defined value)";
+    private static String BodiesSelectionDialogTitle = "Addition of bodies";
+    private static String BodiesSelectionDialogInstr = "Select a body and provide values for the parameters in the 'Values' column"
+            + "(default values are used for parameters with no user defined value)";
 
     Viewer(Controller ctrl, Factory<Body> fB) {
         _fB = fB;
@@ -71,27 +66,25 @@ public class Viewer extends JComponent implements SimulatorObserver {
         _showHelp = true;
         _showVectors = true;
 
-
         addMouseMotionListener(new MouseMotionListener() {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                // _centerX + (int) (b.getPosition().getX() / _scale);
+                // TODO? _centerX + (int) (b.getPosition().getX() / _scale);
                 if (_dgBody != null && ControlPanel.getStop()) {
                     double bx = (e.getX() - _centerX) * _scale;
                     double by = (e.getY() - _centerY) * _scale;
                     _dgBody.setPosition(bx, by);
                     repaint();
                 }
-                
+
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                // TODO Auto-generated method stub
-                
+                //Do nothing
             }
-            
+
         });
 
         addKeyListener(new KeyListener() {
@@ -124,23 +117,19 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                // TODO Auto-generated method stub
-
+                //Do nothing
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                // TODO Auto-generated method stub
-
+                //Do nothing
             }
         });
 
         addMouseListener(new MouseListener() {
-            
-            // ... TODO?
 
             @Override
-            public void mouseEntered(MouseEvent e) {  
+            public void mouseEntered(MouseEvent e) {
                 requestFocus();
             }
 
@@ -148,12 +137,11 @@ public class Viewer extends JComponent implements SimulatorObserver {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1 && ControlPanel.getStop()) {
                     Body selBody = getSelectedBody(e.getX(), e.getY());
-                    if (selBody != null){
-                        Color c = JColorChooser.showDialog(new JFrame(),"Change body color", Color.BLUE);
+                    if (selBody != null) {
+                        Color c = JColorChooser.showDialog(new JFrame(), "Change body color", Color.BLUE);
                         _bodiesColors.put(selBody, c);
                         repaint();
-                    }
-                    else if (_bodySelDialog.open() == 1) {
+                    } else if (_bodySelDialog.open() == 1) {
                         _ctrl.addBody(_bodySelDialog.getCBoxSelection());
                     }
                 }
@@ -171,14 +159,13 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // TODO Auto-generated method stub
-
+                //Do nothing
             }
         });
     }
 
     private Body getSelectedBody(int x, int y) {
-        for (Body b: _bodies) {
+        for (Body b : _bodies) {
             int bx = _centerX + (int) (b.getPosition().getX() / _scale);
             int by = _centerY + (int) (b.getPosition().getY() / _scale);
             if (Math.sqrt(Math.pow(x - bx, 2) + Math.pow(y - by, 2)) <= _radius) {
@@ -189,9 +176,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
         return null;
     }
 
-    
     @Override
-    protected void paintComponent(Graphics g) { //TODO poner instrucciones para añadir nuevo body
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         // use ’gr’ to draw not ’g’ --- it gives nicer results
@@ -202,8 +188,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
         // calculate the center
         _centerX = getWidth() / 2;
         _centerY = getHeight() / 2;
-        
-        //(1) draw a cross at the center;
+
+        // (1) draw a cross at the center;
         gr.drawString("+", _centerX, _centerY + 4);
         for (Body b : _bodies) {
             int x = _centerX + (int) (b.getPosition().getX() / _scale) - _radius;
@@ -213,9 +199,11 @@ public class Viewer extends JComponent implements SimulatorObserver {
             else
                 gr.setColor(Color.BLUE);
             gr.fillOval(x, y, 2 * _radius, 2 * _radius);
-            gr.drawString(b.getId(), x, y - y/20);
+            gr.setColor(Color.BLACK);
+            gr.setFont(new Font("Bold", Font.BOLD, 15));
+            gr.drawString(b.getId(), x - x / 95, y - y / 20);
 
-            if (_showVectors) { //(2) draw the help message
+            if (_showVectors) { // (2) draw the help message
                 int scaleFactor = 18;
                 x += _radius;
                 y += _radius;
@@ -226,13 +214,18 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 y1 = (int) b.getForce().direction().scale(scaleFactor).getY() + y;
                 drawLineWithArrow(gr, x, y, x1, y1, 2, 3, Color.RED, Color.RED);
             }
-            
-            //(3) draw the bodies, and if _showVectors is true, also the velocity and force vectors  (using 2 different colours)
-            if (_showHelp) { 
+
+            // (3) draw the bodies, and if _showVectors is true, also the velocity and force
+            // vectors (using 2 different colours)
+            if (_showHelp) {
                 String help = "Scaling ratio: " + _scale;
                 gr.setColor(Color.RED);
+                gr.setFont(new Font("Default", Font.PLAIN, 12));
                 gr.drawString(_helpMsg, 8, 32);
                 gr.drawString(help, 8, 47);
+                // instructions on how to add a new body
+                gr.setColor(Color.BLACK);
+                gr.drawString("* NOTE: double-click anywhere to add a new body there *", 8, 62);
             }
 
         }
@@ -252,12 +245,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
     // This method draws a line from (x1,y1) to (x2,y2) with an arrow.
     // The arrow is of height h and width w.
     // The last two arguments are the colors of the arrow and the line
-    private void drawLineWithArrow(
-            Graphics g, 
-            int x1, int y1, 
-            int x2, int y2, 
-            int w, int h, 
-            Color lineColor, Color arrowColor) {
+    private void drawLineWithArrow(Graphics g, int x1, int y1, int x2, int y2, int w, int h, Color lineColor,
+            Color arrowColor) {
 
         int dx = x2 - x1, dy = y2 - y1;
         double D = Math.sqrt(dx * dx + dy * dy);
@@ -277,7 +266,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         g.fillPolygon(xpoints, ypoints, 3);
     }
 
-    private void resetBodiesAndScale(List<Body> l){
+    private void resetBodiesAndScale(List<Body> l) {
         _bodies = new ArrayList<>(l);
         autoScale();
         repaint();

@@ -15,12 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
-
 import javax.swing.SwingUtilities;
-
 import org.json.JSONObject;
-
-//import extra.dialog.ex1.MainWindow;
 import simulator.control.Controller;
 import simulator.control.StateComparator;
 import simulator.factories.*;
@@ -232,7 +228,6 @@ public class Main {
 		// JSON structure corresponding to the data of that type. We split this
 		// information
 		// into variables 'type' and 'data'
-		//
 		int i = v.indexOf(":");
 		String type = null;
 		String data = null;
