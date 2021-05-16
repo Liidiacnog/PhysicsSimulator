@@ -58,6 +58,14 @@ public class Controller {
         _sim.addBody(_fB.createInstance(bodyInfo));
     }
 
+    public void removeBody(Body b) {
+        _sim.removeBody(b);
+    }
+
+    public void removeBody(String bodyId) {
+        _sim.removeBody(bodyId);
+    }
+
     
     /*
      * it runs the simulator n steps, and prints the different states out in the
@@ -156,6 +164,10 @@ public class Controller {
      */
     public void setForceLaws(JSONObject info) {
         _sim.setForceLaws(_fFL.createInstance(info));
+    }
+
+    public Object[] getBodiesId() {
+        return _sim.getBodiesId();
     }
 
 }

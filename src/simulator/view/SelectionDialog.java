@@ -68,13 +68,14 @@ public class SelectionDialog extends JDialog {
 
 	private void initGUI() {
 
-		setTitle(_title); 
+		setTitle(_title);
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		// PAGE_START
 		JPanel topPanel = new JPanel();
 		topPanel.add(new JLabel(_instructions));
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
+		
 
 		// CENTER
 		JPanel center = new JPanel();
@@ -88,7 +89,7 @@ public class SelectionDialog extends JDialog {
 		setComboBoxNames();
 		JPanel forcesCBoxPanel = new JPanel();
 		forcesCBoxPanel.add(_CBox, "Select one: ");
-		forcesCBoxPanel.setPreferredSize(new Dimension(300, 50));
+		forcesCBoxPanel.setPreferredSize(new Dimension(80, 50));
 		center.add(forcesCBoxPanel);
 
 		mainPanel.add(center, BorderLayout.CENTER);

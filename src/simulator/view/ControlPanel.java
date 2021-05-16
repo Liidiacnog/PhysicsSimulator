@@ -20,8 +20,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private JToolBar _toolBar;
     private Controller _ctrl;
     private PhysicsSimulator _simulator;
-    private boolean _stopped;
-    JButton ldBodiesB, ldForcesB, goB, stopB, exitB;
+    private static boolean _stopped;
+    JButton ldBodiesB, ldForcesB, goB, stopB, exitB, removeB;
     JFileChooser fc;
     SelectionDialog _selectionDialog;
     JSpinner _stepsSpinner;
@@ -31,14 +31,14 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private static String ForcesSelectionDialogTitle = "Force Laws Selection"; 
     private static String ForcesSelectionDialogInstr = 
             "Select a force law and provide values for the parameters in the 'Value' column"
-		 		 +  "(default values are used for parameters with no user defined value)"; 
+		 		 + " (default values are used for parameters with no user defined value)"; 
     
 
 
     public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL) {
         _ctrl = ctrl;
         _simulator = simulator;
-        _stopped = false;
+        _stopped = true;
         _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL,
                             ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);
         initGUI();
@@ -138,6 +138,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         //Delta-Time area using a JTextField.
         _deltaT = new JTextField("" + Default_deltaT);
+        _simulator.setDeltaTime(Default_deltaT);
         _deltaT.setEditable(true);
         _deltaT.setPreferredSize(new Dimension(80, 30));
         JLabel dtLabel = new JLabel("Delta-Time: ");
@@ -147,22 +148,33 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
 
+        //Remove body button
+        removeB = new JButton("Remove Body");
+        removeB.setPreferredSize(new Dimension(100, 50));
+        removeB.addActionListener((e) -> {
+            String op = (String) JOptionPane.showInputDialog(new JFrame(),
+                                    "Select a body", "Remove body", JOptionPane.PLAIN_MESSAGE,
+                                    null, _ctrl.getBodiesId(), _ctrl.getBodiesId()[0]);
+            _ctrl.removeBody(op);
+        });
+        _toolBar.add(removeB);
+
 
         //Exit button
         exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
         exitB.setPreferredSize(new Dimension(50, 50)); 
         exitB.addActionListener( (e) -> {
+            Object[] text = {"Quit", "No"};
             int option = JOptionPane.showOptionDialog(new JFrame(),
                             "Are sure you want to quit?", "Quitting simulator...",
                             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon("resources/icons/exit.png"),
-                            null, null);
+                            text, text[0]);
 
             if (option == 0) //0 is "Quit"
                 System.exit(0);
         });
         exitB.setToolTipText("Exit the simulator");
         _toolBar.add(exitB);
-                
 
         this.add(_toolBar);
         this.setVisible(true);
@@ -182,7 +194,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 _ctrl.run(1);
             } catch (Exception e) {
                 /*TODO In addition, catch all exceptions thrown by the controller/simulator and show a corresponding
-message using a dialog box (e.g., using JOptionPane.showMessageDialog).*/
+                 message using a dialog box (e.g., using JOptionPane.showMessageDialog).*/
                 // which errors can occur?
                 JOptionPane.showMessageDialog(new JFrame(),
                                                 "The following error occurred: " + e.getMessage(),
@@ -217,6 +229,10 @@ message using a dialog box (e.g., using JOptionPane.showMessageDialog).*/
 
         if (b != null)
             b.setEnabled(!bool);
+    }
+
+    public static boolean getStop() {
+        return _stopped;
     }
 
     

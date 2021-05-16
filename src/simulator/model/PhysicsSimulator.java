@@ -63,6 +63,28 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
             o.onBodyAdded(_bodies, b); 
     }
 
+    
+
+    public void removeBody(Body b) throws IllegalArgumentException {
+        if (!_bodies.contains(b))
+            throw new IllegalArgumentException();
+
+        _bodies.remove(b);
+        for(SimulatorObserver o: observers)
+            o.onBodyAdded(_bodies, b); 
+    }
+
+    public void removeBody(String bodyId) {
+        for (Body b: _bodies) {
+            if (b.getId().equals(bodyId)) {
+                _bodies.remove(b);
+                for(SimulatorObserver o: observers)
+                    o.onBodyAdded(_bodies, b);
+                return;
+            }
+        }
+    }
+
     /*
      * returns the JSON structure that includes the simulator’s state: { "time": t,
      * "bodies": [json1, json2, . . .] } where t is the current time and jsoni is
@@ -132,5 +154,11 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
         }
     }
 
-
+    public Object[] getBodiesId() {
+        String[] bodiesId = new String[_bodies.size()];
+        for (int i = 0; i < bodiesId.length; i++) {
+            bodiesId[i] = _bodies.get(i).getId();
+        }
+        return bodiesId;
+    }
 }

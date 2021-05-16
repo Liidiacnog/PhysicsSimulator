@@ -29,7 +29,7 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBorder(BorderFactory.createBevelBorder(1));
 
-        _currLaws.setPreferredSize(new Dimension(300, 30));
+        _currLaws.setPreferredSize(new Dimension(500, 30));
         _currTime.setPreferredSize(new Dimension(120, 30));
         _numOfBodies.setPreferredSize(new Dimension(80, 30));
 

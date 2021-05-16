@@ -6,14 +6,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import simulator.control.Controller;
 import simulator.misc.Vector2D;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import simulator.factories.Factory;
@@ -21,7 +30,7 @@ import simulator.factories.Factory;
 public class Viewer extends JComponent implements SimulatorObserver {
 
     private int _centerX, _centerY; // coordinates of its origin position (width and the height of the component by 2)
-    private int _radius; // current list of bodies for drawing them, updated when the state changes.
+    private final int _radius = 6; // current list of bodies for drawing them, updated when the state changes.
     private double _scale; // to scale the universe so we can draw it within the area of the component
     private List<Body> _bodies;
     private SelectionDialog _bodySelDialog;
@@ -34,6 +43,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
                                    * changed when key ’v’ is pressed.
                                    */
     private Factory<Body> _fB;
+    private Map<Body, Color> _bodiesColors;
     private Controller _ctrl;
     private Body _dgBody;
     private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
@@ -43,8 +53,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		 		 +  "(default values are used for parameters with no user defined value)";
 
     Viewer(Controller ctrl, Factory<Body> fB) {
-        _radius = 6;
         _fB = fB;
+        _ctrl = ctrl;
         _bodySelDialog = new SelectionDialog((Frame) SwingUtilities.getWindowAncestor(this), _fB,
                 BodiesSelectionDialogTitle, BodiesSelectionDialogInstr);
         initGUI();
@@ -56,6 +66,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 TitledBorder.LEFT, TitledBorder.RIGHT));
 
         _bodies = new ArrayList<>();
+        _bodiesColors = new HashMap<>();
         _scale = 1.0;
         _showHelp = true;
         _showVectors = true;
@@ -65,8 +76,11 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (_dgBody != null) {
-                    _dgBody.setPosition(e.getX(), e.getY());
+                // _centerX + (int) (b.getPosition().getX() / _scale);
+                if (_dgBody != null && ControlPanel.getStop()) {
+                    double bx = (e.getX() - _centerX) * _scale;
+                    double by = (e.getY() - _centerY) * _scale;
+                    _dgBody.setPosition(bx, by);
                     repaint();
                 }
                 
@@ -132,9 +146,15 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
-                    if (_bodySelDialog.open() == 1) {
-                        _ctrl.addBody(_bodySelDialog.getCBoxSelection()); //TODO parar la simulación
+                if (e.getClickCount() > 1 && ControlPanel.getStop()) {
+                    Body selBody = getSelectedBody(e.getX(), e.getY());
+                    if (selBody != null){
+                        Color c = JColorChooser.showDialog(new JFrame(),"Change body color", Color.BLUE);
+                        _bodiesColors.put(selBody, c);
+                        repaint();
+                    }
+                    else if (_bodySelDialog.open() == 1) {
+                        _ctrl.addBody(_bodySelDialog.getCBoxSelection());
                     }
                 }
             }
@@ -159,7 +179,9 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     private Body getSelectedBody(int x, int y) {
         for (Body b: _bodies) {
-            if (Math.sqrt(Math.pow(x - b.getPosition().getX(), 2) + Math.pow(y - b.getPosition().getY(), 2)) <= _radius) {
+            int bx = _centerX + (int) (b.getPosition().getX() / _scale);
+            int by = _centerY + (int) (b.getPosition().getY() / _scale);
+            if (Math.sqrt(Math.pow(x - bx, 2) + Math.pow(y - by, 2)) <= _radius) {
                 return b;
             }
         }
@@ -182,22 +204,26 @@ public class Viewer extends JComponent implements SimulatorObserver {
         _centerY = getHeight() / 2;
         
         //(1) draw a cross at the center;
-        gr.drawString("+", _centerX, _centerY);
+        gr.drawString("+", _centerX, _centerY + 4);
         for (Body b : _bodies) {
-            int x = _centerX + (int) (b.getPosition().getX() / _scale);
-            int y = _centerY + (int) (b.getPosition().getY() / _scale);
-            gr.setColor(Color.BLUE);
+            int x = _centerX + (int) (b.getPosition().getX() / _scale) - _radius;
+            int y = _centerY + (int) (b.getPosition().getY() / _scale) - _radius;
+            if (_bodiesColors.containsKey(b))
+                gr.setColor(_bodiesColors.get(b));
+            else
+                gr.setColor(Color.BLUE);
             gr.fillOval(x, y, 2 * _radius, 2 * _radius);
             gr.drawString(b.getId(), x, y - y/20);
 
-            if (_showVectors) { //(2) draw the help message 
+            if (_showVectors) { //(2) draw the help message
+                int scaleFactor = 18;
                 x += _radius;
                 y += _radius;
-                int x1 = (int) b.getVelocity().direction().scale(15).getX() + x;
-                int y1 = (int) b.getVelocity().direction().scale(15).getY() + y;
+                int x1 = (int) b.getVelocity().direction().scale(scaleFactor).getX() + x;
+                int y1 = (int) b.getVelocity().direction().scale(scaleFactor).getY() + y;
                 drawLineWithArrow(gr, x, y, x1, y1, 2, 2, Color.GREEN, Color.GREEN);
-                x1 = (int) b.getForce().direction().scale(15).getX() + x;
-                y1 = (int) b.getForce().direction().scale(15).getY() + y;
+                x1 = (int) b.getForce().direction().scale(scaleFactor).getX() + x;
+                y1 = (int) b.getForce().direction().scale(scaleFactor).getY() + y;
                 drawLineWithArrow(gr, x, y, x1, y1, 2, 3, Color.RED, Color.RED);
             }
             
