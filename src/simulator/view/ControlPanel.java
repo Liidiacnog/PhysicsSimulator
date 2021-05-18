@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import simulator.factories.Factory;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.List;
@@ -13,7 +14,7 @@ import simulator.model.Body;
 import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
 import simulator.model.SimulatorObserver;
-import java.awt.FlowLayout;
+
 
 public class ControlPanel extends JPanel implements SimulatorObserver {
     private static final double Default_deltaT = 2500.0;
@@ -49,8 +50,10 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private void initGUI() {
 
         _toolBar = new JToolBar();
-        //_toolBar.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20)); TODO?
-        
+       // _toolBar.setLayout(new BoxLayout(_toolBar, BoxLayout.X_AXIS)); 
+        _toolBar.setPreferredSize(new Dimension(1000, 100));
+        //_toolBar.setPreferredSize(((Frame) SwingUtilities.getWindowAncestor(this)).getSize());//TODO ?
+
         //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
         ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
@@ -69,6 +72,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             }
         } );
         ldBodiesB.setToolTipText("Load a bodies' JSON file");
+        ldBodiesB.setAlignmentY(Component.LEFT_ALIGNMENT);
         _toolBar.add(ldBodiesB);
             
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
@@ -95,6 +99,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             //else : User has clicked Cancel (option nr 0) and we do nothing
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
+        ldForcesB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(ldForcesB);
         
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
@@ -109,7 +114,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             /* (2) set the current delta-time of the simulator to the one specified in the corresponding text field;*/
             try{
                 _simulator.setDeltaTime(Double.parseDouble(_deltaT.getText()));
-            }catch(NullPointerException ex){
+            }catch(IllegalArgumentException ex){
+                openErrorDialog(ex);
                 _simulator.setDeltaTime(Default_deltaT);
             }
             
@@ -117,6 +123,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             run_sim((Integer) _stepsSpinner.getValue());  
         });
         goB.setToolTipText("Start the simulation"); 
+        goB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(goB);
 
         
@@ -125,6 +132,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         stopB.addActionListener( (e) -> _stopped = true  );
         stopB.setToolTipText("Stop the simulation"); 
         stopB.setPreferredSize(new Dimension(50, 50));
+        stopB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(stopB);
     
 
@@ -132,9 +140,10 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         JLabel stepsLabel = new JLabel("Steps: ");
         stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
         _toolBar.add(stepsLabel);
-        SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 0, null, 100); //initial value, min, max, step
+        SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 1, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
         _stepsSpinner.setPreferredSize(new Dimension(80, 30));
+        _stepsSpinner.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(_stepsSpinner);
     
 
@@ -142,9 +151,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         _deltaT = new JTextField("" + Default_deltaT);
         _simulator.setDeltaTime(Default_deltaT);
         _deltaT.setEditable(true);
-        _deltaT.setPreferredSize(new Dimension(80, 30));
+        _deltaT.setPreferredSize(new Dimension(200, 50));
         JLabel dtLabel = new JLabel("Delta-Time: ");
         stepsLabel.setLabelFor(_deltaT); //TODO consultar
+        dtLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        _deltaT.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(dtLabel);
         _toolBar.add(_deltaT);
 
@@ -159,6 +170,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                                     null, _ctrl.getBodiesId(), _ctrl.getBodiesId()[0]);
             _ctrl.removeBody(op);
         });
+        removeB.setToolTipText("Remove a certain body from the simulation");
+        removeB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(removeB);
 
 
@@ -176,6 +189,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 System.exit(0);
         });
         exitB.setToolTipText("Exit the simulator");
+        exitB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(exitB);
 
         this.add(_toolBar);
@@ -191,6 +205,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
          * see the intermediate steps, only the final result, and in the meantime the
          * interface will be completely blocked.
          */
+            
         if (n > 0 && !_stopped) {
             try {
                 _ctrl.run(1);
@@ -198,11 +213,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 /*TODO In addition, catch all exceptions thrown by the controller/simulator and show a corresponding
                  message using a dialog box (e.g., using JOptionPane.showMessageDialog).*/
                 // which errors can occur?
-                JOptionPane.showMessageDialog(new JFrame(),
-                                                "The following error occurred: " + e.getMessage(),
-                                                "Error found while running: ",
-                                                JOptionPane.ERROR_MESSAGE,
-                                                null);
+                openErrorDialog(e);
                 _stopped = true;
                 setAllButtonsTo(true, null);
                 return;
@@ -217,6 +228,16 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             _stopped = true;
             setAllButtonsTo(true, null);
         }
+
+        //NOTE: the number of steps is never <= 0 because the min value for the JSpinner has been set to 1
+    }
+
+    private void openErrorDialog(Exception e) {
+        JOptionPane.showMessageDialog(new JFrame(),
+                                                "The following error occurred: " + e.getMessage(),
+                                                "Error found while running: ",
+                                                JOptionPane.ERROR_MESSAGE,
+                                                null);
     }
 
     // sets all buttons to bool, except b
@@ -224,6 +245,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         ldBodiesB.setEnabled(bool);
         ldForcesB.setEnabled(bool);
         goB.setEnabled(bool);
+        removeB.setEnabled(bool);
         stopB.setEnabled(bool);
         exitB.setEnabled(bool);
         _deltaT.setEnabled(bool);

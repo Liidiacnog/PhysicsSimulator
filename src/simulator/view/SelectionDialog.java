@@ -12,7 +12,7 @@ import simulator.factories.Factory;
 
 public class SelectionDialog extends JDialog {
 
-	protected int _status;
+	private int _status; //== 0 if user clicks on Cancel button, or 1 if he clicks on OK button
 
 	private JComboBox<String> _CBox;
 	private List<JSONObject> _info;
@@ -136,7 +136,7 @@ public class SelectionDialog extends JDialog {
 
 
 	public int open() {
-		//TODO _status = 0; es necesario para resetearlo?
+		_status = 0;
 		setLocation(getParent().getLocation().x + 100, getParent().getLocation().y + 100);
 		pack();
 		setVisible(true);

@@ -60,6 +60,7 @@ public class MainWindow extends JFrame {
         statusBar.setPreferredSize(new Dimension(900, 30));
         mainPanel.add(statusBar, BorderLayout.PAGE_END);
 
+        this.pack(); //TODO does it do sth? it is supposed to be resized to fit the preferred sizes of its subcomponents
         this.setVisible(true);
     }
 
