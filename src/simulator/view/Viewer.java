@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import simulator.control.Controller;
 import simulator.misc.Vector2D;
@@ -39,13 +40,13 @@ public class Viewer extends JComponent implements SimulatorObserver {
                                    * changed when key ’v’ is pressed.
                                    */
     private Factory<Body> _fB;
-    private Map<Body, Color> _bodiesColors;
+    private Map<Body, Color> _bodiesColors; //maps a body to its colour, to be used when repainting it
     private Controller _ctrl;
-    private Body _dgBody;
+    private Body _dgBody; //body being dragged by the user to perform some action on it
     private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
     private static String BodiesSelectionDialogTitle = "Addition of bodies";
-    private static String BodiesSelectionDialogInstr = "Select a body and provide values for the parameters in the 'Values' column"
-            + "(default values are used for parameters with no user defined value)";
+    private static String BodiesSelectionDialogInstr = 
+    "Select a body and provide values for the parameters in the 'Values' column";
 
     Viewer(Controller ctrl, Factory<Body> fB) {
         _fB = fB;
@@ -66,6 +67,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         _showHelp = true;
         _showVectors = true;
 
+        //to be able to drag bodies and change their position:
         addMouseMotionListener(new MouseMotionListener() {
 
             @Override
@@ -73,7 +75,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 // TODO? _centerX + (int) (b.getPosition().getX() / _scale);
                 if (_dgBody != null && ControlPanel.getStop()) {
                     double bx = (e.getX() - _centerX) * _scale;
-                    double by = (e.getY() - _centerY) * _scale;
+                    double by = (e.getY() - _centerY) * _scale; // TODO -centerX, Y,  por qué?, y por qué no se hace igual que en getSelectedBody()
                     _dgBody.setPosition(bx, by);
                     repaint();
                 }
@@ -86,6 +88,53 @@ public class Viewer extends JComponent implements SimulatorObserver {
             }
 
         });
+        
+        //to be able to select bodies and change their colour
+        addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                requestFocus();
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1 && ControlPanel.getStop()) { //bodies are selected by double-clicking!
+                    Body selBody = getSelectedBody(e.getX(), e.getY());
+                    if (selBody != null) {
+                        Color c = JColorChooser.showDialog(new JFrame(), "Change body color", Color.BLUE);
+                        _bodiesColors.put(selBody, c);
+                        repaint();
+                    } else if (_bodySelDialog.open() == 1) {
+                        try{
+                            _ctrl.addBody(_bodySelDialog.getCBoxSelection());
+                        }catch(IllegalArgumentException ex){
+                            JOptionPane.showMessageDialog(new JFrame(),
+                                                "The following error occurred: " + ex.getMessage(),
+                                                "Error found while running: ",
+                                                JOptionPane.ERROR_MESSAGE,
+                                                null);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                _dgBody = getSelectedBody(e.getX(), e.getY());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                _dgBody = null;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //Do nothing
+            }
+        });
+
 
         addKeyListener(new KeyListener() {
             @Override
@@ -126,44 +175,10 @@ public class Viewer extends JComponent implements SimulatorObserver {
             }
         });
 
-        addMouseListener(new MouseListener() {
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                requestFocus();
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1 && ControlPanel.getStop()) {
-                    Body selBody = getSelectedBody(e.getX(), e.getY());
-                    if (selBody != null) {
-                        Color c = JColorChooser.showDialog(new JFrame(), "Change body color", Color.BLUE);
-                        _bodiesColors.put(selBody, c);
-                        repaint();
-                    } else if (_bodySelDialog.open() == 1) {
-                        _ctrl.addBody(_bodySelDialog.getCBoxSelection());
-                    }
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                _dgBody = getSelectedBody(e.getX(), e.getY());
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                _dgBody = null;
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                //Do nothing
-            }
-        });
     }
 
+    //returns the body whose oval occupies position x, y; or null if there is none
     private Body getSelectedBody(int x, int y) {
         for (Body b : _bodies) {
             int bx = _centerX + (int) (b.getPosition().getX() / _scale);
@@ -200,8 +215,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 gr.setColor(Color.BLUE);
             gr.fillOval(x, y, 2 * _radius, 2 * _radius);
             gr.setColor(Color.BLACK);
-            gr.setFont(new Font("Bold", Font.BOLD, 15));
-            gr.drawString(b.getId(), x - x / 95, y - y / 20);
+            gr.setFont(new Font("Bold", Font.BOLD, 13));
+            gr.drawString(b.getId(), x - x / 205, y - y / 20);
 
             if (_showVectors) { // (2) draw the help message
                 int scaleFactor = 18;
@@ -225,7 +240,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 gr.drawString(help, 8, 47);
                 // instructions on how to add a new body
                 gr.setColor(Color.BLACK);
-                gr.drawString("* NOTE: double-click anywhere to add a new body there *", 8, 62);
+                gr.drawString("* NOTE: If the simulator is stopped: *", 8, 62);
+                gr.drawString("* you can double-click anywhere to add a new body there *", 8, 77);
             }
 
         }
@@ -266,6 +282,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         g.fillPolygon(xpoints, ypoints, 3);
     }
 
+    //auxiliary method for observer methods
     private void resetBodiesAndScale(List<Body> l) {
         _bodies = new ArrayList<>(l);
         autoScale();

@@ -363,4 +363,11 @@ public class Main {
 		}
 	}
 
+	/*
+	TODO: dudas Samir:
+	- layout del controlpanel para que coja todo el ancho de la ventana incluso al hacer resize
+	- how to opne MainWindow in the middle of the screen instead of in the top left corner
+	- why can we add a body with same ID, if equals method has been correctly overwritten?
+	- 
+	*/
 }

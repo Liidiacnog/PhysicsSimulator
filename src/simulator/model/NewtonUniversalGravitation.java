@@ -35,7 +35,7 @@ public class NewtonUniversalGravitation implements ForceLaw {
 	}
 
 	public String toString(){
-		return "Newton’s Universal Gravitation with G =" + _G;
+		return "Newton’s Universal Gravitation with G = " + _G;
 	}
 
 }

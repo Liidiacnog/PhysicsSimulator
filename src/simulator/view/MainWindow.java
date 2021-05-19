@@ -32,11 +32,9 @@ public class MainWindow extends JFrame {
     private void initGUI() {
 
         this.setSize(900, 700);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
         JPanel mainPanel = new JPanel(new BorderLayout());
-        setContentPane(mainPanel);
-
+        
         //PAGE_START:
         JPanel controlPanel = new ControlPanel(_ctrl,  _sim, _fFL);
         mainPanel.add(controlPanel, BorderLayout.PAGE_START);
@@ -60,6 +58,8 @@ public class MainWindow extends JFrame {
         statusBar.setPreferredSize(new Dimension(900, 30));
         mainPanel.add(statusBar, BorderLayout.PAGE_END);
 
+        this.setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack(); //TODO does it do sth? it is supposed to be resized to fit the preferred sizes of its subcomponents
         this.setVisible(true);
     }

@@ -63,6 +63,7 @@ public class Body {
 	}
 
 	//equal bodies if they have the same identifier
+	@Override
 	public boolean equals(Object o){
 		if(this == o)
 			return true;

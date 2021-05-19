@@ -55,8 +55,8 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
      * already exists
      */
     public void addBody(Body b) throws IllegalArgumentException {
-        if (_bodies.contains(b))
-            throw new IllegalArgumentException();
+        if (_bodies.contains(b)) //TODO why doesn't it work?
+            throw new IllegalArgumentException("Attempted to add a body which already exists");
 
         _bodies.add(b);
         for(SimulatorObserver o: observers)

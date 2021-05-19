@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import simulator.factories.Factory;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.List;
+import java.io.File;
 import javax.swing.*;
 import simulator.control.Controller;
 import simulator.model.Body;
@@ -40,6 +40,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     public ControlPanel(Controller ctrl,  PhysicsSimulator simulator, Factory<ForceLaw> fFL) {
         _ctrl = ctrl;
         _simulator = simulator;
+        fc = new JFileChooser();
+        fc.setCurrentDirectory(new File("resources"));
         _stopped = true;
         _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL,
                             ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);
@@ -50,16 +52,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private void initGUI() {
 
         _toolBar = new JToolBar();
-       // _toolBar.setLayout(new BoxLayout(_toolBar, BoxLayout.X_AXIS)); 
-        _toolBar.setPreferredSize(new Dimension(1000, 100));
-        //_toolBar.setPreferredSize(((Frame) SwingUtilities.getWindowAncestor(this)).getSize());//TODO ?
-
+        
         //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
         ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
         ldBodiesB.addActionListener((e) -> {
             // (1) ask the user to select a file using a JFileChooser
-            fc = new JFileChooser();
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 // (2) reset the simulator
                 _ctrl.reset();
@@ -72,7 +70,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             }
         } );
         ldBodiesB.setToolTipText("Load a bodies' JSON file");
-        ldBodiesB.setAlignmentY(Component.LEFT_ALIGNMENT);
         _toolBar.add(ldBodiesB);
             
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
@@ -93,13 +90,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                                                     "The following error occurred: " + iae.getMessage(),
                                                     "The change of force laws did not succeed:", 
                                                     JOptionPane.ERROR_MESSAGE, 
-                                                    new ImageIcon("resources/icons/caution.jpg"));
+                                                    new ImageIcon("resources/icons/caution.jpg")); //TODO make it smaller?
                 }
             }
             //else : User has clicked Cancel (option nr 0) and we do nothing
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
-        ldForcesB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(ldForcesB);
         
         _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
@@ -123,7 +119,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             run_sim((Integer) _stepsSpinner.getValue());  
         });
         goB.setToolTipText("Start the simulation"); 
-        goB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(goB);
 
         
@@ -132,7 +127,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         stopB.addActionListener( (e) -> _stopped = true  );
         stopB.setToolTipText("Stop the simulation"); 
         stopB.setPreferredSize(new Dimension(50, 50));
-        stopB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(stopB);
     
 
@@ -142,8 +136,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         _toolBar.add(stepsLabel);
         SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 1, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
-        _stepsSpinner.setPreferredSize(new Dimension(80, 30));
-        _stepsSpinner.setAlignmentY(Component.CENTER_ALIGNMENT);
+        _stepsSpinner.setPreferredSize(new Dimension(80, 50));
         _toolBar.add(_stepsSpinner);
     
 
@@ -151,11 +144,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         _deltaT = new JTextField("" + Default_deltaT);
         _simulator.setDeltaTime(Default_deltaT);
         _deltaT.setEditable(true);
-        _deltaT.setPreferredSize(new Dimension(200, 50));
+        _deltaT.setPreferredSize(new Dimension(80, 50));
         JLabel dtLabel = new JLabel("Delta-Time: ");
         stepsLabel.setLabelFor(_deltaT); //TODO consultar
-        dtLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-        _deltaT.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(dtLabel);
         _toolBar.add(_deltaT);
 
@@ -171,7 +162,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
             _ctrl.removeBody(op);
         });
         removeB.setToolTipText("Remove a certain body from the simulation");
-        removeB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(removeB);
 
 
@@ -189,7 +179,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 System.exit(0);
         });
         exitB.setToolTipText("Exit the simulator");
-        exitB.setAlignmentY(Component.CENTER_ALIGNMENT);
         _toolBar.add(exitB);
 
         this.add(_toolBar);

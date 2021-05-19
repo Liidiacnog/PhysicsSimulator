@@ -26,7 +26,7 @@ public class MovingTowardsFixedPointBuilder extends Builder<ForceLaw> {
         return data;
     }
 
-    protected ForceLaw createNewT(JSONObject info) { 
+    protected ForceLaw createNewT(JSONObject info) throws IllegalArgumentException { 
         try {
             if (!info.has("c") && !info.has("g")) // No params provided, so default values are used
                 return new MovingTowardsFixedPoint(Default_c, Default_g);

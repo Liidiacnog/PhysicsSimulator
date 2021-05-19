@@ -50,11 +50,11 @@ public class Controller {
         // convert the input JSON into a JSONObject:
         JSONArray bodies = new JSONObject(new JSONTokener(in)).getJSONArray("bodies");
         for (int i = 0; i < bodies.length(); ++i) {
-            _sim.addBody(_fB.createInstance(bodies.getJSONObject(i)));
+           addBody(bodies.getJSONObject(i));
         }
     }
 
-    public void addBody(JSONObject bodyInfo) {
+    public void addBody(JSONObject bodyInfo) throws IllegalArgumentException {
         _sim.addBody(_fB.createInstance(bodyInfo));
     }
 

@@ -24,7 +24,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaw> {
         return data;
     }
 
-    protected ForceLaw createNewT(JSONObject info) {
+    protected ForceLaw createNewT(JSONObject info) throws IllegalArgumentException {
         try {
             if (info.has("G"))
                 return new NewtonUniversalGravitation(info.getDouble("G"));
