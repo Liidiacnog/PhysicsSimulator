@@ -13,6 +13,7 @@ import simulator.control.Controller;
 import simulator.model.Body;
 import simulator.model.ForceLaw;
 import simulator.model.PhysicsSimulator;
+import java.awt.BorderLayout;
 import simulator.model.SimulatorObserver;
 
 
@@ -23,6 +24,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private Controller _ctrl;
     private PhysicsSimulator _simulator;
     private static boolean _stopped;
+    private Factory<ForceLaw> _fFL;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB, removeB;
     JFileChooser fc;
     SelectionDialog _selectionDialog;
@@ -43,8 +45,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         fc = new JFileChooser();
         fc.setCurrentDirectory(new File("resources"));
         _stopped = true;
-        _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), fFL,
-                            ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);
+        _fFL = fFL;
         initGUI();
         _ctrl.addObserver(this);
     }
@@ -52,7 +53,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private void initGUI() {
 
         _toolBar = new JToolBar();
-        
+
         //Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
         ldBodiesB.setPreferredSize(new Dimension(50, 50)); 
@@ -62,7 +63,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 // (2) reset the simulator
                 _ctrl.reset();
                 // (3) load the selected file into the simulator
-                try (InputStream inChar = new FileInputStream(fc.getSelectedFile().toPath().toString())) { //TODO is "try" necessary?
+                try (InputStream inChar = new FileInputStream(fc.getSelectedFile().toPath().toString())) {
                     _ctrl.loadBodies(inChar);
                 } catch (IOException ioe) {
                     throw new IllegalArgumentException("Input file could not be opened");
@@ -72,7 +73,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         ldBodiesB.setToolTipText("Load a bodies' JSON file");
         _toolBar.add(ldBodiesB);
             
-        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+        _toolBar.addSeparator();
         
 
         //Change force button
@@ -81,6 +82,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         ldForcesB.addActionListener((e) -> {
             // (1) open a dialog box and ask the user to select one of the available force laws;
             //user has clicked OK, and wants to continue changing the force law:
+            
+            if(_selectionDialog == null){
+                _selectionDialog = new SelectionDialog( (Frame) SwingUtilities.getWindowAncestor(this), _fFL,
+                    ForcesSelectionDialogTitle,  ForcesSelectionDialogInstr);
+            }
+            
             if( _selectionDialog.open() == 1 ) {
                 /* once selected, change the force laws of the simulator to the chosen one  */
 			    try{
@@ -90,15 +97,30 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                                                     "The following error occurred: " + iae.getMessage(),
                                                     "The change of force laws did not succeed:", 
                                                     JOptionPane.ERROR_MESSAGE, 
-                                                    new ImageIcon("resources/icons/caution.jpg")); //TODO make it smaller?
+                                                    null);
                 }
             }
             //else : User has clicked Cancel (option nr 0) and we do nothing
         });
         ldForcesB.setToolTipText("Select one of the available force laws"); 
+        ldForcesB.setAlignmentX(CENTER_ALIGNMENT); //TODO does it do sth?
         _toolBar.add(ldForcesB);
         
-        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
+
+        //Remove body button
+        removeB = new JButton("Remove Body");
+        removeB.setPreferredSize(new Dimension(100, 50));
+        removeB.addActionListener((e) -> {
+            String op = (String) JOptionPane.showInputDialog(new JFrame(),
+                                    "Select a body", "Remove body", JOptionPane.PLAIN_MESSAGE,
+                                    null, _ctrl.getBodiesId(), _ctrl.getBodiesId()[0]);
+            _ctrl.removeBody(op);
+        });
+        removeB.setToolTipText("Remove a certain body from the simulation");
+        _toolBar.add(removeB);
+
+
+        _toolBar.addSeparator();
             
         
         //Start button
@@ -132,11 +154,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         //JSpinner for steps:
         JLabel stepsLabel = new JLabel("Steps: ");
-        stepsLabel.setLabelFor(_stepsSpinner); //TODO consultar si es necesario
         _toolBar.add(stepsLabel);
         SpinnerModel stepsModel = new SpinnerNumberModel(Default_steps, 1, null, 100); //initial value, min, max, step
         _stepsSpinner = new JSpinner(stepsModel);
         _stepsSpinner.setPreferredSize(new Dimension(80, 50));
+        _stepsSpinner.setMaximumSize(new Dimension(80, 50));
         _toolBar.add(_stepsSpinner);
     
 
@@ -145,25 +167,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         _simulator.setDeltaTime(Default_deltaT);
         _deltaT.setEditable(true);
         _deltaT.setPreferredSize(new Dimension(80, 50));
+        _deltaT.setMaximumSize(new Dimension(80, 50));
         JLabel dtLabel = new JLabel("Delta-Time: ");
-        stepsLabel.setLabelFor(_deltaT); //TODO consultar
         _toolBar.add(dtLabel);
         _toolBar.add(_deltaT);
 
-        _toolBar.add(new JSeparator(SwingConstants.VERTICAL));
-
-        //Remove body button
-        removeB = new JButton("Remove Body");
-        removeB.setPreferredSize(new Dimension(100, 50));
-        removeB.addActionListener((e) -> {
-            String op = (String) JOptionPane.showInputDialog(new JFrame(),
-                                    "Select a body", "Remove body", JOptionPane.PLAIN_MESSAGE,
-                                    null, _ctrl.getBodiesId(), _ctrl.getBodiesId()[0]);
-            _ctrl.removeBody(op);
-        });
-        removeB.setToolTipText("Remove a certain body from the simulation");
-        _toolBar.add(removeB);
-
+        _toolBar.addSeparator();
+        
 
         //Exit button
         exitB = new JButton(new ImageIcon("resources/icons/exit.png"));
@@ -181,7 +191,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         exitB.setToolTipText("Exit the simulator");
         _toolBar.add(exitB);
 
-        this.add(_toolBar);
+        this.setLayout(new BorderLayout());
+        this.add(_toolBar, BorderLayout.CENTER);
         this.setVisible(true);
     }
 

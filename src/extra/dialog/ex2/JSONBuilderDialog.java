@@ -152,7 +152,7 @@ class JSONBuilderDialog extends JDialog {
 
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-		// bottons
+		// buttons
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setAlignmentX(CENTER_ALIGNMENT);
 

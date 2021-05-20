@@ -72,12 +72,17 @@ public class Body {
 		if(o.getClass() != getClass())
 			return false;
 
+			
 		Body b = (Body) o;
-		if(b.getId() == null)
-			if(id == null)
+		
+		if(b.getId() != null && id != null){
+			if(id.equals(b.getId()))
 				return true;
-		else if(id.equals(b.getId()))
+		}
+		
+		if(b.getId() == null && id == null){
 			return true;
+		}
 		
 		return false;
 	}

@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import simulator.control.Controller;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 
 public class BodiesTable extends JPanel {
@@ -21,9 +22,9 @@ public class BodiesTable extends JPanel {
         );
         setLayout(new BorderLayout());
         JTable table = new JTable(new BodiesTableModel(ctr));
-        //TODO? table.setPreferredSize(new Dimension(900, 200)); 
-        JScrollPane scrollPane = new JScrollPane(table);
-        //TODO? scrollPane.setPreferredSize(new Dimension(900, 200));
+        table.setPreferredSize(new Dimension(900, 200)); 
+        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                                                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane);
     }
 }

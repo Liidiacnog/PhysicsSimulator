@@ -137,7 +137,11 @@ public class SelectionDialog extends JDialog {
 
 	public int open() {
 		_status = 0;
-		setLocation(getParent().getLocation().x + 100, getParent().getLocation().y + 100);
+		if (getParent() != null)
+			setLocation(//
+					getParent().getLocation().x + getParent().getWidth() / 2 - getWidth() / 2,
+					getParent().getLocation().y + getParent().getHeight() / 2 - getHeight() / 2);
+		
 		pack();
 		setVisible(true);
 		return _status;

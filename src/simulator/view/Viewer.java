@@ -72,10 +72,9 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                // TODO? _centerX + (int) (b.getPosition().getX() / _scale);
                 if (_dgBody != null && ControlPanel.getStop()) {
                     double bx = (e.getX() - _centerX) * _scale;
-                    double by = (e.getY() - _centerY) * _scale; // TODO -centerX, Y,  por qué?, y por qué no se hace igual que en getSelectedBody()
+                    double by = (e.getY() - _centerY) * _scale; 
                     _dgBody.setPosition(bx, by);
                     repaint();
                 }
@@ -214,7 +213,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
             else
                 gr.setColor(Color.BLUE);
             gr.fillOval(x, y, 2 * _radius, 2 * _radius);
-            gr.setColor(Color.BLACK);
+            gr.setColor(Color.DARK_GRAY);
             gr.setFont(new Font("Bold", Font.BOLD, 13));
             gr.drawString(b.getId(), x - x / 205, y - y / 20);
 

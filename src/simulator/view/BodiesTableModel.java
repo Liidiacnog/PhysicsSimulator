@@ -15,11 +15,6 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         _bodies = new ArrayList<>();
         ctrl.addObserver(this);
     }
-
-    // TODO : only for test purposes
-    BodiesTableModel(List<Body> bodies) {
-        _bodies = new ArrayList<>(bodies);
-    }
     
     @Override
     public int getRowCount() {
@@ -102,10 +97,4 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         resetBodiesList(bodies);
     }
 
-    //TODO:
-    // private void update(List<Body> bodies) { 
-    //     _bodies = new ArrayList<>(bodies);
-    //     fireTableStructureChanged();
-    // }
-    
 }
