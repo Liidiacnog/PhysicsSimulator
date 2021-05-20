@@ -5,7 +5,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import org.json.JSONObject;
+import java.awt.Component;
 import java.awt.BorderLayout;
 
 public class SelectionDialogTable extends JPanel  {
@@ -15,7 +18,22 @@ public class SelectionDialogTable extends JPanel  {
 
 	public SelectionDialogTable(JSONObject onDisplay) {
 		_model = new ParamsTableModel(onDisplay);
-		_table = new JTable(_model);
+
+		_table = new JTable(_model) {
+			private static final long serialVersionUID = 1L;
+
+			// we override prepareRenderer to resized rows to fit to content
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component component = super.prepareRenderer(renderer, row, column);
+				int rendererWidth = component.getPreferredSize().width;
+				TableColumn tableColumn = getColumnModel().getColumn(column);
+				tableColumn.setPreferredWidth(
+						Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+				return component;
+			}
+		};
+
 		setLayout(new BorderLayout());
 		JScrollPane scrollPane = new JScrollPane(_table);
 		this.add(scrollPane);
@@ -29,6 +47,8 @@ public class SelectionDialogTable extends JPanel  {
 	public JSONObject getData() {
 		return _model.getData();
 	}
+
+
 
 	class ParamsTableModel extends AbstractTableModel {
 
@@ -123,6 +143,7 @@ public class SelectionDialogTable extends JPanel  {
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			_data[rowIndex][columnIndex] = (String) aValue;
 		}
+
 	}
 
 }

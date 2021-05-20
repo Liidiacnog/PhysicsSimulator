@@ -35,6 +35,7 @@ public class SelectionDialog extends JDialog {
 	}
 
 
+	//sets option names for the combo box, taking them from the key "desc" of every JSONObject in _info   
 	private void setComboBoxNames() {
 		String[] names = new String[_info.size()];
 		int i = 0;
@@ -69,6 +70,8 @@ public class SelectionDialog extends JDialog {
 	private void initGUI() {
 
 		setTitle(_title);
+		setMinimumSize(new Dimension(600, 500));
+		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
 		// PAGE_START
@@ -87,10 +90,10 @@ public class SelectionDialog extends JDialog {
 
 		//combo box:
 		setComboBoxNames();
-		JPanel forcesCBoxPanel = new JPanel();
-		forcesCBoxPanel.add(_CBox, "Select one: ");
-		forcesCBoxPanel.setPreferredSize(new Dimension(80, 50));
-		center.add(forcesCBoxPanel);
+		JPanel panelCBox = new JPanel();
+		panelCBox.add(_CBox, "Select one: ");
+		panelCBox.setPreferredSize(new Dimension(80, 50));
+		center.add(panelCBox);
 
 		mainPanel.add(center, BorderLayout.CENTER);
 
@@ -122,7 +125,6 @@ public class SelectionDialog extends JDialog {
 		mainPanel.add(buttonsPanel, BorderLayout.PAGE_END);
 
 		setContentPane(mainPanel);
-		setMinimumSize(new Dimension(100, 100));
 		setVisible(false);
 	}
 

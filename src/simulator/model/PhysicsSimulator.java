@@ -63,17 +63,6 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
             o.onBodyAdded(_bodies, b); 
     }
 
-    
-
-    public void removeBody(Body b) throws IllegalArgumentException {
-        if (!_bodies.contains(b))
-            throw new IllegalArgumentException();
-
-        _bodies.remove(b);
-        for(SimulatorObserver o: observers)
-            o.onBodyAdded(_bodies, b); 
-    }
-
     public void removeBody(String bodyId) {
         for (Body b: _bodies) {
             if (b.getId().equals(bodyId)) {

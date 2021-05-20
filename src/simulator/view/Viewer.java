@@ -25,34 +25,41 @@ import simulator.factories.Factory;
 
 public class Viewer extends JComponent implements SimulatorObserver {
 
-    private int _centerX, _centerY; // coordinates of its origin position (width and the height of the component by
-                                    // 2)
-    private final int _radius = 6; // current list of bodies for drawing them, updated when the state changes.
+    private Controller _ctrl;
+
+    private int _centerX, _centerY; /*
+                                     * coordinates of the JComponent's center (computed by taking its width and
+                                     * height and dividing them by 2, because the origin (0,0) is the top left
+                                     * corner, and the position (width, height) is its bottom right corner)
+                                     */
+
     private double _scale; // to scale the universe so we can draw it within the area of the component
-    private List<Body> _bodies;
-    private SelectionDialog _bodySelDialog;
+
+    private List<Body> _bodies; // current list of bodies, stored for drawing them. Updated when the state
+                                // changes.
+    private Map<Body, Color> _bodiesColors; // maps a body to its colour, to be used when repainting it
+    private Body _dgBody; // body being dragged by the user to perform some action on it
+    private final int _radius = 6; // radius used to draw the bodies as ovals
+
+    private SelectionDialog _bodySelDialog; // selection dialog which allows to add new bodies of the specified type
+    private static String BodiesSelectionDialogTitle = "Addition of bodies";
+    private static String BodiesSelectionDialogInstr = "Select a body and provide values for the parameters in the 'Values' column";
+    private Factory<Body> _fB;
+
+    private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
     private boolean _showHelp; /*
                                 * true if the help text (in the left-top corner) should be shown, its value is
                                 * changed when key ’h’ is pressed
                                 */
+
     private boolean _showVectors; /*
                                    * true if the velocity/force vectors of each body are shown, its value is
                                    * changed when key ’v’ is pressed.
                                    */
-    private Factory<Body> _fB;
-    private Map<Body, Color> _bodiesColors; //maps a body to its colour, to be used when repainting it
-    private Controller _ctrl;
-    private Body _dgBody; //body being dragged by the user to perform some action on it
-    private final String _helpMsg = "h: toggle help, v: toggle vectors, +: zoom-in, -: zoom-out, =: fit" + '\n';
-    private static String BodiesSelectionDialogTitle = "Addition of bodies";
-    private static String BodiesSelectionDialogInstr = 
-    "Select a body and provide values for the parameters in the 'Values' column";
 
     Viewer(Controller ctrl, Factory<Body> fB) {
         _fB = fB;
         _ctrl = ctrl;
-        _bodySelDialog = new SelectionDialog((Frame) SwingUtilities.getWindowAncestor(this), _fB,
-                BodiesSelectionDialogTitle, BodiesSelectionDialogInstr);
         initGUI();
         ctrl.addObserver(this);
     }
@@ -67,14 +74,14 @@ public class Viewer extends JComponent implements SimulatorObserver {
         _showHelp = true;
         _showVectors = true;
 
-        //to be able to drag bodies and change their position:
+        // to be able to drag bodies and change their position:
         addMouseMotionListener(new MouseMotionListener() {
 
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (_dgBody != null && ControlPanel.getStop()) {
                     double bx = (e.getX() - _centerX) * _scale;
-                    double by = (e.getY() - _centerY) * _scale; 
+                    double by = (e.getY() - _centerY) * _scale;
                     _dgBody.setPosition(bx, by);
                     repaint();
                 }
@@ -83,12 +90,12 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                //Do nothing
+                // Do nothing
             }
 
         });
-        
-        //to be able to select bodies and change their colour
+
+        // to be able to select bodies and change their colour
         addMouseListener(new MouseListener() {
 
             @Override
@@ -98,21 +105,29 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1 && ControlPanel.getStop()) { //bodies are selected by double-clicking!
+                if (e.getClickCount() > 1 && ControlPanel.getStop()) { // bodies are selected by double-clicking!
                     Body selBody = getSelectedBody(e.getX(), e.getY());
                     if (selBody != null) {
                         Color c = JColorChooser.showDialog(new JFrame(), "Change body color", Color.BLUE);
                         _bodiesColors.put(selBody, c);
                         repaint();
-                    } else if (_bodySelDialog.open() == 1) {
-                        try{
-                            _ctrl.addBody(_bodySelDialog.getCBoxSelection());
-                        }catch(IllegalArgumentException ex){
-                            JOptionPane.showMessageDialog(new JFrame(),
-                                                "The following error occurred: " + ex.getMessage(),
-                                                "Error found while running: ",
-                                                JOptionPane.ERROR_MESSAGE,
-                                                null);
+                    } else {
+
+                        if (_bodySelDialog == null) { /* it is instantiated here to ensure that the viewer has been
+                                                       * correctly constructed when we use it as a parameter
+                                                       */
+                            _bodySelDialog = new SelectionDialog((Frame) SwingUtilities.getWindowAncestor(Viewer.this),
+                                    _fB, BodiesSelectionDialogTitle, BodiesSelectionDialogInstr);
+                        }
+
+                        if (_bodySelDialog.open() == 1) { // '1' means user has clicked OK
+                            try {
+                                _ctrl.addBody(_bodySelDialog.getCBoxSelection());
+                            } catch (IllegalArgumentException ex) {
+                                JOptionPane.showMessageDialog(new JFrame(),
+                                        "The following error occurred: " + ex.getMessage(),
+                                        "Error found while running: ", JOptionPane.ERROR_MESSAGE, null);
+                            }
                         }
                     }
                 }
@@ -130,7 +145,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                //Do nothing
+                // Do nothing
             }
         });
 
@@ -165,23 +180,24 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                //Do nothing
+                // Do nothing
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                //Do nothing
+                // Do nothing
             }
         });
 
-
     }
 
-    //returns the body whose oval occupies position x, y; or null if there is none
+    // returns the body whose oval occupies position x, y; or null if there is none which matches 
     private Body getSelectedBody(int x, int y) {
         for (Body b : _bodies) {
+            //calculate the coordinates of body b taking into account the scale and our reference system (center of the viewer)
             int bx = _centerX + (int) (b.getPosition().getX() / _scale);
             int by = _centerY + (int) (b.getPosition().getY() / _scale);
+            
             if (Math.sqrt(Math.pow(x - bx, 2) + Math.pow(y - by, 2)) <= _radius) {
                 return b;
             }
@@ -199,12 +215,15 @@ public class Viewer extends JComponent implements SimulatorObserver {
         gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // calculate the center
+        // calculate the center of the JComponent viewer
         _centerX = getWidth() / 2;
         _centerY = getHeight() / 2;
 
         // (1) draw a cross at the center;
-        gr.drawString("+", _centerX, _centerY + 4);
+        gr.drawString("+", _centerX - 4, _centerY + 4);
+
+        // (2) draw the bodies, and if _showVectors is true, also the velocity and force
+        // vectors (using 2 different colours)
         for (Body b : _bodies) {
             int x = _centerX + (int) (b.getPosition().getX() / _scale) - _radius;
             int y = _centerY + (int) (b.getPosition().getY() / _scale) - _radius;
@@ -217,7 +236,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
             gr.setFont(new Font("Bold", Font.BOLD, 13));
             gr.drawString(b.getId(), x - x / 205, y - y / 20);
 
-            if (_showVectors) { // (2) draw the help message
+            if (_showVectors) { 
                 int scaleFactor = 18;
                 x += _radius;
                 y += _radius;
@@ -228,21 +247,19 @@ public class Viewer extends JComponent implements SimulatorObserver {
                 y1 = (int) b.getForce().direction().scale(scaleFactor).getY() + y;
                 drawLineWithArrow(gr, x, y, x1, y1, 2, 3, Color.RED, Color.RED);
             }
-
-            // (3) draw the bodies, and if _showVectors is true, also the velocity and force
-            // vectors (using 2 different colours)
-            if (_showHelp) {
-                String help = "Scaling ratio: " + _scale;
-                gr.setColor(Color.RED);
-                gr.setFont(new Font("Default", Font.PLAIN, 12));
-                gr.drawString(_helpMsg, 8, 32);
-                gr.drawString(help, 8, 47);
-                // instructions on how to add a new body
-                gr.setColor(Color.BLACK);
-                gr.drawString("* NOTE: If the simulator is stopped: *", 8, 62);
-                gr.drawString("* you can double-click anywhere to add a new body there *", 8, 77);
-            }
-
+        }
+        
+        // (3) draw the help message
+        if (_showHelp) {
+            String help = "Scaling ratio: " + _scale;
+            gr.setColor(Color.RED);
+            gr.setFont(new Font("Default", Font.PLAIN, 12));
+            gr.drawString(_helpMsg, 8, 32);
+            gr.drawString(help, 8, 47);
+            // instructions on how to add a new body
+            gr.setColor(Color.BLACK);
+            gr.drawString("* NOTE: If the simulator is stopped: *", 8, 62);
+            gr.drawString("* you can double-click anywhere to add a new body there *", 8, 77);
         }
     }
 
@@ -281,7 +298,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
         g.fillPolygon(xpoints, ypoints, 3);
     }
 
-    //auxiliary method for observer methods
+    // auxiliary method for observer methods
     private void resetBodiesAndScale(List<Body> l) {
         _bodies = new ArrayList<>(l);
         autoScale();

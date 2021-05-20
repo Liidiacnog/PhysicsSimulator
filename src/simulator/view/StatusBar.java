@@ -16,9 +16,8 @@ import simulator.model.SimulatorObserver;
  */
 public class StatusBar extends JPanel implements SimulatorObserver {
 
-    private JLabel _currTime; // for current time
-    private JLabel _currLaws; // for force laws
-    private JLabel _numOfBodies; // for number of bodies
+    private JLabel _currTime, _currLaws, _numOfBodies; 
+    // for current time,  for force laws,  for number of bodies
 
     StatusBar(Controller ctrl) {
         ctrl.addObserver(this);
@@ -36,7 +35,7 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         _currLaws.setVerticalAlignment(JLabel.TOP);
         _currTime.setVerticalAlignment(JLabel.TOP);
         _numOfBodies.setVerticalAlignment(JLabel.TOP);
-        
+
         this.add(_currTime);
         this.add(_numOfBodies);
         this.add(_currLaws);

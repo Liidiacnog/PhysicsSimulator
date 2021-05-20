@@ -13,18 +13,14 @@ import java.awt.BorderLayout;
 public class BodiesTable extends JPanel {
 
     BodiesTable(Controller ctr) {
-        setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.DARK_GRAY, 2), 
-            "Bodies", 
-            TitledBorder.LEFT,
-            TitledBorder.RIGHT
-            )
-        );
+        setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(Color.DARK_GRAY, 2), 
+                                                    "Bodies", TitledBorder.LEFT, TitledBorder.RIGHT ) );
         setLayout(new BorderLayout());
         JTable table = new JTable(new BodiesTableModel(ctr));
         table.setPreferredSize(new Dimension(900, 200)); 
-        JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                                                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane(table,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, //Set scrollbar appear when needed
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane);
     }
 }

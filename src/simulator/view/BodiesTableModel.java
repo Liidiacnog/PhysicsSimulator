@@ -26,6 +26,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         return 5;
     }
 
+
     @Override
     public String getColumnName(int column) {
         String name = "";
@@ -72,6 +73,7 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
         return obj;
     }
 
+    //auxiliary method to be called by methods inherited of Observer
     private void resetBodiesList(List<Body> l){
         _bodies = new ArrayList<>(l);
         fireTableStructureChanged();

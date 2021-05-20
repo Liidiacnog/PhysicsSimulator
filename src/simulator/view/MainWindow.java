@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
 
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack(); //TODO does it do sth? it is supposed to be resized to fit the preferred sizes of its subcomponents
+        this.pack(); // to resize it to fit the preferred sizes of its subcomponents
         this.setVisible(true);
     }
 
