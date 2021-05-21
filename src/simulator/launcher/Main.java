@@ -31,6 +31,7 @@ public class Main {
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
 	private final static Integer _stepsDefaultValue = 150;
+	private final static String _modeDefaultValue = "batch";
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -209,7 +210,7 @@ public class Main {
 	}
 
 	private static void parseModeOption(CommandLine line) {
-		_mode = line.getOptionValue("m");
+		_mode = line.getOptionValue("m", _modeDefaultValue);
 	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
