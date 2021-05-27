@@ -1,0 +1,47 @@
+General Comments
+================
+
+- Very good assignment! 
+
+
+ControlPanel
+============
+
+
+StatusBar
+=========
+
+
+Viewer
+======
+
+
+TableInfo
+=========
+
+- better to define a field header with all value of the headers, and then use it in getColumnName and get getColumnCount
+    > DONE
+
+ForceLawsDialog
+===============
+
+- consider using a comboboxModel instead of fixed values from an array
+    > DONE :)
+
+
+Optional Parts
+==============
+
+- better have a method onBodyRemoved instead for using onBodyAdded (for deleting body)
+    > DONE
+
+
+MainWindow
+==========
+
+
+Main
+====
+
+The -i option should be optional in GUI mode
+    > DONE

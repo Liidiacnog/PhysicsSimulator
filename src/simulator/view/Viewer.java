@@ -326,4 +326,9 @@ public class Viewer extends JComponent implements SimulatorObserver {
         repaint();
     }
 
+    @Override
+    public void onBodyRemoved(List<Body> bodies, Body b) {
+        resetBodiesAndScale(bodies);
+    }
+
 }

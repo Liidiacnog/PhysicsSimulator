@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
     private List<Body> _bodies;
+    private String[] _headers = {"Id", "Mass", "Position", "Velocity", "Force"};
 
     BodiesTableModel(Controller ctrl) {
         _bodies = new ArrayList<>();
@@ -23,31 +24,13 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return _headers.length;
     }
 
 
     @Override
     public String getColumnName(int column) {
-        String name = "";
-        switch (column) {
-            case 0:
-                name = "id";
-                break;
-            case 1:
-                name = "Mass";
-                break;
-            case 2:
-                name = "Position";
-                break;
-            case 3:
-                name = "Velocity";
-                break;
-            case 4:
-                name = "Force";
-                break;
-        }
-        return name;
+        return _headers[column];
     }
 
     @Override
@@ -96,6 +79,11 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
+        resetBodiesList(bodies);
+    }
+
+    @Override
+    public void onBodyRemoved(List<Body> bodies, Body b) {
         resetBodiesList(bodies);
     }
 

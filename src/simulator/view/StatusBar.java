@@ -71,4 +71,9 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         _currLaws.setText("Law: " + fLawsDesc);
     }
 
+    @Override
+    public void onBodyRemoved(List<Body> bodies, Body b) {
+        _numOfBodies.setText("Bodies: " + bodies.size());
+    }
+
 }

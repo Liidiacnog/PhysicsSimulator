@@ -68,7 +68,7 @@ public class PhysicsSimulator implements Observable<SimulatorObserver>{
             if (b.getId().equals(bodyId)) {
                 _bodies.remove(b);
                 for(SimulatorObserver o: observers)
-                    o.onBodyAdded(_bodies, b);
+                    o.onBodyRemoved(_bodies, b);
                 return;
             }
         }

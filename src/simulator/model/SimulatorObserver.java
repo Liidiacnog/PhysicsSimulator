@@ -34,4 +34,8 @@ public interface SimulatorObserver {
         //Default: do nothing
     }
 
+    default public void onBodyRemoved(List<Body> bodies, Body b){
+        //Default: do nothing
+    }
+
 }

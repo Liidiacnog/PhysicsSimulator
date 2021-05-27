@@ -1,6 +1,8 @@
 package simulator.view;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
+
 import org.json.JSONObject;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -37,13 +39,20 @@ public class SelectionDialog extends JDialog {
 
 	//sets option names for the combo box, taking them from the key "desc" of every JSONObject in _info   
 	private void setComboBoxNames() {
-		String[] names = new String[_info.size()];
-		int i = 0;
-		for (JSONObject o : _info) {
-			names[i] = o.getString("desc");
-			++i;
-		}
-		_CBox = new JComboBox<String>(names);
+		ComboBoxModel<String> _cBoxModel = new DefaultComboBoxModel<String>() {
+
+			@Override
+			public int getSize() {
+				return _info.size();
+			}
+
+			@Override
+			public String getElementAt(int index) {
+				return _info.get(index).getString("desc");
+			}
+			
+		};
+		_CBox = new JComboBox<String>(_cBoxModel);
 		_CBox.setSelectedIndex(IntitialItemCBox);
 		_CBox.addActionListener((e) -> {
  				String name = _CBox.getSelectedItem().toString();

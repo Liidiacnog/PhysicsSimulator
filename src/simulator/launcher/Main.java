@@ -186,7 +186,7 @@ public class Main {
 
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null) {
+		if (_inFile == null && line.getOptionValue("m").equals("batch")) {
 			throw new ParseException("In batch mode an input file of bodies is required");
 		}
 	}
