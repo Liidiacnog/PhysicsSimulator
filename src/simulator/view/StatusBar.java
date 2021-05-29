@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import simulator.model.Body;
@@ -28,6 +29,10 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBorder(BorderFactory.createBevelBorder(1));
 
+        _numOfBodies = new JLabel("Bodies: ");
+        _currLaws = new JLabel("Law: ");
+        _currTime = new JLabel("Time: ");
+
         _currLaws.setPreferredSize(new Dimension(500, 30));
         _currTime.setPreferredSize(new Dimension(120, 30));
         _numOfBodies.setPreferredSize(new Dimension(80, 30));
@@ -35,7 +40,7 @@ public class StatusBar extends JPanel implements SimulatorObserver {
         _currLaws.setVerticalAlignment(JLabel.TOP);
         _currTime.setVerticalAlignment(JLabel.TOP);
         _numOfBodies.setVerticalAlignment(JLabel.TOP);
-
+        
         this.add(_currTime);
         this.add(_numOfBodies);
         this.add(_currLaws);
@@ -43,37 +48,67 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        _numOfBodies = new JLabel("Bodies: " + bodies.size());
-        _currLaws = new JLabel("Law: " + fLawsDesc);
-        _currTime = new JLabel("Time: " + time);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _numOfBodies.setText("Bodies: " + bodies.size());
+                _currLaws.setText("Law: " + fLawsDesc);
+                _currTime.setText("Time: " + time);
+            }
+        });
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        _numOfBodies.setText("Bodies: " + bodies.size());
-        _currLaws.setText("Law: " + fLawsDesc);
-        _currTime.setText("Time: " + time);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _numOfBodies.setText("Bodies: " + bodies.size());
+                _currLaws.setText("Law: " + fLawsDesc);
+                _currTime.setText("Time: " + time);
+            }
+        });
     }
 
     @Override
     public void onBodyAdded(List<Body> bodies, Body b) {
-        _numOfBodies.setText("Bodies: " + bodies.size());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _numOfBodies.setText("Bodies: " + bodies.size());
+            }
+        });
     }
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-        _numOfBodies.setText("Bodies: " + bodies.size());
-        _currTime.setText("Time: " + time);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _numOfBodies.setText("Bodies: " + bodies.size());
+                _currTime.setText("Time: " + time);
+            }
+        });
     }
 
     @Override
     public void onForceLawsChanged(String fLawsDesc) {
-        _currLaws.setText("Law: " + fLawsDesc);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _currLaws.setText("Law: " + fLawsDesc); 
+            }
+        });
     }
 
     @Override
     public void onBodyRemoved(List<Body> bodies, Body b) {
-        _numOfBodies.setText("Bodies: " + bodies.size());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _numOfBodies.setText("Bodies: " + bodies.size());
+            }
+        });
     }
 
 }

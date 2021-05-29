@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Launch MainWindow",
             "request": "launch",
+            "mainClass": "extra.jtable.MainWindow",
+            "projectName": "TP-II"
+        },
+        {
+            "type": "java",
+            "name": "Launch MainWindow",
+            "request": "launch",
             "mainClass": "extra.dialog.ex2.MainWindow",
             "projectName": "TP-II"
         },

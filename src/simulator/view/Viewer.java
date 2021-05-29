@@ -300,9 +300,14 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     // auxiliary method for observer methods
     private void resetBodiesAndScale(List<Body> l) {
-        _bodies = new ArrayList<>(l);
-        autoScale();
-        repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _bodies = new ArrayList<>(l);
+                autoScale();
+                repaint();
+            }
+        });
     }
 
     @Override
@@ -322,13 +327,18 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
     @Override
     public void onAdvance(List<Body> bodies, double time) {
-        _bodies = new ArrayList<>(bodies);
-        repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _bodies = new ArrayList<>(bodies);
+                repaint();
+            }
+        });
     }
 
     @Override
     public void onBodyRemoved(List<Body> bodies, Body b) {
-        resetBodiesAndScale(bodies);
+       resetBodiesAndScale(bodies);
     }
 
 }

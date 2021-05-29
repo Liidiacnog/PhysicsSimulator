@@ -1,8 +1,6 @@
 package simulator.view;
 
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
-
 import org.json.JSONObject;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

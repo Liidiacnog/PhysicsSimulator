@@ -22,13 +22,16 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
     private JToolBar _toolBar;
     private Controller _ctrl;
     private PhysicsSimulator _simulator;
-    private static boolean _stopped;
+
+    private static boolean _stopped; //WE ARE NOT REMOVING IT BECAUSE WE USE IT IN THE VIEWER, so that the user cannot drag bodies while the simulation is running
+    
     private Factory<ForceLaw> _fFL;
     JButton ldBodiesB, ldForcesB, goB, stopB, exitB, removeB;
     JFileChooser fc;
     SelectionDialog _selectionDialog;
-    JSpinner _stepsSpinner;
+    JSpinner _stepsSpinner, _delaySpinner;
     JTextField _deltaT;
+    private SwingWorker<Void, Void> _worker;
 
     private static String ForcesSelectionDialogTitle = "Force Laws Selection";
     private static String ForcesSelectionDialogInstr = "Select a force law and provide values for the parameters in the 'Value' column"
@@ -49,6 +52,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         _toolBar = new JToolBar();
 
+        
         // Load button
         ldBodiesB = new JButton(new ImageIcon("resources/icons/open.png"));
         ldBodiesB.addActionListener((e) -> {
@@ -121,8 +125,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         goB.addActionListener((e) -> {
             setAllButtonsTo(false, stopB);
             _stopped = false;
-            /*
-             * (2) set the current delta-time of the simulator to the one specified in the
+
+            /* (2) set the current delta-time of the simulator to the one specified in the
              * corresponding text field;
              */
             try {
@@ -136,7 +140,19 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
              * (3) call method run_sim with the current value of steps as specified in the
              * JSpinner
              */
-            run_sim((Integer) _stepsSpinner.getValue());
+            _worker = new SwingWorker<Void, Void>() {
+                protected Void doInBackground() {
+                    run_sim( Long.valueOf( ((Integer) _delaySpinner.getValue()) ), (Integer) _stepsSpinner.getValue() );
+                    
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    setAllButtonsTo(true, null);
+                }
+            };
+            _worker.execute();
         });
         goB.setToolTipText("Start the simulation");
         // Add start button
@@ -144,11 +160,32 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
         // Stop button
         stopB = new JButton(new ImageIcon("resources/icons/stop.png"));
-        stopB.addActionListener((e) -> _stopped = true);
+        stopB.addActionListener((e) -> {
+            if ( _worker != null ) {
+                _worker.cancel(true);
+                _worker = null; 
+            }
+            _stopped = true;
+        });
         stopB.setToolTipText("Stop the simulation");
         // Add stop button
         _toolBar.add(stopB);
 
+
+        
+        //ASSIGNMENT 3:
+        // JSpinner for Delay:
+        JLabel delayLabel = new JLabel("Delay: ");
+        _toolBar.add(delayLabel); // Add delay label
+        SpinnerModel delayModel = new SpinnerNumberModel(1, 1, 1000, 1); // initial value, min, max, step
+        _delaySpinner = new JSpinner(delayModel); //delay between consecutive simulation steps
+        _delaySpinner.setMaximumSize(new Dimension(80, 50));
+        _delaySpinner.setMinimumSize(new Dimension(80, 50));
+        // Add spiner for delay
+        _toolBar.add(_delaySpinner);
+
+
+        
         // JSpinner for steps:
         JLabel stepsLabel = new JLabel("Steps: ");
         _toolBar.add(stepsLabel); // Add steps label
@@ -194,6 +231,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         this.setVisible(true);
     }
 
+    
+    //RUN FOR ASSIGNMENT 2:
     private void run_sim(int n) {
         /*
          * the method run_sim guarantees that the interface will not block. It does this
@@ -218,7 +257,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
                 }
             });
         } else {
-            _stopped = true;
+            _stopped = true; 
             setAllButtonsTo(true, null);
         }
 
@@ -226,12 +265,41 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         // JSpinner has been set to 1
     }
 
+
+    //RUN FOR ASSIGNMENT 3:
+    private void run_sim(Long delay, int n) {
+        while(n > 0 && !_worker.isCancelled()) {
+            // 1. execute the simulator one step, and handle exceptions if any
+            try {
+                _ctrl.run(1);
+            } catch (Exception e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        openErrorDialog(e);
+                        return;
+                    }
+                } );
+            }
+            // 2. sleep the current thread for ’delay’ milliseconds
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                return;
+            }
+            n--;
+        }
+
+    }
+
+
+
     private void openErrorDialog(Exception e) {
         JOptionPane.showMessageDialog(new JFrame(), "The following error occurred: " + e.getMessage(),
                 "Error found while running: ", JOptionPane.ERROR_MESSAGE, null);
     }
 
-    // sets all buttons to bool, except b
+    // sets all buttons and spinners to bool, except b
     private void setAllButtonsTo(boolean bool, JButton b) {
         ldBodiesB.setEnabled(bool);
         ldForcesB.setEnabled(bool);
@@ -241,6 +309,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
         exitB.setEnabled(bool);
         _deltaT.setEnabled(bool);
         _stepsSpinner.setEnabled(bool);
+        _delaySpinner.setEnabled(bool);
 
         if (b != null)
             b.setEnabled(!bool);
@@ -252,19 +321,28 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
     // SimulatorObserver methods:
 
+    private void setDeltaT_Text(double dt){
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _deltaT.setText(dt + "");
+            }
+        });
+    }
+
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        _deltaT.setText(dt + "");
+        setDeltaT_Text(dt);
     }
 
     @Override
     public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-        _deltaT.setText(dt + "");
+        setDeltaT_Text(dt);
     }
 
     @Override
     public void onDeltaTimeChanged(double dt) {
-        _deltaT.setText(dt + "");
+        setDeltaT_Text(dt);
     }
 
 }

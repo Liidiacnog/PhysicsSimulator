@@ -6,6 +6,7 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 import simulator.control.Controller;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
@@ -58,13 +59,19 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
     //auxiliary method to be called by methods inherited of Observer
     private void resetBodiesList(List<Body> l){
-        _bodies = new ArrayList<>(l);
-        fireTableStructureChanged();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                _bodies = new ArrayList<>(l);
+                fireTableStructureChanged();
+            }
+        });
     }
 
     @Override
     public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
         resetBodiesList(bodies);
+        
     }
 
     @Override
